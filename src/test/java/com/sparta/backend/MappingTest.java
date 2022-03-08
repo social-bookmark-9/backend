@@ -146,17 +146,17 @@ public class MappingTest {
 
     @Test
     @Order(5)
-    @DisplayName("알람 보내기")
+    @DisplayName("알람 생성하기")
     public void createAlarm() {
 
         // given
         ArticleFolder articleFolder = articleFolderRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("해당 아티클 폴더는 존재하지 않습니다"));
-        Member member1 = articleFolder.getMember();
+        Member toMember = articleFolder.getMember();
 
         Hashtag hashtag = Hashtag.builder()
                 .firstHashtag(firstHashtag)
                 .build();
-        Member member2 = Member.builder()
+        Member fromMember = Member.builder()
                 .memberName("영희")
                 .email("123@123.com")
                 .hashtag(hashtag)
@@ -164,16 +164,16 @@ public class MappingTest {
                 .password("1234")
                 .build();
 
-        memberRepository.save(member2);
+        memberRepository.save(fromMember);
 
         Alarm alarm = Alarm.builder()
                 .articleFolderId(articleFolder.getId())
-                .fromMemberId(member2.getId())
-                .member(member1)
+                .fromMemberId(fromMember.getId())
+                .member(toMember)
                 .build();
 
         alarmRepository.save(alarm);
-        
+
         Assertions.assertEquals(alarm, alarmRepository.findById(alarm.getId())
                 .orElseThrow(() -> new IllegalArgumentException("알람없음")));
     }
