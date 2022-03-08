@@ -1,23 +1,18 @@
 package com.sparta.backend;
 
-import com.sparta.backend.model.Article;
-import com.sparta.backend.model.ArticleFolder;
-import com.sparta.backend.model.Hashtag;
-import com.sparta.backend.model.Member;
-import com.sparta.backend.repository.ArticleFolderRepository;
-import com.sparta.backend.repository.ArticleRepository;
-import com.sparta.backend.repository.MemberRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.sparta.backend.model.*;
+import com.sparta.backend.repository.*;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-//@Rollback(value = false)
+@Rollback(value = false)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MappingTest {
 
     private String memberName;
@@ -39,6 +34,10 @@ public class MappingTest {
     private ArticleFolderRepository articleFolderRepository;
     @Autowired
     private ArticleRepository articleRepository;
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+    @Autowired
+    private AlarmRepository alarmRepository;
 
     @BeforeEach
     public void setup() {
@@ -57,10 +56,11 @@ public class MappingTest {
     }
 
     @Test
-    @DisplayName("유저 및 해쉬태그 테스트")
-    public void createUser() {
+    @Order(1)
+    @DisplayName("유저 생성 테스트")
+    public void createMember() {
 
-        // given - when
+        // given
         Hashtag hashtag = Hashtag.builder()
                 .firstHashtag(firstHashtag)
                 .build();
@@ -73,82 +73,108 @@ public class MappingTest {
                 .hashtag(hashtag)
                 .build();
 
-        // then
+        // when
         memberRepository.save(member);
 
-        memberRepository.delete(member);
+        // then
+        Assertions.assertEquals(member, memberRepository.findById(member.getId()).orElseThrow(() -> new IllegalArgumentException("해당 멤버는 존재하지 않습니다")));
     }
 
     @Test
-    @DisplayName("유저 및 아티클폴더 생성 및 삭제 테스트")
+    @Order(2)
+    @DisplayName("아티클폴더 생성 테스트")
     public void createArticleFolder() {
 
-        // given - when
-        Hashtag hashtag = Hashtag.builder()
-                .firstHashtag(firstHashtag)
-                .build();
-
-        Member member = Member.builder()
-                .memberName(memberName)
-                .email(email)
-                .password(password)
-                .expiredDate(expiredDate)
-                .hashtag(hashtag)
-                .build();
-
-        memberRepository.save(member);
+        // given
+        Member member = memberRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("해당 멤버는 존재하지 않습니다"));
 
         ArticleFolder articleFolder = ArticleFolder.builder()
                 .articleFolderName(articleFolderName)
                 .member(member)
                 .build();
-
+        // when
         articleFolderRepository.save(articleFolder);
 
         // then
-        articleFolderRepository.delete(articleFolder);
-        memberRepository.delete(member);
+        Assertions.assertEquals(articleFolder, articleFolderRepository.findById(articleFolder.getId()).orElseThrow(() -> new IllegalArgumentException("해당 아티클 폴더는 존재하지 않습니다")));
     }
 
     @Test
-    @DisplayName("유저 및 아티클폴더 및 아티클 테스트")
+    @Order(3)
+    @DisplayName("아티클 폴더에 아티클 추가하기")
     public void createArticle() {
-        // given - when
+
+        // given
+        ArticleFolder articleFolder = articleFolderRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("해당 아티클 폴더는 존재하지 않습니다"));
+
         Hashtag hashtag = Hashtag.builder()
                 .firstHashtag(firstHashtag)
                 .build();
-
-        Member member = Member.builder()
-                .memberName(memberName)
-                .email(email)
-                .password(password)
-                .expiredDate(expiredDate)
-                .hashtag(hashtag)
-                .build();
-
-        memberRepository.save(member);
-
-        ArticleFolder articleFolder = ArticleFolder.builder()
-                .articleFolderName(articleFolderName)
-                .member(member)
-                .build();
-
-        articleFolderRepository.save(articleFolder);
 
         Article article = Article.builder()
                 .url(url)
                 .titleOg(titleOg)
                 .imgOg(imgOg)
                 .hashtag(hashtag)
-                .articleFolder(articleFolder)
                 .build();
 
-        article.SetArticleFolder(articleFolder);
+        article.setArticleFolder(articleFolder);
 
+        // when
         articleRepository.save(article);
-        System.out.println("아티클 삭제 쿼리");
-//        articleRepository.delete(article);
-        articleRepository.deleteAllInBatch();
-//        articleFolder.getArticles().remove(article);
+
+        // then
+        Assertions.assertEquals(article, articleRepository.findById(article.getId()).orElseThrow(() -> new IllegalArgumentException("해당 아티클이 존재하지 않습니다.")));
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("유저가 아티클폴더에 좋아요 누르기")
+    public void createFavorite() {
+
+        // given
+        Member member = memberRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("해당 멤버는 존재하지 않습니다"));
+        ArticleFolder articleFolder = articleFolderRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("해당 아티클 폴더는 존재하지 않습니다"));
+        Favorite favorite = new Favorite(member, articleFolder);
+
+        // when
+        favoriteRepository.save(favorite);
+
+        // then
+        Assertions.assertEquals(favorite, favoriteRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("해당 좋아요가 존재하지 않습니다.")));
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("알람 보내기")
+    public void createAlarm() {
+
+        // given
+        ArticleFolder articleFolder = articleFolderRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("해당 아티클 폴더는 존재하지 않습니다"));
+        Member member1 = articleFolder.getMember();
+
+        Hashtag hashtag = Hashtag.builder()
+                .firstHashtag(firstHashtag)
+                .build();
+        Member member2 = Member.builder()
+                .memberName("영희")
+                .email("123@123.com")
+                .hashtag(hashtag)
+                .expiredDate(expiredDate)
+                .password("1234")
+                .build();
+
+        memberRepository.save(member2);
+
+        Alarm alarm = Alarm.builder()
+                .articleFolderId(articleFolder.getId())
+                .fromMemberId(member2.getId())
+                .member(member1)
+                .build();
+
+        alarmRepository.save(alarm);
+        
+        Assertions.assertEquals(alarm, alarmRepository.findById(alarm.getId())
+                .orElseThrow(() -> new IllegalArgumentException("알람없음")));
     }
 }

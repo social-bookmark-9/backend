@@ -44,7 +44,7 @@ public class Article extends Timestamped {
     private ArticleFolder articleFolder;
 
     // 연관관계 편의 메소드
-    public void SetArticleFolder(ArticleFolder articleFolder) {
+    public void setArticleFolder(ArticleFolder articleFolder) {
         this.articleFolder = articleFolder;
         articleFolder.getArticles().add(this);
     }
