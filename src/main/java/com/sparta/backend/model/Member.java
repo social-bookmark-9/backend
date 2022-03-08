@@ -3,6 +3,8 @@ package com.sparta.backend.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -38,7 +40,7 @@ public class Member extends Timestamped {
 
     // 테스트용
     @Builder
-    public Member (String memberName, String email, String password, Long expiredDate,Hashtag hashtag) {
+    public Member (String memberName, String email, String password, Long expiredDate,Hashtag hashtag, Favorite favorite) {
         this.memberName = memberName;
         this.email = email;
         this.password = password;
