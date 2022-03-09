@@ -58,4 +58,18 @@ public class Article extends Timestamped {
         this.hashtag = hashtag;
         this.articleFolder = articleFolder;
     }
+
+    @Builder(builderMethodName = "createArticleDtoBuilder")
+    public Article(String url, String titleOg, String imgOg,
+                   String review, Boolean reviewHide, int readCount,
+                   Hashtag hashtag, ArticleFolder articleFolder) {
+        this.url = url;
+        this.titleOg = titleOg;
+        this.imgOg = imgOg;
+        this.review = review;
+        this.reviewHide = reviewHide;
+        this.readCount = readCount;
+        this.hashtag = hashtag;
+        this.articleFolder = articleFolder;
+    }
 }
