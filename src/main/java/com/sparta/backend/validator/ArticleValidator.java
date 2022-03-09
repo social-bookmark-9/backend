@@ -1,4 +1,10 @@
 package com.sparta.backend.validator;
 
-public class ArticleValidator {
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class ArticleValidator {    
+
 }
