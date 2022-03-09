@@ -38,13 +38,23 @@ public class Member extends Timestamped {
     @JoinColumn(name = "hashtag_id", nullable = false)
     private Hashtag hashtag;
 
+    @Column(name = "member_role", nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private MemberRoleEnum memberRole;
+
+    @Column(name = "kakao_id", unique = true)
+    private Long kakaoId;
+
     // 테스트용
     @Builder
-    public Member (String memberName, String email, String password, Long expiredDate,Hashtag hashtag, Favorite favorite) {
+    public Member (String memberName, String email, String password,
+                   Long expiredDate,Hashtag hashtag, Long kakaoId, MemberRoleEnum memberRole) {
         this.memberName = memberName;
         this.email = email;
         this.password = password;
         this.expiredDate = expiredDate;
         this.hashtag = hashtag;
+        this.kakaoId = kakaoId;
+        this.memberRole = memberRole;
     }
 }
