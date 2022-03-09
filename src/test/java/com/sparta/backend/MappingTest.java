@@ -71,6 +71,7 @@ public class MappingTest {
                 .password(password)
                 .expiredDate(expiredDate)
                 .hashtag(hashtag)
+                .memberRole(MemberRoleEnum.USER)
                 .build();
 
         // when
@@ -162,6 +163,7 @@ public class MappingTest {
                 .hashtag(hashtag)
                 .expiredDate(expiredDate)
                 .password("1234")
+                .memberRole(MemberRoleEnum.USER)
                 .build();
 
         memberRepository.save(fromMember);
