@@ -13,7 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -54,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .cors() // CORS 설정 파일은 WebConfig
                 .and()
                     .authorizeRequests() // 요청에 대한 사용권한 체크
-                    .antMatchers("/**").permitAll()
+                    .antMatchers("/**").permitAll() // 개발기간동안 우선 열어놓기.
                     .anyRequest().permitAll() // 그외 나머지 요청은 누구나 접근 가능
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

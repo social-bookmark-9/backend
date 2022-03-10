@@ -34,7 +34,7 @@ public class Member extends Timestamped implements UserDetails {
     @Column(name = "social_url")
     private String socialUrl;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password", nullable = false)
