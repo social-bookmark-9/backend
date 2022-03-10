@@ -20,6 +20,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     // 토근 생성 및 제공자 DI.
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     // 스웨거 적용
     @Override public void configure(WebSecurity web) {
@@ -53,8 +55,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .cors() // CORS 설정 파일은 WebConfig
                 .and()
                     .authorizeRequests() // 요청에 대한 사용권한 체크
+                    .antMatchers("/user/test").hasRole("USER") // 토큰 유효성 테스트용 
+                    .antMatchers("/admin/test").hasRole("ADMIN") // 토큰 유효성 테스트용
                     .antMatchers("/**").permitAll() // 개발기간동안 우선 열어놓기.
                     .anyRequest().permitAll() // 그외 나머지 요청은 누구나 접근 가능
+                .and()
+                    .exceptionHandling()
+                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+                    .accessDeniedHandler(customAccessDeniedHandler)
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }

@@ -67,4 +67,16 @@ public class OauthController {
 
         return new ResponseEntity<>(new DataMessage<>("로그인 성공", map), HttpStatus.OK);
     }
+
+    // 토큰 테스트
+    @PostMapping("/user/test")
+    public String tokenTest() {
+        return "good";
+    }
+
+    // 토큰 테스트 2
+    @PostMapping("/admin/test")
+    public String tokenTest2() {
+        return "fail";
+    }
 }
