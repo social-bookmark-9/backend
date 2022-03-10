@@ -7,15 +7,12 @@ import com.sparta.backend.model.Member;
 import com.sparta.backend.oauthDto.KakaoMemberInfoRequestDto;
 import com.sparta.backend.oauthDto.KakaoMemberInfoResponseDto;
 import com.sparta.backend.oauthDto.KakaoMemberRegisterRequestDto;
+import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.service.OauthService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +23,7 @@ public class OauthController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final OauthService oauthService;
+    private final MemberRepository memberRepository;
 
     // 카카오 로그인 실행
     @GetMapping("/user/kakao/callback")
@@ -36,8 +34,9 @@ public class OauthController {
         boolean isExist = oauthService.checkIfMemberExists(kakaoUserInfoRequestDto);
 
         if (isExist) {
-            KakaoMemberInfoResponseDto kakaoUserInfoResponseDto = oauthService.ifNeededCreateKakaoMemberAndLogin(kakaoUserInfoRequestDto);
-            String token = jwtTokenProvider.createToken(kakaoUserInfoResponseDto.getMember().getUsername(), kakaoUserInfoResponseDto.getMember().getMemberRoles());
+            Member member = memberRepository.findMemberByKakaoId(kakaoUserInfoRequestDto.getKakaoId())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다."));
+            String token = jwtTokenProvider.createToken(member.getUsername(), member.getMemberRoles());
 
             Map<String, Object> map = new HashMap<>();
             map.put("login", true);
