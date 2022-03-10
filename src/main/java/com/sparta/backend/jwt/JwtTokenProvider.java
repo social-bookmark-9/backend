@@ -25,8 +25,10 @@ public class JwtTokenProvider {
     // 시크릿 키. 실전에는 따로 환경변수 파일을 만들어서 보안을 생각하자.
     private String secretKey = "backendisking";
 
-    // 토큰 유효시간 30분 / 분, 초, 미리초
-    private long tokenValidTime = 30 * 60 * 1000L;
+    // 토큰 유효시간 30분 / 분, 초, 미리초 / 30분 후 만료
+//    private long tokenValidTime = 30 * 60 * 1000L;
+    // 테스트용 토큰 발급 시간 / 20초 후 만료
+    private long tokenValidTime = 20 * 1000L;
 
     private final UserDetailsService userDetailsService;
 
