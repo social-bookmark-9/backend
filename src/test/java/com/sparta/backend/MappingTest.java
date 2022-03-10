@@ -63,6 +63,8 @@ public class MappingTest {
         // given
         Hashtag hashtag = Hashtag.builder()
                 .firstHashtag(firstHashtag)
+                .secondHashtag(null)
+                .thirdHashtag(null)
                 .build();
 
         Member member = Member.builder()
