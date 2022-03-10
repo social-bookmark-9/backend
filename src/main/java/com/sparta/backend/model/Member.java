@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "member")
 public class Member extends Timestamped {
 
     @Id
@@ -25,7 +26,7 @@ public class Member extends Timestamped {
     @Column(name = "social_url")
     private String socialUrl;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password", nullable = false)

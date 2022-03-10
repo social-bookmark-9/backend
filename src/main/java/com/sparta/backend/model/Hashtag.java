@@ -7,7 +7,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Hashtag extends Timestamped{
+@Table(name = "hashtag")
+public class Hashtag extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,7 @@ public class Hashtag extends Timestamped{
 
     @Column(name = "third_hashtag")
     private String thirdHashtag;
-    
+
     // 테스트용
     @Builder
     public Hashtag(String firstHashtag, String secondHashtag, String thirdHashtag) {
