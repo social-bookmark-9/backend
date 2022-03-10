@@ -32,26 +32,25 @@ public class ArticleFolderController {
      * @param articleFolderRequestDto
      * @return message
      */
-    @ApiOperation(value = "폴더 생성", notes = "폴더 생성을 위한 API입니다.")
-    @PostMapping("/articleFolder")
-    public ResponseEntity<DefaultMessage> createArticleFolder (
-            final @Valid @RequestBody CreateArticleFolderRequestDto articleFolderRequestDto,
-            @AuthenticationPrincipal Member member) {
-        // 로그인 여부 확인 로직
-        articleFolderService.createArticleFolder(articleFolderRequestDto, member.getId());
-        return new ResponseEntity<>(new DefaultMessage("컬렉션을 생성했습니다."), HttpStatus.OK);
-    }
-
-    /**
-     * 아티클 폴더 안 모든 아티클 조회
-     * @param id
-     * @return
-     */
-    @ApiOperation(value = "폴더 상세보기", notes = "폴더 상세보기를 위한 API입니다.")
-    @GetMapping("/articleFolder/{id}")
-    public ResponseEntity<DataMessage<T>> getAllArticleInFolder(@PathVariable Long id) {
-        articleFolderService.getAllArticleInFolder(id);
-        return null;
-    }
-
+//    @ApiOperation(value = "폴더 생성", notes = "폴더 생성을 위한 API입니다.")
+//    @PostMapping("/articleFolder")
+//    public ResponseEntity<DefaultMessage> createArticleFolder (
+//            final @Valid @RequestBody CreateArticleFolderRequestDto articleFolderRequestDto,
+//            @AuthenticationPrincipal Member member) {
+//        // 로그인 여부 확인 로직
+//        articleFolderService.createArticleFolder(articleFolderRequestDto, member.getId());
+//        return new ResponseEntity<>(new DefaultMessage("컬렉션을 생성했습니다."), HttpStatus.OK);
+//    }
+//
+//    /**
+//     * 아티클 폴더 안 모든 아티클 조회
+//     * @param id
+//     * @return
+//     */
+//    @ApiOperation(value = "폴더 상세보기", notes = "폴더 상세보기를 위한 API입니다.")
+//    @GetMapping("/articleFolder/{id}")
+//    public ResponseEntity<DataMessage<T>> getAllArticleInFolder(@PathVariable Long id) {
+//        articleFolderService.getAllArticleInFolder(id);
+//        return null;
+//    }
 }
