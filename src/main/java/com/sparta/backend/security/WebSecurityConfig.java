@@ -1,17 +1,26 @@
 package com.sparta.backend.security;
 
+import com.sparta.backend.jwt.JwtAuthenticationFilter;
+import com.sparta.backend.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    // 토근 생성 및 제공자 DI.
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 스웨거 적용
     @Override public void configure(WebSecurity web) {
@@ -29,13 +38,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**");
     }
 
+    @Bean // 비밀번호 암호화 해서 저장하는 Bean 등록하기.
+    public BCryptPasswordEncoder encodePassword() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .csrf().disable() // csrf 보안 토큰 disable처리.
-                .authorizeRequests() // 요청에 대한 사용권한 체크
-                .antMatchers("/**").permitAll()
-                .anyRequest().permitAll(); // 그외 나머지 요청은 누구나 접근 가능
+                .httpBasic().disable() // rest api 만을 고려
+                    .csrf().disable() // csrf 보안 토큰 disable처리.
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.
+                .and()
+                    .cors() // CORS 설정 파일은 WebConfig
+                .and()
+                    .authorizeRequests() // 요청에 대한 사용권한 체크
+                    .antMatchers("/**").permitAll()
+                    .anyRequest().permitAll() // 그외 나머지 요청은 누구나 접근 가능
+                .and()
+                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 }

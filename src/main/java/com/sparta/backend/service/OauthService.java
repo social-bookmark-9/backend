@@ -3,22 +3,34 @@ package com.sparta.backend.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.backend.oauthDto.KakaoUserInfoDto;
+import com.sparta.backend.model.Member;
+import com.sparta.backend.oauthDto.KakaoUserInfoRequestDto;
+import com.sparta.backend.oauthDto.KakaoUserInfoResponseDto;
+import com.sparta.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Collections;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class OauthService {
 
-    public KakaoUserInfoDto kakaoLogin(String code) throws JsonProcessingException {
+    // 비밀번호 암호화
+    private final PasswordEncoder passwordEncoder;
+
+    private final MemberRepository memberRepository;
+
+    public KakaoUserInfoRequestDto getKakaoInfo(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
@@ -41,6 +53,7 @@ public class OauthService {
                 kakaoTokenRequest,
                 String.class
         );
+        System.out.println("토큰줘" + response);
 
         // HTTP 응답 (JSON) -> 액세스 토큰 파싱
         String responseBody = response.getBody();
@@ -64,14 +77,48 @@ public class OauthService {
 
         responseBody = response.getBody();
         jsonNode = objectMapper.readTree(responseBody);
-        Long id = jsonNode.get("id").asLong();
-        String nickname = jsonNode.get("properties")
-                .get("nickname").asText();
+        String id = String.valueOf(jsonNode.get("id").asLong());
         String email = jsonNode.get("kakao_account")
                 .get("email").asText();
 
-        System.out.println("카카오 사용자 정보: " + id + ", " + nickname + ", " + email);
+        return new KakaoUserInfoRequestDto(id, email);
+    }
 
-        return new KakaoUserInfoDto(id, nickname, email);
+    public KakaoUserInfoResponseDto ifNeededCreateKakaoMemberAndLogin(KakaoUserInfoRequestDto kakaoUserInfo) {
+        // 3. 받아온 정보로 회원가입 하기
+        // DB 에 중복된 KakaoId 가 있는지 확인
+        String kakaoId = kakaoUserInfo.getId();
+        Member checkMember = memberRepository.findMemberByKakaoId(kakaoId).orElse(null);
+        if (checkMember == null) {
+            // 회원가입
+            // password: random UUID
+            String password = UUID.randomUUID().toString();
+            String encodedPassword = passwordEncoder.encode(password);
+            // email: kakao email
+            String kakaoEmail = kakaoUserInfo.getEmail();
+            // role: 일반 사용자
+
+            Member kakaoMember = Member.builder()
+                    .email(kakaoEmail)
+                    .password(encodedPassword)
+                    .expiredDate(1L)
+                    .kakaoId(kakaoId)
+                    .memberRoles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
+                    .build();
+            memberRepository.save(kakaoMember);
+
+            return new KakaoUserInfoResponseDto(kakaoMember);
+        }
+
+        return new KakaoUserInfoResponseDto(checkMember);
+    }
+
+    public boolean checkIfMemberExists(KakaoUserInfoRequestDto kakaoUserInfo) {
+        String kakaoId = kakaoUserInfo.getId();
+        Member checkMember = memberRepository.findMemberByKakaoId(kakaoId).orElse(null);
+        if (checkMember == null) {
+            return false;
+        }
+        return true;
     }
 }

@@ -1,12 +1,11 @@
 package com.sparta.backend.oauthDto;
 
+import com.sparta.backend.model.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class KakaoUserInfoDto {
-    private Long id;
-    private String nickname;
-    private String email;
+public class KakaoUserInfoResponseDto {
+    private Member member;
 }
