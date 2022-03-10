@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.oauthDto.KakaoMemberInfoRequestDto;
-import com.sparta.backend.oauthDto.KakaoMemberInfoResponseDto;
 import com.sparta.backend.oauthDto.KakaoMemberRegisterRequestDto;
 import com.sparta.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class OauthService {
 
@@ -86,38 +87,9 @@ public class OauthService {
         return new KakaoMemberInfoRequestDto(id, email);
     }
 
-    public KakaoMemberInfoResponseDto ifNeededCreateKakaoMemberAndLogin(KakaoMemberInfoRequestDto kakaoUserInfo) {
-        // 3. 받아온 정보로 회원가입 하기
-        // DB 에 중복된 KakaoId 가 있는지 확인
-        String kakaoId = kakaoUserInfo.getId();
-        Member checkMember = memberRepository.findMemberByKakaoId(kakaoId).orElse(null);
-        if (checkMember == null) {
-            // 회원가입
-            // password: random UUID
-            String password = UUID.randomUUID().toString();
-            String encodedPassword = passwordEncoder.encode(password);
-            // email: kakao email
-            String kakaoEmail = kakaoUserInfo.getEmail();
-            // role: 일반 사용자
-
-            Member kakaoMember = Member.builder()
-                    .email(kakaoEmail)
-                    .password(encodedPassword)
-                    .expiredDate(1L)
-                    .kakaoId(kakaoId)
-                    .memberRoles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
-                    .build();
-            memberRepository.save(kakaoMember);
-
-            return new KakaoMemberInfoResponseDto(kakaoMember);
-        }
-
-        return new KakaoMemberInfoResponseDto(checkMember);
-    }
-
     // 회원가입 유무 체크
     public boolean checkIfMemberExists(KakaoMemberInfoRequestDto kakaoUserInfo) {
-        String kakaoId = kakaoUserInfo.getId();
+        String kakaoId = kakaoUserInfo.getKakaoId();
         Member checkMember = memberRepository.findMemberByKakaoId(kakaoId).orElse(null);
         if (checkMember == null) {
             return false;
