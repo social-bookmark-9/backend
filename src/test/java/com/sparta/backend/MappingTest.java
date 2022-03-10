@@ -59,6 +59,7 @@ public class MappingTest {
     @Order(1)
     @DisplayName("유저 생성 테스트")
     public void createMember() {
+        // TODO: 테스트 에러 처리
 
         // given
         Hashtag hashtag = Hashtag.builder()
@@ -92,6 +93,7 @@ public class MappingTest {
         ArticleFolder articleFolder = ArticleFolder.builder()
                 .articleFolderName(articleFolderName)
                 .member(member)
+                .deleteable(false)
                 .build();
         // when
         articleFolderRepository.save(articleFolder);
