@@ -1,37 +1,37 @@
-package com.sparta.backend.controller;
-
-import com.sparta.backend.message.DataMessage;
-import com.sparta.backend.message.DefaultMessage;
-import com.sparta.backend.model.Member;
-import com.sparta.backend.requestDto.CreateArticleFolderRequestDto;
-import com.sparta.backend.service.ArticleFolderService;
-import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-
-@Slf4j
-@RestController
-@RequestMapping("/api")
-public class ArticleFolderController {
-
-    private ArticleFolderService articleFolderService;
-
-    @Autowired
-    public ArticleFolderController(ArticleFolderService articleFolderService) {
-        this.articleFolderService = articleFolderService;
-    }
-
-    /**
-     * 아티클 폴더 생성
-     * @param articleFolderRequestDto
-     * @return message
-     */
+//package com.sparta.backend.controller;
+//
+//import com.sparta.backend.message.DataMessage;
+//import com.sparta.backend.message.DefaultMessage;
+//import com.sparta.backend.model.Member;
+//import com.sparta.backend.requestDto.CreateArticleFolderRequestDto;
+//import com.sparta.backend.service.ArticleFolderService;
+//import io.swagger.annotations.ApiOperation;
+//import lombok.extern.slf4j.Slf4j;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.HttpStatus;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.security.core.annotation.AuthenticationPrincipal;
+//import org.springframework.web.bind.annotation.*;
+//
+//import javax.validation.Valid;
+//
+//@Slf4j
+//@RestController
+//@RequestMapping("/api")
+//public class ArticleFolderController {
+//
+//    private ArticleFolderService articleFolderService;
+//
+//    @Autowired
+//    public ArticleFolderController(ArticleFolderService articleFolderService) {
+//        this.articleFolderService = articleFolderService;
+//    }
+//
+//    /**
+//     * 아티클 폴더 생성
+//     * @param articleFolderRequestDto
+//     * @return message
+//     */
 //    @ApiOperation(value = "폴더 생성", notes = "폴더 생성을 위한 API입니다.")
 //    @PostMapping("/articleFolder")
 //    public ResponseEntity<DefaultMessage> createArticleFolder (
@@ -53,4 +53,5 @@ public class ArticleFolderController {
 //        articleFolderService.getAllArticleInFolder(id);
 //        return null;
 //    }
-}
+//
+//}
