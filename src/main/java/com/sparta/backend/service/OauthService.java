@@ -3,9 +3,11 @@ package com.sparta.backend.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
-import com.sparta.backend.oauthDto.KakaoUserInfoRequestDto;
-import com.sparta.backend.oauthDto.KakaoUserInfoResponseDto;
+import com.sparta.backend.oauthDto.KakaoMemberInfoRequestDto;
+import com.sparta.backend.oauthDto.KakaoMemberInfoResponseDto;
+import com.sparta.backend.oauthDto.KakaoMemberRegisterRequestDto;
 import com.sparta.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -30,7 +32,7 @@ public class OauthService {
 
     private final MemberRepository memberRepository;
 
-    public KakaoUserInfoRequestDto getKakaoInfo(String code) throws JsonProcessingException {
+    public KakaoMemberInfoRequestDto getKakaoInfo(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
@@ -81,10 +83,10 @@ public class OauthService {
         String email = jsonNode.get("kakao_account")
                 .get("email").asText();
 
-        return new KakaoUserInfoRequestDto(id, email);
+        return new KakaoMemberInfoRequestDto(id, email);
     }
 
-    public KakaoUserInfoResponseDto ifNeededCreateKakaoMemberAndLogin(KakaoUserInfoRequestDto kakaoUserInfo) {
+    public KakaoMemberInfoResponseDto ifNeededCreateKakaoMemberAndLogin(KakaoMemberInfoRequestDto kakaoUserInfo) {
         // 3. 받아온 정보로 회원가입 하기
         // DB 에 중복된 KakaoId 가 있는지 확인
         String kakaoId = kakaoUserInfo.getId();
@@ -107,18 +109,46 @@ public class OauthService {
                     .build();
             memberRepository.save(kakaoMember);
 
-            return new KakaoUserInfoResponseDto(kakaoMember);
+            return new KakaoMemberInfoResponseDto(kakaoMember);
         }
 
-        return new KakaoUserInfoResponseDto(checkMember);
+        return new KakaoMemberInfoResponseDto(checkMember);
     }
 
-    public boolean checkIfMemberExists(KakaoUserInfoRequestDto kakaoUserInfo) {
+    // 회원가입 유무 체크
+    public boolean checkIfMemberExists(KakaoMemberInfoRequestDto kakaoUserInfo) {
         String kakaoId = kakaoUserInfo.getId();
         Member checkMember = memberRepository.findMemberByKakaoId(kakaoId).orElse(null);
         if (checkMember == null) {
             return false;
         }
         return true;
+    }
+
+    // 회원가입
+    public Member createKakaoMember(KakaoMemberRegisterRequestDto kakaoMemberRegisterRequestDto) {
+
+        String password = UUID.randomUUID().toString();
+        String encodedPassword = passwordEncoder.encode(password);
+
+        Hashtag hashtag = Hashtag.builder()
+                .firstHashtag(kakaoMemberRegisterRequestDto.getHashtag1())
+                .secondHashtag(kakaoMemberRegisterRequestDto.getHashtag2())
+                .thirdHashtag(kakaoMemberRegisterRequestDto.getHashtag3())
+                .build();
+
+        Member kakaoMember = Member.builder()
+                .email(kakaoMemberRegisterRequestDto.getEmail())
+                .password(encodedPassword)
+                .expiredDate(1L)
+                .memberName(kakaoMemberRegisterRequestDto.getMemberName())
+                .kakaoId(kakaoMemberRegisterRequestDto.getKakaoId())
+                .memberRoles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
+                .hashtag(hashtag)
+                .build();
+
+        memberRepository.save(kakaoMember);
+
+        return kakaoMember;
     }
 }

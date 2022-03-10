@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class KakaoUserInfoResponseDto {
+public class KakaoMemberInfoResponseDto {
     private Member member;
 }
