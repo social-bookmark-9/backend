@@ -14,8 +14,11 @@ public enum ErrorCode {
     // 403 Forbidden - 해당 요청에 대한 권한이 없음.
     // 404 Not Found - 해당 RESOURECE 를 찾을 수 없음.
 
-    // 회원가입 관련 에러 모음
-    USERNAME_VALIDATE(HttpStatus.BAD_REQUEST, "400_Register_1", "유저네임은 최소 3자 이상, 알파벳 대소문자(a~z, A~Z), 숫자(0~9)로 구성해야 합니다.");
+    // 아티클 생성 관련 에러 모음
+    ARTICLE_BOOLEAN_VALIDATE(HttpStatus.BAD_REQUEST, "400_Article_2", "2번째. (Boolean)"),
+    ARTICLE_URL_VALIDATE(HttpStatus.BAD_REQUEST, "400_Article_1", "올바른 URL 형식이 아닙니다.");
+
+
     private final HttpStatus httpStatus;
     private final String errorCode;
     private final String errorMessage;
