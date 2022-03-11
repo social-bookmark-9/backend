@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,8 +31,8 @@ class ArticleRepositoryTest {
     void createArticle() {
 
         // 멤버 given
-        String memberName = "철수";
-        String email = "abc@abc.com";
+        String memberName = "민아";
+        String email = "test@test.com";
         String password = "1234";
         Long expiredDate = 1L;
 
@@ -60,7 +61,7 @@ class ArticleRepositoryTest {
                 .password(password)
                 .expiredDate(expiredDate)
                 .hashtag(hashtag)
-                .memberRole(MemberRoleEnum.USER)
+                .memberRoles(Collections.singletonList("ROLE_USER"))
                 .build();
 
         ArticleFolder defaultArticleFolder = ArticleFolder.builder()
