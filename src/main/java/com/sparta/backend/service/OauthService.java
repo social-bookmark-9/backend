@@ -91,8 +91,10 @@ public class OauthService {
         String id = String.valueOf(jsonNode.get("id").asLong());
         String email = jsonNode.get("kakao_account")
                 .get("email").asText();
+        String profileImage = jsonNode.get("kakao_account")
+                .get("profile").get("profile_image_url").asText();
 
-        return new KakaoMemberInfoRequestDto(id, email);
+        return new KakaoMemberInfoRequestDto(id, email, profileImage);
     }
 
     // 회원가입 유무 체크
@@ -125,6 +127,7 @@ public class OauthService {
                 .kakaoId(kakaoMemberRegisterRequestDto.getKakaoId())
                 .memberRoles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
                 .hashtag(hashtag)
+                .profileImage(kakaoMemberRegisterRequestDto.getProfileImage())
                 .build();
 
         memberRepository.save(kakaoMember);
