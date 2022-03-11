@@ -37,7 +37,6 @@ public class OauthController {
         if (isExist) {
             Member member = memberRepository.findMemberByKakaoId(kakaoUserInfoRequestDto.getKakaoId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다."));
-//            String token = jwtTokenProvider.createToken(member.getUsername(), member.getMemberRoles());
             TokenDto token = jwtTokenProvider.createAccessRefreshToken(member.getUsername(), member.getMemberRoles());
 
             Map<String, Object> map = new HashMap<>();
@@ -72,7 +71,6 @@ public class OauthController {
         if (isExist) {
             Member member = memberRepository.findMemberByKakaoId(kakaoUserInfoRequestDto.getKakaoId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다."));
-//            String token = jwtTokenProvider.createToken(member.getUsername(), member.getMemberRoles());
             TokenDto token = jwtTokenProvider.createAccessRefreshToken(member.getUsername(), member.getMemberRoles());
 
             Map<String, Object> map = new HashMap<>();
@@ -102,7 +100,6 @@ public class OauthController {
         // 받아온 정보로 회원가입 진행
         Member member = oauthService.createKakaoMember(kakaoMemberRegisterRequestDto);
         // 로그인 ( 토큰 발행 )
-//        String token = jwtTokenProvider.createToken(member.getUsername(), member.getMemberRoles());
         TokenDto token = jwtTokenProvider.createAccessRefreshToken(member.getUsername(), member.getMemberRoles());
 
         Map<String, Object> map = new HashMap<>();
@@ -124,6 +121,9 @@ public class OauthController {
         TokenDto token = oauthService.reissue(tokenRequestDto);
         return new ResponseEntity<>(new DataMessage<>("토큰 재발급", token), HttpStatus.OK);
     }
+
+    // 로그아웃 (토큰 삭제)
+
 
     // 토큰 테스트 (401)
     @PostMapping("/user/test")

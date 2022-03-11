@@ -44,6 +44,9 @@ public class Member extends Timestamped implements UserDetails {
     @Column(name = "expired_date", nullable = false)
     private Long expiredDate;
 
+    @Column(name = "profile_Image")
+    private String profileImage;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "hashtag_id")
     private Hashtag hashtag;
@@ -86,9 +89,10 @@ public class Member extends Timestamped implements UserDetails {
     // 테스트용
     @Builder
     public Member (String memberName, String email, String password,
-                   Long expiredDate,Hashtag hashtag, String kakaoId, List<String> memberRoles) {
+                   Long expiredDate,Hashtag hashtag, String kakaoId, List<String> memberRoles, String profileImage) {
         this.memberName = memberName;
         this.email = email;
+        this.profileImage = profileImage;
         this.password = password;
         this.expiredDate = expiredDate;
         this.hashtag = hashtag;
