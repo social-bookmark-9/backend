@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class ArticleCreateRequestDto {
+public class CreateArticleReqDto {
     private final String url;
     private final String titleOg;
     private final String imgOg;
