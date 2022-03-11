@@ -11,9 +11,8 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateArticleFolderReqDto {
+public class ArticleFolderNameUpdateRequestDto {
 
     @NotBlank(message = "컬랙션 이름 필요")
     private String articleFolderName;
-
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticlesInFolderRespDto {
+public class ArticlesInFolderResponseDto {
 
     private String url;
     private String titleOg;
@@ -17,7 +17,7 @@ public class ArticlesInFolderRespDto {
     private Hashtag hashtag;
 
     @Builder
-    public ArticlesInFolderRespDto(String url, String titleOg, String imgOg, Hashtag hashtag) {
+    public ArticlesInFolderResponseDto(String url, String titleOg, String imgOg, Hashtag hashtag) {
         this.url = url;
         this.titleOg = titleOg;
         this.imgOg = imgOg;

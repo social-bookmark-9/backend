@@ -5,9 +5,9 @@ import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.MemberRepository;
-import com.sparta.backend.requestDto.CreateArticleFolderReqDto;
-import com.sparta.backend.requestDto.UpdateAFNameReqDto;
-import com.sparta.backend.responseDto.ArticlesInFolderRespDto;
+import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
+import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
+import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @param member
      */
     @Override
-    public void createArticleFolder(CreateArticleFolderReqDto articleFolderRequestDto, Member member) {
+    public void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member) {
         checkMember(member.getId());
 
         ArticleFolder articleFolder = ArticleFolder.builder()
@@ -62,13 +62,13 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
 
     /**
      * 아티클 폴더 제목 수정
-     * @param updateAFNameReqDto
+     * @param articleFolderNameUpdateRequestDto
      * @param id
      * @return void
      */
     @Override
-    public void updateArticleFolderName(UpdateAFNameReqDto updateAFNameReqDto, Long id) {
-        String articleFolderName = updateAFNameReqDto.getArticleFolderName();
+    public void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, Long id) {
+        String articleFolderName = articleFolderNameUpdateRequestDto.getArticleFolderName();
         checkFolder(id).ifPresent(
                 articleFolder -> articleFolderRepository.updateArticleFolderTitle(articleFolderName, id)
         );
@@ -80,21 +80,21 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return List<ArticlesInFolderRespDto>
      */
     @Override
-    public List<ArticlesInFolderRespDto> findArticlesInFolder(Long id) {
-        List<ArticlesInFolderRespDto> articlesInFolderRespDtoList = new ArrayList<>();
+    public List<ArticlesInFolderResponseDto> findArticlesInFolder(Long id) {
+        List<ArticlesInFolderResponseDto> articlesInFolderResponseDtoList = new ArrayList<>();
 
         List<Article> articles = checkFolder(id).get().getArticles();
         for (Article article : articles) {
-            ArticlesInFolderRespDto articlesInFolderRespDto = ArticlesInFolderRespDto.builder()
+            ArticlesInFolderResponseDto articlesInFolderResponseDto = ArticlesInFolderResponseDto.builder()
                     .url(article.getUrl())
                     .titleOg(article.getTitleOg())
                     .imgOg(article.getImgOg())
                     .hashtag(article.getHashtag())
                     .build();
-            articlesInFolderRespDtoList.add(articlesInFolderRespDto);
+            articlesInFolderResponseDtoList.add(articlesInFolderResponseDto);
         }
 
-        return articlesInFolderRespDtoList;
+        return articlesInFolderResponseDtoList;
     }
 
     /**
