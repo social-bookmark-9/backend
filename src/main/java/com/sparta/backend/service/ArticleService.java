@@ -3,7 +3,7 @@ package com.sparta.backend.service;
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleRepository;
-import com.sparta.backend.requestDto.ArticleCreateRequestDto;
+import com.sparta.backend.requestDto.CreateArticleReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
 
     // 아티클 생성
-    public void createArticle(ArticleCreateRequestDto requestDto, Member member) {
+    public void createArticle(CreateArticleReqDto requestDto, Member member) {
         Article article = Article.createArticleDtoBuilder()
                 .url(requestDto.getUrl())
                 .titleOg(requestDto.getTitleOg())

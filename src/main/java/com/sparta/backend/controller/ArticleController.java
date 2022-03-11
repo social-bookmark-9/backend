@@ -2,7 +2,7 @@ package com.sparta.backend.controller;
 
 import com.sparta.backend.message.DefaultMessage;
 import com.sparta.backend.model.Member;
-import com.sparta.backend.requestDto.ArticleCreateRequestDto;
+import com.sparta.backend.requestDto.CreateArticleReqDto;
 import com.sparta.backend.service.ArticleService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class ArticleController {
 
     @ApiOperation(value = "아티클 생성", notes = "아티클을 생성하기 위한 API입니다.")
     @PostMapping("/articles")
-    public ResponseEntity<DefaultMessage> createArticles(@RequestBody ArticleCreateRequestDto requestDto,
+    public ResponseEntity<DefaultMessage> createArticles(@RequestBody CreateArticleReqDto requestDto,
                                                          @AuthenticationPrincipal Member member) {
         articleService.createArticle(requestDto, member);
         return new ResponseEntity<>(new DefaultMessage("북마크를 저장했습니다."), HttpStatus.OK);

@@ -92,6 +92,7 @@ public class MappingTest {
         ArticleFolder articleFolder = ArticleFolder.builder()
                 .articleFolderName(articleFolderName)
                 .member(member)
+                .deleteable(false)
                 .build();
         // when
         articleFolderRepository.save(articleFolder);

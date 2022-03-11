@@ -22,17 +22,22 @@ public class ArticleFolder extends Timestamped {
     @Column(name = "artice_folder_name", nullable = false)
     private String articleFolderName;
 
+    @Column(name = "deleteable", nullable = false)
+    private Boolean deleteable;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
 
     @OneToMany(mappedBy = "articleFolder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Article> articles = new ArrayList<>();
 
     // 테스트용
     @Builder
-    public ArticleFolder(String articleFolderName, Member member) {
+    public ArticleFolder(String articleFolderName, Boolean deleteable, Member member) {
         this.articleFolderName = articleFolderName;
+        this.deleteable = deleteable;
         this.member = member;
     }
 }
