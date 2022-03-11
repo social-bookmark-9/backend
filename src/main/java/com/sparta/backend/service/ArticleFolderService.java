@@ -3,21 +3,21 @@ package com.sparta.backend.service;
 
 import com.sparta.backend.model.Member;
 
-import com.sparta.backend.requestDto.CreateArticleFolderReqDto;
-import com.sparta.backend.requestDto.UpdateAFNameReqDto;
-import com.sparta.backend.responseDto.ArticlesInFolderRespDto;
+import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
+import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
+import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
 
 import java.util.List;
 
 
 public interface ArticleFolderService {
 
-    void createArticleFolder(CreateArticleFolderReqDto articleFolderRequestDto, Member member);
+    void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member);
 
     void deleteArticleFolder(Long id);
 
-    void updateArticleFolderName(UpdateAFNameReqDto updateAFNameReqDto, Long id);
+    void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, Long id);
 
-    List<ArticlesInFolderRespDto> findArticlesInFolder(Long id);
+    List<ArticlesInFolderResponseDto> findArticlesInFolder(Long id);
 
 }
