@@ -30,6 +30,7 @@ public class ArticleFolder extends Timestamped {
     @JoinColumn(name = "member_id")
     private Member member;
 
+
     @OneToMany(mappedBy = "articleFolder", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Article> articles = new ArrayList<>();
 
