@@ -15,6 +15,8 @@ public class KakaoMemberRegisterRequestDto {
 
     private String memberName;
 
+    private String profileImage;
+
     private String hashtag1;
 
     private String hashtag2;
