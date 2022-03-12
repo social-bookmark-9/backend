@@ -14,6 +14,7 @@ import com.sparta.backend.oauthDto.TokenRequestDto;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -34,6 +35,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OauthService {
 
+    @Value("${client-id}")
+    private String clientId;
+
     // 비밀번호 암호화
     private final PasswordEncoder passwordEncoder;
 
@@ -50,8 +54,9 @@ public class OauthService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "c27b7586bc830a0e582c3ae63780729f");
-        body.add("redirect_uri", "http://localhost:8080/user/kakao/callback");
+        body.add("client_id", clientId);
+        body.add("redirect_uri", "http://localhost:3000/api/users/login"); // 프론트 연결용
+//        body.add("redirect_uri", "http://52.78.132.235/api/users/login"); // 테스트용
         body.add("code", code);
 
         // HTTP 요청 보내기
