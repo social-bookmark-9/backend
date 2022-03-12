@@ -1,27 +1,19 @@
 package com.sparta.backend.service;
-import com.sparta.backend.model.*;
-import com.sparta.backend.repository.ArticleFolderRepository;
+
+import com.sparta.backend.model.Article;
+import com.sparta.backend.model.ArticleFolder;
+import com.sparta.backend.model.Hashtag;
+import com.sparta.backend.model.Member;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 
-@ExtendWith(MockitoExtension.class)
-@ActiveProfiles("mysql")
-class ArticleFolderServiceTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    @InjectMocks private ArticleFolderService articleFolderService;
-    @Mock private ArticleFolderRepository articleFolderRepository;
-    @Mock private ArticleFolder mock_articleFolder;
-    @Mock private Member mock_member;
-    @Mock private Article mock_article;
+class ArticleFolderServiceTest {
     private ArticleFolder articleFolder;
     private Member member;
     private Article article;
@@ -69,6 +61,5 @@ class ArticleFolderServiceTest {
     void create_articleFolder_test() {
 
     }
-
 
 }
