@@ -44,7 +44,7 @@ public class Member extends Timestamped implements UserDetails {
     @Column(name = "expired_date", nullable = false)
     private Long expiredDate;
 
-    @Column(name = "profile_Image")
+    @Column(name = "profile_image")
     private String profileImage;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

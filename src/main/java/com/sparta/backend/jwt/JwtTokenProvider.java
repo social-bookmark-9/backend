@@ -3,6 +3,7 @@ package com.sparta.backend.jwt;
 import com.sparta.backend.oauthDto.TokenDto;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +22,8 @@ import java.util.List;
 public class JwtTokenProvider {
 
     // 시크릿 키. 실전에는 따로 환경변수 파일을 만들어서 보안을 생각하자.
-    private String secretKey = "backendisking";
+    @Value("${secret-key}")
+    private String secretKey;
 
     // 테스트용 엑세스 토큰 발급 시간
     private long accessTokenValidTime = 30 * 1000L;
@@ -35,21 +37,6 @@ public class JwtTokenProvider {
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-    }
-
-    // JWT 토큰 생성 (Access Token 만 존재)
-    public String createToken(String userPk, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위
-        claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
-        Date now = new Date();
-
-        return Jwts.builder()
-                .setClaims(claims) // 정보 저장
-                .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + accessTokenValidTime)) // set Expire Time
-                .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
-                // signature 에 들어갈 secret값 세팅
-                .compact();
     }
 
     // JWT 토큰 생성 (Access, Refresh Token 포함)
