@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -37,8 +38,6 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      */
     @Override
     public void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member) {
-        checkMember(member.getId());
-
         ArticleFolder articleFolder = ArticleFolder.builder()
                 .articleFolderName(articleFolderRequestDto.getArticleFolderName())
                 .deleteable(true)
@@ -98,17 +97,26 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
     }
 
     /**
-     * 회원 유효성 체크
-     * @param id
-     * @return void
+     * 폴더 안 아티클 삭제
+     * @param folderId
+     * @param articleId
      */
-    private void checkMember(Long id) {
-        memberRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+    @Override
+    public void deleteArticleInArticleFolder(Long folderId, Long articleId) {
+        Optional<ArticleFolder> articleFolder = checkFolder(folderId);
+        Optional<List<Article>> articles = articleFolder.map(ArticleFolder::getArticles);
+        if (articles.isPresent()) {
+            List<Article> targetArticle = articles.get().stream().filter(article -> article.getId().equals(articleId))
+                    .collect(Collectors.toList());
+            articleFolder.get().getArticles().remove(targetArticle.get(0));
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
+
     /**
-     * 아티클 유효성 체크
+     * 폴더 유효성 체크
      * @param id
      * @return ArticleFolder
      */
