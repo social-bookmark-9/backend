@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -26,6 +27,11 @@ public class ArticleFolderController {
 
     private final ArticleFolderService articleFolderService;
 
+    private void checkAuth(Member member) {
+        Optional.ofNullable(member)
+                .orElseThrow(() -> { throw new RuntimeException(); });
+    }
+
     /**
      * 아티클 폴더 생성
      * @param articleFolderRequestDto
@@ -33,10 +39,10 @@ public class ArticleFolderController {
      */
     @ApiOperation(value = "아티클 폴더 생성", notes = "폴더 생성 API")
     @PostMapping("/articleFolder")
-    public ResponseEntity<DefaultMessage> createArticleFolder (
+    public ResponseEntity<DefaultMessage> createArticleFolder(
             final @Valid @RequestBody ArticleFolderCreateRequestDto articleFolderRequestDto,
             @AuthenticationPrincipal Member member) {
-        // 로그인 여부 확인 로직
+        checkAuth(member);
         articleFolderService.createArticleFolder(articleFolderRequestDto, member);
         return new ResponseEntity<>(new DefaultMessage("컬렉션을 생성 완료."), HttpStatus.OK);
     }
@@ -45,14 +51,14 @@ public class ArticleFolderController {
      * 아티클 폴더 삭제
      * @param member
      * @param id
-     * @return
+     * @return message
      */
     @ApiOperation(value = "아티클 폴더 삭제", notes = "아티클 폴더 삭제 API")
     @DeleteMapping("/articleFolder/{id}")
-    public ResponseEntity<DefaultMessage> deleteArticleFolder (
+    public ResponseEntity<DefaultMessage> deleteArticleFolder(
             @AuthenticationPrincipal Member member,
             @PathVariable Long id) {
-        // 로그인 여부 확인 로직
+        checkAuth(member);
         articleFolderService.deleteArticleFolder(id);
         return new ResponseEntity<>(new DefaultMessage("아티클 폴더 삭제 완료"), HttpStatus.OK);
     }
@@ -70,7 +76,7 @@ public class ArticleFolderController {
             @AuthenticationPrincipal Member member,
             @PathVariable Long id,
             @RequestBody ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto) {
-        //로그인 여부 확인 로직
+        checkAuth(member);
         articleFolderService.updateArticleFolderName(articleFolderNameUpdateRequestDto, id);
         return new ResponseEntity<>(new DefaultMessage("아티클 폴더 수정 완료"), HttpStatus.OK);
     }
@@ -86,7 +92,25 @@ public class ArticleFolderController {
         List<ArticlesInFolderResponseDto> articlesInFolderResponseDtoList = articleFolderService.findArticlesInFolder(id);
 
         return new ResponseEntity<>(new DataListMessage<>("폴더 안 아티클 조회", articlesInFolderResponseDtoList), HttpStatus.OK);
-
     }
+
+    /**
+     * 폴더 안 아티클 삭제
+     * @param member
+     * @param folderId
+     * @param articleId
+     * @return message
+     */
+    @ApiOperation(value = "폴더 안 아티클 삭제", notes = "폴더 안 아티클 삭제 API")
+    @DeleteMapping("/articleFolder/{folderId}/articles{articleId}")
+    public ResponseEntity<DefaultMessage> deleteArticleInArticleFolder(
+            @AuthenticationPrincipal Member member,
+            @PathVariable Long folderId,
+            @PathVariable Long articleId) {
+        checkAuth(member);
+        articleFolderService.deleteArticleInArticleFolder(folderId, articleId);
+        return new ResponseEntity<>(new DefaultMessage("북마크를 삭제했습니다."), HttpStatus.OK);
+    }
+
 
 }

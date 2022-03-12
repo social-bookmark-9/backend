@@ -30,15 +30,16 @@ public class ArticleFolder extends Timestamped {
     @JoinColumn(name = "member_id")
     private Member member;
 
-
     @OneToMany(mappedBy = "articleFolder", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Article> articles = new ArrayList<>();
 
     // 테스트용
     @Builder
-    public ArticleFolder(Boolean deleteable, String articleFolderName, Member member) {
+    public ArticleFolder(Boolean deleteable, String articleFolderName, Member member, Article article) {
         this.deleteable = deleteable;
         this.articleFolderName = articleFolderName;
         this.member = member;
+        this.articles.add(article);
+        article.setArticleFolder(this);
     }
 }

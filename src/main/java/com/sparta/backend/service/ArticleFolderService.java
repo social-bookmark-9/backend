@@ -20,4 +20,6 @@ public interface ArticleFolderService {
 
     List<ArticlesInFolderResponseDto> findArticlesInFolder(Long id);
 
+    void deleteArticleInArticleFolder(Long folderId, Long articleId);
+
 }
