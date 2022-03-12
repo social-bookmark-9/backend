@@ -1,5 +1,6 @@
 package com.sparta.backend.model;
 
+import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +28,9 @@ public class Article extends Timestamped {
     @Column(name = "img_og", nullable = false)
     private String imgOg;
 
+    @Column(name = "content_og", nullable = false)
+    private String contentOg;
+
     @Column(name = "review")
     private String review;
 
@@ -44,29 +48,28 @@ public class Article extends Timestamped {
     @JoinColumn(name = "article_folder_id", nullable = false)
     private ArticleFolder articleFolder;
 
+    // Update
+    public void updateArticle(ArticleUpdateRequestDto requestDto) {
+        this.review = requestDto.getReview();
+        this.reviewHide = requestDto.isReviewHide();
+        this.hashtag = requestDto.getHashtag();
+        this.articleFolder = requestDto.getArticleFolder();
+    }
+
     // 연관관계 편의 메소드
     public void setArticleFolder(ArticleFolder articleFolder) {
         this.articleFolder = articleFolder;
         articleFolder.getArticles().add(this);
     }
 
-    // 테스트용
     @Builder
-    public Article(String url, String titleOg, String imgOg, Hashtag hashtag, ArticleFolder articleFolder) {
-        this.url = url;
-        this.titleOg = titleOg;
-        this.imgOg = imgOg;
-        this.hashtag = hashtag;
-        this.articleFolder = articleFolder;
-    }
-
-    @Builder(builderMethodName = "createArticleDtoBuilder")
-    public Article(String url, String titleOg, String imgOg,
+    public Article(String url, String titleOg, String imgOg, String contentOg,
                    String review, Boolean reviewHide, int readCount,
                    Hashtag hashtag, ArticleFolder articleFolder) {
         this.url = url;
         this.titleOg = titleOg;
         this.imgOg = imgOg;
+        this.contentOg = contentOg;
         this.review = review;
         this.reviewHide = reviewHide;
         this.readCount = readCount;
