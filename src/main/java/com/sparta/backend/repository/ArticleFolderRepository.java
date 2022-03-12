@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ArticleFolderRepository extends JpaRepository<ArticleFolder, Long> {
+    ArticleFolder findArticleFolderByArticleFolderName(String currentArticleFolderName);
 }

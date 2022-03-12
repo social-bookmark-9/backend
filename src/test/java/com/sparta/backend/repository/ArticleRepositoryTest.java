@@ -5,15 +5,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@Rollback(value = false)
 class ArticleRepositoryTest {
 
     @Autowired
@@ -30,8 +33,8 @@ class ArticleRepositoryTest {
     void createArticle() {
 
         // 멤버 given
-        String memberName = "철수";
-        String email = "abc@abc.com";
+        String memberName = "민아";
+        String email = "test@test.com";
         String password = "1234";
         Long expiredDate = 1L;
 
@@ -40,14 +43,15 @@ class ArticleRepositoryTest {
 
         // 아티클 폴더 given (Default)
         String articleFolderName = "기본 컬렉션";
-        Boolean deleteable = false;
+        boolean deleteable = false;
         List<Article> articles = new ArrayList<Article>();
 
         // 아티클 given
         String url = "www.naver.com";
         String titleOg = "네이버";
         String imgOg = "www.naver.com";
-        Boolean reviewHide = false;
+        String contentOg = "네이버 좋아요";
+        boolean reviewHide = false;
         int readCount = 0;
 
         Hashtag hashtag = Hashtag.builder()
@@ -60,7 +64,7 @@ class ArticleRepositoryTest {
                 .password(password)
                 .expiredDate(expiredDate)
                 .hashtag(hashtag)
-                .memberRole(MemberRoleEnum.USER)
+                .memberRoles(Collections.singletonList("ROLE_USER"))
                 .build();
 
         ArticleFolder defaultArticleFolder = ArticleFolder.builder()
@@ -69,10 +73,11 @@ class ArticleRepositoryTest {
                 .member(member)
                 .build();
 
-        Article article = Article.createArticleDtoBuilder()
+        Article article = Article.builder()
                 .url(url)
                 .titleOg(titleOg)
                 .imgOg(imgOg)
+                .contentOg(contentOg)
                 .reviewHide(reviewHide)
                 .readCount(readCount)
                 .hashtag(hashtag)
@@ -89,6 +94,7 @@ class ArticleRepositoryTest {
         assertEquals(url, article.getUrl());
         assertEquals(titleOg, article.getTitleOg());
         assertEquals(imgOg, article.getImgOg());
+        assertEquals(contentOg, article.getContentOg());
         assertEquals(reviewHide, article.isReviewHide());
         assertEquals(readCount, article.getReadCount());
         assertEquals(hashtag, article.getHashtag());

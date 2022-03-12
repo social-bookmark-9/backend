@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -27,6 +28,10 @@ public class MappingTest {
     private String url;
     private String titleOg;
     private String imgOg;
+    private String contentOg;
+    private String review;
+    private boolean reviewHide;
+    private int readCount;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -53,6 +58,10 @@ public class MappingTest {
         url = "naver.com";
         titleOg = "naver";
         imgOg = "naver.jpg";
+        contentOg = "영욱님 테스트 내용";
+        review = "";
+        reviewHide = false;
+        readCount = 0;
     }
 
     @Test
@@ -119,7 +128,12 @@ public class MappingTest {
                 .url(url)
                 .titleOg(titleOg)
                 .imgOg(imgOg)
+                .contentOg(contentOg)
+                .review(review)
+                .reviewHide(reviewHide)
+                .readCount(readCount)
                 .hashtag(hashtag)
+                .articleFolder(articleFolder)
                 .build();
 
         article.setArticleFolder(articleFolder);
