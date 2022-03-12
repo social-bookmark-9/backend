@@ -1,10 +1,9 @@
 package com.sparta.backend.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.sparta.backend.oauthDto.TokenDto;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,12 +22,14 @@ import java.util.List;
 public class JwtTokenProvider {
 
     // 시크릿 키. 실전에는 따로 환경변수 파일을 만들어서 보안을 생각하자.
-    private String secretKey = "backendisking";
+    @Value("${secret-key}")
+    private String secretKey;
 
-    // 토큰 유효시간 30분 / 분, 초, 미리초 / 30분 후 만료
-//    private long tokenValidTime = 30 * 60 * 1000L;
-    // 테스트용 토큰 발급 시간 / 20초 후 만료
-    private long tokenValidTime = 20 * 1000L;
+    // 테스트용 엑세스 토큰 발급 시간
+    private long accessTokenValidTime = 30 * 1000L;
+
+    // 테스트용 리프레시 토큰 발급 시간
+    private long refreshTokenValidTime = 2 * 60 * 1000L;
 
     private final UserDetailsService userDetailsService;
 
@@ -38,29 +39,58 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    // JWT 토큰 생성
-    public String createToken(String userPk, List<String> roles) {
+    // JWT 토큰 생성 (Access, Refresh Token 포함)
+    public TokenDto createAccessRefreshToken(String userPk, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위
         claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
-        return Jwts.builder()
-                .setClaims(claims) // 정보 저장
-                .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + tokenValidTime)) // set Expire Time
-                .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
-                // signature 에 들어갈 secret값 세팅
+
+        // Access Token 생성
+        String accessToken = Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + accessTokenValidTime))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+
+        // Refresh Token 생성
+        String refreshToken = Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+
+        return TokenDto.builder()
+                .grantType("bearer")
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .accessTokenExpireDate(accessTokenValidTime)
+                .build();
     }
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
+
+        // JWT 에서 Claims 추출
+        Claims claims = parseClaims(token);
+
+        // 권한 정보 확인
+        if (claims.get("roles") == null) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    // 토큰에서 회원 정보 추출
-    public String getUserPk(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    // JWT 토큰 복호화해서 가져오기
+    public Claims parseClaims(String token) {
+        try {
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
     // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
