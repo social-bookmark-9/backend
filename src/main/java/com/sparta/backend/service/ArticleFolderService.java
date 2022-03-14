@@ -11,13 +11,9 @@ import java.util.List;
 
 
 public interface ArticleFolderService {
-
     void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member);
-
     void deleteArticleFolder(Long id);
-
     void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, Long id);
-
     List<ArticlesInFolderResponseDto> findArticlesInFolder(Long id);
 
 }
