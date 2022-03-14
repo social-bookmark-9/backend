@@ -1,5 +1,6 @@
 package com.sparta.backend.exception;
 
+import com.sparta.backend.message.RestResponseMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +24,12 @@ public class testException {
 //    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<DefaultMessage> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<RestResponseMessage<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String errorMessage = e.getBindingResult()
                 .getAllErrors()
                 .get(0)
                 .getDefaultMessage();
 
-        return new ResponseEntity<>(new DefaultMessage(errorMessage), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new RestResponseMessage(false, errorMessage, ""), HttpStatus.BAD_REQUEST);
     }
 }
