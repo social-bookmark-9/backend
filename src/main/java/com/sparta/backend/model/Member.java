@@ -41,9 +41,6 @@ public class Member extends Timestamped implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "expired_date", nullable = false)
-    private Long expiredDate;
-
     @Column(name = "profile_image")
     private String profileImage;
 
@@ -94,7 +91,6 @@ public class Member extends Timestamped implements UserDetails {
         this.email = email;
         this.profileImage = profileImage;
         this.password = password;
-        this.expiredDate = expiredDate;
         this.hashtag = hashtag;
         this.kakaoId = kakaoId;
         this.memberRoles = memberRoles;

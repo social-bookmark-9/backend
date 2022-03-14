@@ -49,7 +49,6 @@ public class MappingTest {
         memberName = "철수";
         email = "abc@abc.com";
         password = "1234";
-        expiredDate = 1L;
 
         firstHashtag = "역사";
 
@@ -81,7 +80,6 @@ public class MappingTest {
                 .memberName(memberName)
                 .email(email)
                 .password(password)
-                .expiredDate(expiredDate)
                 .hashtag(hashtag)
                 .build();
 
@@ -178,7 +176,6 @@ public class MappingTest {
                 .memberName("영희")
                 .email("123@123.com")
                 .hashtag(hashtag)
-                .expiredDate(expiredDate)
                 .password("1234")
                 .build();
 

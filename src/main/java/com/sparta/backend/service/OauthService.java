@@ -55,8 +55,8 @@ public class OauthService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
-        body.add("redirect_uri", "http://localhost:3000/api/users/login"); // 프론트 연결용
-//        body.add("redirect_uri", "http://52.78.132.235/api/users/login"); // 테스트용
+//        body.add("redirect_uri", "http://localhost:3000/api/users/login"); // 프론트 연결 테스트용
+        body.add("redirect_uri", "http://3.34.99.169/api/users/login"); // 서버 연결 테스트용
         body.add("code", code);
 
         // HTTP 요청 보내기
