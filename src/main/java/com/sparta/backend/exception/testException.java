@@ -21,6 +21,7 @@ public class testException {
 //                );
 //        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
 //    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<DefaultMessage> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String errorMessage = e.getBindingResult()
