@@ -22,20 +22,20 @@ public class ReminderController {
     @PostMapping("/api/reminders")
     public ResponseEntity<RestResponseMessage> createReminder(@RequestBody ReminderRequestDto reminderRequestDto, @AuthenticationPrincipal Member member) {
         reminderService.createReminder(reminderRequestDto, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "리마인더 생성 성공", new HashMap<>()), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "리마인더 생성 성공", ""), HttpStatus.OK);
     }
 
     // 리마인더 수정하기
     @PatchMapping("/api/reminders")
     public ResponseEntity<RestResponseMessage> editReminder(@RequestBody ReminderRequestDto reminderRequestDto, @AuthenticationPrincipal Member member) {
         reminderService.editReminder(reminderRequestDto, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "리마인더 수정 성공", new HashMap<>()), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "리마인더 수정 성공", ""), HttpStatus.OK);
     }
 
     // 리마인더 삭제하기
     @DeleteMapping("/api/reminders")
     public ResponseEntity<RestResponseMessage> deleteReminder(@RequestBody ReminderRequestDto reminderRequestDto, @AuthenticationPrincipal Member member) {
         reminderService.deleteReminder(reminderRequestDto, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "리마인더 삭제 성공", new HashMap<>()), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "리마인더 삭제 성공", ""), HttpStatus.OK);
     }
 }
