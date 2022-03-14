@@ -1,7 +1,6 @@
 package com.sparta.backend.model;
 
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +20,7 @@ public class Member extends Timestamped implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    private Long id;
+    private long id;
 
     @Column(name = "kakao_id", unique = true)
     private String kakaoId;
