@@ -30,11 +30,11 @@ public class OauthController {
     @GetMapping("/api/users/login")
     public ResponseEntity<RestResponseMessage> kakaoServerLogin(@RequestParam String code) throws JsonProcessingException {
         // 인가 코드 발행, 토큰 발행 및 API 호출
-        KakaoMemberInfoRequestDto kakaoUserInfoRequestDto = oauthService.getKakaoInfo(code);
+        KakaoMemberInfoRequestDto kakaoMemberInfoRequestDto = oauthService.getKakaoInfo(code);
         // 호출한 정보로 회원가입 여부 판별
-        boolean isExist = oauthService.checkIfMemberExists(kakaoUserInfoRequestDto);
+        boolean isExist = oauthService.checkIfMemberExists(kakaoMemberInfoRequestDto);
         if (isExist) {
-            Member member = memberRepository.findMemberByKakaoId(kakaoUserInfoRequestDto.getKakaoId())
+            Member member = memberRepository.findMemberByKakaoId(kakaoMemberInfoRequestDto.getKakaoId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다."));
 
             TokenDto token = jwtTokenProvider.createAccessRefreshToken(member.getUsername(), member.getMemberRoles());
@@ -62,7 +62,7 @@ public class OauthController {
         } else {
             Map<String, Object> map = new HashMap<>();
             map.put("login", false);
-            map.put("kakaoMemberInfo", kakaoUserInfoRequestDto);
+            map.put("kakaoMemberInfo", kakaoMemberInfoRequestDto);
             return new ResponseEntity<>(new RestResponseMessage<>(true,"아직 회원가입을 하지 않았습니다.", map), HttpStatus.OK);
         }
     }
@@ -95,7 +95,12 @@ public class OauthController {
         return new ResponseEntity<>(new RestResponseMessage<>(true,"토큰 재발급", token), HttpStatus.OK);
     }
 
-    // 로그아웃 (토큰 삭제)
+    // 로그아웃 ( 카카오계정 세션 만료시키기 )
+    @GetMapping("/api/users/logout")
+    public ResponseEntity<RestResponseMessage> kakaoLogout(@RequestParam String state) {
+        oauthService.deleteRefreshToken(state);
+        return new ResponseEntity<>(new RestResponseMessage<>(true,"로그아웃 성공", ""), HttpStatus.OK);
+    }
 
     // 토큰 테스트 (401)
     @PostMapping("/api/users/test")
