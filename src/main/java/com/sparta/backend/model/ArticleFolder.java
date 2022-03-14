@@ -17,7 +17,7 @@ public class ArticleFolder extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "article_folder_id")
-    private Long id;
+    private long id;
 
     @Column(name = "article_folder_name", nullable = false)
     private String articleFolderName;

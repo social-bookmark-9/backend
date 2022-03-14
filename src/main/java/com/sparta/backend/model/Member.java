@@ -21,7 +21,7 @@ public class Member extends Timestamped implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    private Long id;
+    private long id;
 
     @Column(name = "kakao_id", unique = true)
     private String kakaoId;
@@ -42,7 +42,7 @@ public class Member extends Timestamped implements UserDetails {
     private String password;
 
     @Column(name = "expired_date", nullable = false)
-    private Long expiredDate;
+    private long expiredDate;
 
     @Column(name = "profile_image")
     private String profileImage;

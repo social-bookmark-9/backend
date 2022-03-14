@@ -118,9 +118,9 @@ public class OauthService {
         String encodedPassword = passwordEncoder.encode(password);
 
         Hashtag hashtag = Hashtag.builder()
-                .firstHashtag(kakaoMemberRegisterRequestDto.getHashtag1())
-                .secondHashtag(kakaoMemberRegisterRequestDto.getHashtag2())
-                .thirdHashtag(kakaoMemberRegisterRequestDto.getHashtag3())
+                .hashtag1(kakaoMemberRegisterRequestDto.getHashtag1())
+                .hashtag2(kakaoMemberRegisterRequestDto.getHashtag2())
+                .hashtag3(kakaoMemberRegisterRequestDto.getHashtag3())
                 .build();
 
         Member kakaoMember = Member.builder()

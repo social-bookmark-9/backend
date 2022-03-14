@@ -13,23 +13,23 @@ public class Hashtag extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hashtag_id")
-    private Long id;
+    private long id;
 
-    @Column(name = "first_hashtag", nullable = false)
-    private String firstHashtag;
+    @Column(name = "hashtag_1", nullable = false)
+    private String hashtag1;
 
-    @Column(name = "second_hashtag")
-    private String secondHashtag;
+    @Column(name = "hashtag_2")
+    private String hashtag2;
 
-    @Column(name = "third_hashtag")
-    private String thirdHashtag;
+    @Column(name = "hashtag_3")
+    private String hashtag3;
 
     // 테스트용
     @Builder
-    public Hashtag(String firstHashtag, String secondHashtag, String thirdHashtag) {
-        this.firstHashtag = firstHashtag;
-        this.secondHashtag = secondHashtag;
-        this.thirdHashtag = thirdHashtag;
+    public Hashtag(String hashtag1, String hashtag2, String hashtag3) {
+        this.hashtag1 = hashtag1;
+        this.hashtag2 = hashtag2;
+        this.hashtag3 = hashtag3;
     }
 
 }
