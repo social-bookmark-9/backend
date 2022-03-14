@@ -21,7 +21,7 @@ public class MappingTest {
     private String password;
     private Long expiredDate;
 
-    private String firstHashtag;
+    private String hashtag1;
 
     private String articleFolderName;
 
@@ -50,7 +50,7 @@ public class MappingTest {
         email = "abc@abc.com";
         password = "1234";
 
-        firstHashtag = "역사";
+        hashtag1 = "역사";
 
         articleFolderName = "테스트 아티클폴더";
 
@@ -71,9 +71,9 @@ public class MappingTest {
 
         // given
         Hashtag hashtag = Hashtag.builder()
-                .firstHashtag(firstHashtag)
-                .secondHashtag(null)
-                .thirdHashtag(null)
+                .hashtag1(hashtag1)
+                .hashtag2(null)
+                .hashtag3(null)
                 .build();
 
         Member member = Member.builder()
@@ -119,7 +119,7 @@ public class MappingTest {
         ArticleFolder articleFolder = articleFolderRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("해당 아티클 폴더는 존재하지 않습니다"));
 
         Hashtag hashtag = Hashtag.builder()
-                .firstHashtag(firstHashtag)
+                .hashtag1(hashtag1)
                 .build();
 
         Article article = Article.builder()
@@ -170,7 +170,7 @@ public class MappingTest {
         Member toMember = articleFolder.getMember();
 
         Hashtag hashtag = Hashtag.builder()
-                .firstHashtag(firstHashtag)
+                .hashtag1(hashtag1)
                 .build();
         Member fromMember = Member.builder()
                 .memberName("영희")

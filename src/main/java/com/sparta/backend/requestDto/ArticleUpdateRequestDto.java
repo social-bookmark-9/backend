@@ -4,12 +4,10 @@ import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Hashtag;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
 @Getter
-@RequiredArgsConstructor
 @Builder
 public class ArticleUpdateRequestDto {
     private final String titleOg;

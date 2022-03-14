@@ -29,7 +29,7 @@ class ArticleRepositoryTest {
     public ArticleFolderRepository articleFolderRepository;
 
     @Test
-    @DisplayName("아티클 생성 (성공케이스)")
+    @DisplayName("아티클 생성")
     void createArticle() {
 
         // 멤버 given
@@ -39,7 +39,7 @@ class ArticleRepositoryTest {
         Long expiredDate = 1L;
 
         // 해시태그 given
-        String firstHashtag = "IT/개발";
+        String hashtag1 = "IT/개발";
 
         // 아티클 폴더 given (Default)
         String articleFolderName = "기본 컬렉션";
@@ -55,7 +55,7 @@ class ArticleRepositoryTest {
         int readCount = 0;
 
         Hashtag hashtag = Hashtag.builder()
-                .firstHashtag(firstHashtag)
+                .hashtag1(hashtag1)
                 .build();
 
         Member member = Member.builder()
