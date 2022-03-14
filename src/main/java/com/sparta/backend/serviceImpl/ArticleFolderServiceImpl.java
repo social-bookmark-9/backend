@@ -9,6 +9,7 @@ import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
 import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
+import com.sparta.backend.responseDto.LikeAddOrDeleteResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -59,7 +59,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return void
      */
     @Override
-    public void deleteArticleFolder(Long id) {
+    public void deleteArticleFolder(long id) {
         getFolder(id).ifPresent(
                 articleFolderRepository::delete
         );
@@ -72,7 +72,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return void
      */
     @Override
-    public void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, Long id) {
+    public void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, long id) {
         String articleFolderName = articleFolderNameUpdateRequestDto.getArticleFolderName();
         getFolder(id).ifPresent(
                 articleFolder -> articleFolderRepository.updateArticleFolderTitle(articleFolderName, id)
@@ -81,52 +81,51 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
 
     /**
      * 폴더 안 아티클 조회
-     * @param id
+     * @param member, id
      * @return List<ArticlesInFolderResponseDto>
      */
     @Override
-    public List<ArticlesInFolderResponseDto> findArticlesInFolder(Member member, Long id) {
+    public List<ArticlesInFolderResponseDto> findArticlesInFolder(Member member, long id) {
         List<ArticlesInFolderResponseDto> articlesInFolderResponseDtoList = new ArrayList<>();
 
-        // find 아티클 폴더
+        // 타켓 아티클 폴더 찾기
         Optional<ArticleFolder> articleFolder = getFolder(id);
-        List<Article> articles = new ArrayList<>();
 
         // 폴더 안 모든 아티클 articles에 저장
+        List<Article> articles = new ArrayList<>();
         articleFolder.map(ArticleFolder::getArticles).ifPresent(
                 articleList -> articleList.forEach(article -> articles.add(article))
         );
 
-        List<Article> myArticles     = new ArrayList<>();
-        member.getArticleFolders().stream().map(ArticleFolder::getArticles)
-                .forEach();
-
-
+        // 아티클 url로 같은 아티클을 가지고 있는지 판별하기 위해 아티클의 url만 리스트로 저장
+       List<String> myArticlesUrl = new ArrayList<>();
+        member.getArticleFolders()
+                .stream()
+                .map(ArticleFolder::getArticles)
+                .forEach(myArticleList -> myArticleList.forEach(myArticle -> myArticlesUrl.add(myArticle.getUrl())));
 
         // isMe
-        boolean isMe = false;
-        if (articleFolder.isPresent() && articleFolder.get().getMember().equals(member)) {
-            isMe = true;
-        }
+        boolean isMe = articleFolder.isPresent() && articleFolder.get().getMember().equals(member);
 
         for (Article article : articles) {
             boolean isRead = article.getReadCount() > 0;
-
-            ArticlesInFolderResponseDto.builder()
+            boolean isSaved = myArticlesUrl.contains(article.getUrl());
+            ArticlesInFolderResponseDto articlesInFolderResponseDto = ArticlesInFolderResponseDto.builder()
                     .articleId(article.getId())
                     .url(article.getUrl())
                     .titleOg(article.getTitleOg())
                     .imgOg(article.getTitleOg())
                     .contentOg(article.getContentOg())
-                    .hashtag(article.getHashtag())
+                    .hashtag1(article.getHashtag().getHashtag1())
+                    .hashtag2(article.getHashtag().getHashtag2())
+                    .hashtag3(article.getHashtag().getHashtag3())
                     .isMe(isMe)
                     .isRead(isRead)
-                    .isSaved()
+                    .isSaved(isSaved)
                     .build();
+
+            articlesInFolderResponseDtoList.add(articlesInFolderResponseDto);
         }
-
-
-
 
         return articlesInFolderResponseDtoList;
     }
@@ -137,14 +136,17 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @param articleId
      */
     @Override
-    public void deleteArticleInArticleFolder(Long folderId, Long articleId) {
+    public void deleteArticleInArticleFolder(long folderId, long articleId) {
         Optional<ArticleFolder> articleFolder = getFolder(folderId);
+        /**
+         * 요기 Optional 제거하기
+         */
         Optional<List<Article>> articles = articleFolder.map(ArticleFolder::getArticles);
         if (articles.isPresent()) {
             List<Article> targetArticle = articles
                     .get()
                     .stream()
-                    .filter(article -> article.getId().equals(articleId))
+                    .filter(article -> article.getId() == articleId)
                     .collect(Collectors.toList());
             articleFolder.get().getArticles().remove(targetArticle.get(0));
         } else {
@@ -152,13 +154,17 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         }
     }
 
+    @Override
+    public LikeAddOrDeleteResponseDto likeAddOrRemove(Member member, long id) {
+
+    }
 
     /**
      * 폴더 ID에 해당되는 폴더 조회 메소드
      * @param id
      * @return Optional<ArticleFolder>
      */
-    private Optional<ArticleFolder> getFolder(Long id) {
+    private Optional<ArticleFolder> getFolder(long id) {
         return articleFolderRepository.findById(id);
     }
 

@@ -14,12 +14,13 @@ public interface ArticleFolderService {
 
     void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member);
 
-    void deleteArticleFolder(Long id);
+    void deleteArticleFolder(long id);
 
-    void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, Long id);
+    void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, long id);
 
-    List<ArticlesInFolderResponseDto> findArticlesInFolder(Member member, Long id);
+    List<ArticlesInFolderResponseDto> findArticlesInFolder(Member member, long id);
 
-    void deleteArticleInArticleFolder(Long folderId, Long articleId);
+    void deleteArticleInArticleFolder(long folderId, long articleId);
 
+    void likeAddOrRemove(Member member, long id);
 }
