@@ -1,7 +1,5 @@
 package com.sparta.backend.controller;
 
-import com.sparta.backend.message.DataMessage;
-import com.sparta.backend.message.DefaultMessage;
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.requestDto.ArticleCreateRequestDto;

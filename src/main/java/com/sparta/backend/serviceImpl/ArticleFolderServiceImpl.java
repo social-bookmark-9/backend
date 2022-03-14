@@ -4,6 +4,7 @@ import com.sparta.backend.model.Article;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
+import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -24,11 +26,14 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
 
     private final MemberRepository memberRepository;
     private final ArticleFolderRepository articleFolderRepository;
+    private final ArticleRepository articleRepository;
 
     @Autowired
-    public ArticleFolderServiceImpl(MemberRepository memberRepository ,ArticleFolderRepository articleFolderRepository) {
+    public ArticleFolderServiceImpl(MemberRepository memberRepository ,ArticleFolderRepository articleFolderRepository,
+                                    ArticleRepository articleRepository) {
         this.memberRepository = memberRepository;
         this.articleFolderRepository = articleFolderRepository;
+        this.articleRepository = articleRepository;
     }
 
     /**
@@ -41,6 +46,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         ArticleFolder articleFolder = ArticleFolder.builder()
                 .articleFolderName(articleFolderRequestDto.getArticleFolderName())
                 .deleteable(true)
+                .folderHide(articleFolderRequestDto.getFolderHide())
                 .member(member)
                 .build();
 
@@ -54,7 +60,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      */
     @Override
     public void deleteArticleFolder(Long id) {
-        checkFolder(id).ifPresent(
+        getFolder(id).ifPresent(
                 articleFolderRepository::delete
         );
     }
@@ -68,7 +74,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
     @Override
     public void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, Long id) {
         String articleFolderName = articleFolderNameUpdateRequestDto.getArticleFolderName();
-        checkFolder(id).ifPresent(
+        getFolder(id).ifPresent(
                 articleFolder -> articleFolderRepository.updateArticleFolderTitle(articleFolderName, id)
         );
     }
@@ -76,22 +82,51 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
     /**
      * 폴더 안 아티클 조회
      * @param id
-     * @return List<ArticlesInFolderRespDto>
+     * @return List<ArticlesInFolderResponseDto>
      */
     @Override
-    public List<ArticlesInFolderResponseDto> findArticlesInFolder(Long id) {
+    public List<ArticlesInFolderResponseDto> findArticlesInFolder(Member member, Long id) {
         List<ArticlesInFolderResponseDto> articlesInFolderResponseDtoList = new ArrayList<>();
 
-        List<Article> articles = checkFolder(id).get().getArticles();
+        // find 아티클 폴더
+        Optional<ArticleFolder> articleFolder = getFolder(id);
+        List<Article> articles = new ArrayList<>();
+
+        // 폴더 안 모든 아티클 articles에 저장
+        articleFolder.map(ArticleFolder::getArticles).ifPresent(
+                articleList -> articleList.forEach(article -> articles.add(article))
+        );
+
+        List<Article> myArticles     = new ArrayList<>();
+        member.getArticleFolders().stream().map(ArticleFolder::getArticles)
+                .forEach();
+
+
+
+        // isMe
+        boolean isMe = false;
+        if (articleFolder.isPresent() && articleFolder.get().getMember().equals(member)) {
+            isMe = true;
+        }
+
         for (Article article : articles) {
-            ArticlesInFolderResponseDto articlesInFolderResponseDto = ArticlesInFolderResponseDto.builder()
+            boolean isRead = article.getReadCount() > 0;
+
+            ArticlesInFolderResponseDto.builder()
+                    .articleId(article.getId())
                     .url(article.getUrl())
                     .titleOg(article.getTitleOg())
-                    .imgOg(article.getImgOg())
+                    .imgOg(article.getTitleOg())
+                    .contentOg(article.getContentOg())
                     .hashtag(article.getHashtag())
+                    .isMe(isMe)
+                    .isRead(isRead)
+                    .isSaved()
                     .build();
-            articlesInFolderResponseDtoList.add(articlesInFolderResponseDto);
         }
+
+
+
 
         return articlesInFolderResponseDtoList;
     }
@@ -103,10 +138,13 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      */
     @Override
     public void deleteArticleInArticleFolder(Long folderId, Long articleId) {
-        Optional<ArticleFolder> articleFolder = checkFolder(folderId);
+        Optional<ArticleFolder> articleFolder = getFolder(folderId);
         Optional<List<Article>> articles = articleFolder.map(ArticleFolder::getArticles);
         if (articles.isPresent()) {
-            List<Article> targetArticle = articles.get().stream().filter(article -> article.getId().equals(articleId))
+            List<Article> targetArticle = articles
+                    .get()
+                    .stream()
+                    .filter(article -> article.getId().equals(articleId))
                     .collect(Collectors.toList());
             articleFolder.get().getArticles().remove(targetArticle.get(0));
         } else {
@@ -116,14 +154,14 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
 
 
     /**
-     * 폴더 유효성 체크
+     * 폴더 ID에 해당되는 폴더 조회 메소드
      * @param id
-     * @return ArticleFolder
+     * @return Optional<ArticleFolder>
      */
-    private Optional<ArticleFolder> checkFolder(Long id) {
-        return Optional.ofNullable(articleFolderRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new));
+    private Optional<ArticleFolder> getFolder(Long id) {
+        return articleFolderRepository.findById(id);
     }
+
 
 }
 

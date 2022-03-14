@@ -18,7 +18,7 @@ public interface ArticleFolderService {
 
     void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, Long id);
 
-    List<ArticlesInFolderResponseDto> findArticlesInFolder(Long id);
+    List<ArticlesInFolderResponseDto> findArticlesInFolder(Member member, Long id);
 
     void deleteArticleInArticleFolder(Long folderId, Long articleId);
 

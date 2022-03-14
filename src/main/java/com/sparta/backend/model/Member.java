@@ -21,7 +21,7 @@ public class Member extends Timestamped implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    private Long id;
+    private long id;
 
     @Column(name = "kakao_id", unique = true)
     private String kakaoId;
@@ -53,6 +53,9 @@ public class Member extends Timestamped implements UserDetails {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> memberRoles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ArticleFolder> articleFolders = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

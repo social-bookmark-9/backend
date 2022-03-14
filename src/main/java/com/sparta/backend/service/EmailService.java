@@ -1,6 +1,5 @@
 package com.sparta.backend.service;
 
-import com.sparta.backend.message.EmailMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;

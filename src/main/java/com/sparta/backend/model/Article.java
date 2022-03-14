@@ -17,7 +17,7 @@ public class Article extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "article_id")
-    private Long id;
+    private long id;
 
     @Column(name = "url", nullable = false)
     private String url;
