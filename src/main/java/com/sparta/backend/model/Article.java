@@ -1,5 +1,6 @@
 package com.sparta.backend.model;
 
+import com.sparta.backend.requestDto.ArticleReviewRequestDto;
 import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,7 +18,7 @@ public class Article extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "article_id")
-    private Long id;
+    private long id;
 
     @Column(name = "url", nullable = false)
     private String url;
@@ -48,13 +49,24 @@ public class Article extends Timestamped {
     @JoinColumn(name = "article_folder_id", nullable = false)
     private ArticleFolder articleFolder;
 
-    // Update
+    // 아티클 수정
     public void updateArticle(ArticleUpdateRequestDto requestDto) {
         this.review = requestDto.getReview();
         this.reviewHide = requestDto.isReviewHide();
         this.hashtag = requestDto.getHashtag();
         this.articleFolder = requestDto.getArticleFolder();
     }
+
+    // 리뷰 수정
+    public String updateArticleReview(ArticleReviewRequestDto requestDto) {
+        return this.review = requestDto.getReview();
+    }
+
+    // 리뷰Hide 수정
+    public boolean updateArticleReviewHide(boolean reviewHide) {
+        return this.reviewHide = !reviewHide;
+    }
+
 
     // 연관관계 편의 메소드
     public void setArticleFolder(ArticleFolder articleFolder) {
