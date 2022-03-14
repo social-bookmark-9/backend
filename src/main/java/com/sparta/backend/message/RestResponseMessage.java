@@ -3,11 +3,10 @@ package com.sparta.backend.message;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @RequiredArgsConstructor
-public class DataListMessage<T> {
+public class RestResponseMessage<T> {
+    private final boolean status;
     private final String message;
-    private final List<T> dataList;
+    private final T data;
 }

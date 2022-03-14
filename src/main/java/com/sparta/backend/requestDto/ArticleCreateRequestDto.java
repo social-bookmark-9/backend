@@ -4,13 +4,11 @@ import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Hashtag;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotBlank;
 
 @Getter
-@RequiredArgsConstructor
 @Builder
 public class ArticleCreateRequestDto {
     @URL(message = "올바른 URL형식이 아닙니다.")
@@ -26,7 +24,7 @@ public class ArticleCreateRequestDto {
     private final String contentOg;
 
     private final String review = "";
-    private final Boolean reviewHide = false;
+    private final boolean reviewHide = false;
     private final int readCount = 0;
 
     @NotBlank(message = "한 개 이상의 태그를 선택해야 합니다.")
