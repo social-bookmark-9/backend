@@ -2,7 +2,6 @@ package com.sparta.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.backend.jwt.JwtTokenProvider;
-import com.sparta.backend.message.DataMessage;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.model.RefreshToken;
 import com.sparta.backend.oauthDto.*;

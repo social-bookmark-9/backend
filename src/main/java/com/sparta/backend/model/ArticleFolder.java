@@ -25,6 +25,9 @@ public class ArticleFolder extends Timestamped {
     @Column(name = "deleteable", nullable = false)
     private Boolean deleteable;
 
+    @Column(name = "folder_hide", nullable = false)
+    private Boolean folderHide;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -34,7 +37,7 @@ public class ArticleFolder extends Timestamped {
 
     // 테스트용
     @Builder
-    public ArticleFolder(Boolean deleteable, String articleFolderName, Member member, Article article) {
+    public ArticleFolder(Boolean folderHide, Boolean deleteable, String articleFolderName, Member member, Article article) {
         this.deleteable = deleteable;
         this.articleFolderName = articleFolderName;
         this.member = member;

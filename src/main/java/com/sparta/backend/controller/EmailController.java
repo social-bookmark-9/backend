@@ -1,6 +1,5 @@
 package com.sparta.backend.controller;
 
-import com.sparta.backend.message.EmailMessage;
 import com.sparta.backend.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
