@@ -126,7 +126,6 @@ public class OauthService {
         Member kakaoMember = Member.builder()
                 .email(kakaoMemberRegisterRequestDto.getEmail())
                 .password(encodedPassword)
-                .expiredDate(1L)
                 .memberName(kakaoMemberRegisterRequestDto.getMemberName())
                 .kakaoId(kakaoMemberRegisterRequestDto.getKakaoId())
                 .memberRoles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
@@ -166,5 +165,11 @@ public class OauthService {
         refreshTokenRepository.save(updateRefreshToken);
 
         return newToken;
+    }
+
+    // 로그아웃 ( 리프레시 토큰 삭제 )
+    public void deleteRefreshToken(String refreshToken){
+        // Refresh Token 삭제
+        refreshTokenRepository.deleteRefreshTokenByToken(refreshToken);
     }
 }
