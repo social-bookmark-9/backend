@@ -2,6 +2,7 @@ package com.sparta.backend.serviceImpl;
 
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.ArticleFolder;
+import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
@@ -43,6 +44,12 @@ public class ArticleServiceImpl implements ArticleService {
     // 아티클 생성
     @Override
     public long createArticle(ArticleCreateRequestDto requestDto, Member member) {
+        Hashtag hashtag = Hashtag.builder()
+                .hashtag1(requestDto.getHashtag1())
+                .hashtag2(requestDto.getHashtag2())
+                .hashtag3(requestDto.getHashtag3())
+                .build();
+
         Article article = Article.builder()
                 .url(requestDto.getUrl())
                 .titleOg(requestDto.getTitleOg())
@@ -51,7 +58,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .review(requestDto.getReview())
                 .reviewHide(requestDto.isReviewHide())
                 .readCount(requestDto.getReadCount())
-                .hashtag(requestDto.getHashtag())
+                .hashtag(hashtag)
                 .articleFolder(requestDto.getArticleFolder())
                 .build();
 
