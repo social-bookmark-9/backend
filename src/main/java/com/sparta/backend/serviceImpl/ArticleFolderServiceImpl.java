@@ -2,14 +2,16 @@ package com.sparta.backend.serviceImpl;
 
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.ArticleFolder;
+import com.sparta.backend.model.Favorite;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
+import com.sparta.backend.repository.FavoriteRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
 import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
-import com.sparta.backend.responseDto.LikeAddOrDeleteResponseDto;
+import com.sparta.backend.responseDto.LikeAddOrRemoveResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,17 +29,19 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
     private final MemberRepository memberRepository;
     private final ArticleFolderRepository articleFolderRepository;
     private final ArticleRepository articleRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Autowired
     public ArticleFolderServiceImpl(MemberRepository memberRepository ,ArticleFolderRepository articleFolderRepository,
-                                    ArticleRepository articleRepository) {
+                                    ArticleRepository articleRepository, FavoriteRepository favoriteRepository) {
         this.memberRepository = memberRepository;
         this.articleFolderRepository = articleFolderRepository;
         this.articleRepository = articleRepository;
+        this.favoriteRepository = favoriteRepository;
     }
 
     /**
-     * 폴더 생성
+     * 아티클 폴더 생성
      * @param articleFolderRequestDto
      * @param member
      */
@@ -46,7 +50,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         ArticleFolder articleFolder = ArticleFolder.builder()
                 .articleFolderName(articleFolderRequestDto.getArticleFolderName())
                 .deleteable(true)
-                .folderHide(articleFolderRequestDto.getFolderHide())
+                .folderHide(articleFolderRequestDto.isFolderHide())
                 .member(member)
                 .build();
 
@@ -60,7 +64,8 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      */
     @Override
     public void deleteArticleFolder(long id) {
-        getFolder(id).ifPresent(
+        Optional<ArticleFolder> folder = getFolder(id);
+        folder.ifPresent(
                 articleFolderRepository::delete
         );
     }
@@ -74,7 +79,8 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
     @Override
     public void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, long id) {
         String articleFolderName = articleFolderNameUpdateRequestDto.getArticleFolderName();
-        getFolder(id).ifPresent(
+        Optional<ArticleFolder> folder = getFolder(id);
+        folder.ifPresent(
                 articleFolder -> articleFolderRepository.updateArticleFolderTitle(articleFolderName, id)
         );
     }
@@ -154,9 +160,30 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         }
     }
 
+    /**
+     * 좋아요 추가, 삭제
+     * @param member
+     * @param folderId
+     * @return LikeAddOrRemoveResponseDto
+     */
     @Override
-    public LikeAddOrDeleteResponseDto likeAddOrRemove(Member member, long id) {
+    public LikeAddOrRemoveResponseDto likeAddOrRemove(Member member, long folderId) {
+        LikeAddOrRemoveResponseDto likeAddOrRemoveResponseDto = new LikeAddOrRemoveResponseDto();
+        Optional<ArticleFolder> folder = getFolder(folderId);
+        Optional<Favorite> isFavoriteExist = favoriteRepository.findByMemberAndArticleFolder(member, folder.get());
+        if (isFavoriteExist.isPresent()) {
+            favoriteRepository.delete(isFavoriteExist.get());
+            likeAddOrRemoveResponseDto.setLikeStatus(false);
+        } else {
+            Favorite favorite = Favorite.builder()
+                    .member(member)
+                    .articleFolder(folder.get())
+                    .build();
+            favoriteRepository.save(favorite);
+            likeAddOrRemoveResponseDto.setLikeStatus(false);
+        }
 
+        return likeAddOrRemoveResponseDto;
     }
 
     /**
@@ -165,7 +192,12 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return Optional<ArticleFolder>
      */
     private Optional<ArticleFolder> getFolder(long id) {
-        return articleFolderRepository.findById(id);
+        Optional<ArticleFolder> folder = articleFolderRepository.findById(id);
+        if (folder.isPresent()) {
+            return folder;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
 

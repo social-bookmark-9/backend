@@ -117,7 +117,6 @@ class ArticleServiceImplTest {
                 .memberName(memberName)
                 .email(email)
                 .password(password)
-                .expiredDate(expiredDate)
                 .hashtag(hashtag)
                 .memberRoles(Collections.singletonList("ROLE_USER"))
                 .build();
@@ -197,7 +196,6 @@ class ArticleServiceImplTest {
                 .memberName("항해")
                 .email("hanghae@naver.com")
                 .password("123123")
-                .expiredDate(1L)
                 .hashtag(hashtag)
                 .memberRoles(Collections.singletonList("ROLE_USER"))
                 .build();
@@ -249,7 +247,6 @@ class ArticleServiceImplTest {
                 .memberName("항해1")
                 .email("hanghae1@naver.com")
                 .password("123123")
-                .expiredDate(1L)
                 .hashtag(hashtag)
                 .memberRoles(Collections.singletonList("ROLE_USER"))
                 .build();

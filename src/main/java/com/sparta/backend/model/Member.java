@@ -88,7 +88,7 @@ public class Member extends Timestamped implements UserDetails {
     // 테스트용
     @Builder
     public Member (String memberName, String email, String password,
-                   Long expiredDate,Hashtag hashtag, String kakaoId, List<String> memberRoles, String profileImage) {
+                   Hashtag hashtag, String kakaoId, List<String> memberRoles, String profileImage) {
         this.memberName = memberName;
         this.email = email;
         this.profileImage = profileImage;
