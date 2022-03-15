@@ -28,7 +28,11 @@ public class ArticleCreateRequestDto {
     private final int readCount = 0;
 
     @NotBlank(message = "한 개 이상의 태그를 선택해야 합니다.")
-    private final Hashtag hashtag;
+    private final String hashtag1;
+
+    private final String hashtag2;
+
+    private final String hashtag3;
 
     @NotBlank(message = "아티클 폴더를 반드시 선택해야 합니다.")
     private final ArticleFolder articleFolder;
