@@ -1,11 +1,12 @@
 package com.sparta.backend.service;
 
+import com.sparta.backend.model.Article;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.model.Reminder;
+import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.ReminderRepository;
 import com.sparta.backend.requestDto.ReminderRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +18,13 @@ import java.time.LocalDate;
 public class ReminderService {
 
     private final ReminderRepository reminderRepository;
+    private final ArticleRepository articleRepository;
 
     // 리마인더 생성하기
     public void createReminder(ReminderRequestDto reminderRequestDto, Member member) {
+        Article article = articleRepository.findById(reminderRequestDto.getArticleId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 아티클이 존재하지 않습니다."));
+
         Reminder reminder = Reminder.builder()
                 .sendDate(LocalDate.now().plusDays(reminderRequestDto.getButtonDate()))
                 .email(member.getEmail())
@@ -27,7 +32,11 @@ public class ReminderService {
                 .memberName(member.getMemberName())
                 .url(reminderRequestDto.getUrl())
                 .buttonDate(reminderRequestDto.getButtonDate())
+                .article(article)
                 .build();
+
+        article.setReminder(reminder);
+
         reminderRepository.save(reminder);
     }
 
