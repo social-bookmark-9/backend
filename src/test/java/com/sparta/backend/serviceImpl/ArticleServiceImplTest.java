@@ -12,6 +12,7 @@ import com.sparta.backend.requestDto.ArticleCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleReviewRequestDto;
 import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
 import com.sparta.backend.responseDto.ArticleResponseDto;
+import com.sparta.backend.responseDto.ArticleReviewHideResponseDto;
 import com.sparta.backend.responseDto.ArticleReviewResponseDto;
 import com.sparta.backend.service.ArticleService;
 import org.junit.jupiter.api.*;
@@ -168,15 +169,15 @@ class ArticleServiceImplTest {
         // 한 멤버에 두 폴더를 생성 (기본 폴더, 커스텀 폴더)
         memberRepository.save(member);
         articleFolderRepository.save(articleFolder1);
-        articleService.createArticle(articleCreateRequestDto1, member);
-        long article2Id = articleService.createArticle(articleCreateRequestDto2, member);
+        articleService.createArticle(articleCreateRequestDto1);
+        long article2Id = articleService.createArticle(articleCreateRequestDto2);
         articleFolderRepository.save(articleFolder2);
 
         // 한 멤버의 기본 폴더에서 커스텀 폴더로 이동(수정)하는 작업
-        articleService.updateArticle(articleUpdateRequestDto, article2Id, member);
+        articleService.updateArticle(articleUpdateRequestDto, article2Id);
 
         // 아티클 조회
-        ArticleResponseDto responseDto = articleService.getArticle(article2Id, member);
+        ArticleResponseDto responseDto = articleService.getArticle(article2Id);
 
         // then
         assertEquals(articleFolder2.getArticleFolderName(), responseDto.getArticleFolder().getArticleFolderName());
@@ -230,7 +231,7 @@ class ArticleServiceImplTest {
         long articleId = article.getId();
 
         // when (아티클 리뷰 수정하기)
-        ArticleReviewResponseDto responseDto = articleService.updateArticleReview(requestDto, articleId, member);
+        ArticleReviewResponseDto responseDto = articleService.updateArticleReview(requestDto, articleId);
 
         // then
         assertEquals(review, responseDto.getReview());
@@ -277,10 +278,10 @@ class ArticleServiceImplTest {
 
         long articleId = article.getId();
 
-        // when (reviewHide = false -> true, true -> false)
-        boolean reviewHide = articleService.updateArticleReviewHide(articleId);
+        // when
+        ArticleReviewHideResponseDto reviewHide = articleService.updateArticleReviewHide(articleId);
 
         // then
-        assertTrue(reviewHide);
+        assertTrue(reviewHide.isReviewHide());
     }
 }

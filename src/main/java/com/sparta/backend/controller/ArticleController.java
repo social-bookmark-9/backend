@@ -5,9 +5,12 @@ import com.sparta.backend.model.Member;
 import com.sparta.backend.requestDto.ArticleCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleReviewRequestDto;
 import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
+import com.sparta.backend.requestDto.ReminderRequestDto;
 import com.sparta.backend.responseDto.ArticleResponseDto;
+import com.sparta.backend.responseDto.ArticleReviewHideResponseDto;
 import com.sparta.backend.responseDto.ArticleReviewResponseDto;
 import com.sparta.backend.service.ArticleService;
+import com.sparta.backend.service.ReminderService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,27 +26,36 @@ import javax.validation.Valid;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final ReminderService reminderService;
 
-    // 아티클 상세 페이지
+    // ⚠️ 아티클 상세 페이지
     // TODO: 함께보면 좋은글
-    // TODO: 리마인드 수정 OR 가져오기?
+    // TODO: 리마인드 수정 OR 가져오기
     @ApiOperation(value = "특정 아티클 조회", notes = "특정 아티클 조회 API")
     @GetMapping("/articles/{id}")
     public ResponseEntity<RestResponseMessage<?>> getArticle(@Valid @PathVariable long id,
                                                                    @AuthenticationPrincipal Member member) {
-        // TODO: 로그인 유무 체크?
-        ArticleResponseDto responseDto = articleService.getArticle(id, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "링크를 성공적으로 가져왔습니다.", responseDto), HttpStatus.OK);
+        ArticleResponseDto responseDto = articleService.getArticle(id);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 조회 성공", responseDto), HttpStatus.OK);
     }
 
-    // 아티클 생성 페이지
-    // TODO: 리마인더 의논하기
+    // ✅ 아티클 생성 페이지
+    // TODO: Test, 로직 refactor
     @ApiOperation(value = "아티클 생성", notes = "아티클 생성 API")
     @PostMapping("/articles")
     public ResponseEntity<RestResponseMessage<?>> createArticles(@Valid @RequestBody ArticleCreateRequestDto requestDto,
                                                          @AuthenticationPrincipal Member member) {
-        articleService.createArticle(requestDto, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "링크가 추가되었습니다.", ""), HttpStatus.OK);
+        articleService.createArticle(requestDto);
+
+        if (requestDto.getButtonDate() != 0) {
+            ReminderRequestDto requestDto1 = ReminderRequestDto.builder()
+                    .titleOg(requestDto.getTitleOg())
+                    .buttonDate(requestDto.getButtonDate())
+                    .url(requestDto.getUrl())
+                    .build();
+            reminderService.createReminder(requestDto1, member);
+        }
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 추가 성공", ""), HttpStatus.OK);
     }
 
     // ✅ 아티클 수정 페이지
@@ -52,8 +64,8 @@ public class ArticleController {
     public ResponseEntity<RestResponseMessage<?>> updateArticles(@Valid @RequestBody ArticleUpdateRequestDto requestDto,
                                                          @PathVariable long id,
                                                          @AuthenticationPrincipal Member member) {
-        articleService.updateArticle(requestDto, id, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "링크가 수정되었습니다.", ""), HttpStatus.OK);
+        articleService.updateArticle(requestDto, id);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 수정 성공", ""), HttpStatus.OK);
     }
 
     // ✅ 리뷰 수정
@@ -62,16 +74,16 @@ public class ArticleController {
     public ResponseEntity<RestResponseMessage<?>> updateArticleReview(@Valid @RequestBody ArticleReviewRequestDto requestDto,
                                                                       @PathVariable long id,
                                                                       @AuthenticationPrincipal Member member) {
-        ArticleReviewResponseDto responseDto = articleService.updateArticleReview(requestDto, id, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "메모가 수정되었습니다.", responseDto), HttpStatus.OK);
+        ArticleReviewResponseDto responseDto = articleService.updateArticleReview(requestDto, id);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 리뷰 수정 성공", responseDto), HttpStatus.OK);
     }
 
-    // 리뷰 가리기
+    // ✅ 리뷰 가리기
     @ApiOperation(value = "리뷰(메모) 보이기 / 숨기기", notes = "리뷰(메모) 보이기 / 숨기기")
-    @PatchMapping("/articles/reviewHide/{id}")
+    @PatchMapping("/articles/reviewhide/{id}")
     public ResponseEntity<RestResponseMessage<?>> updateArticleReviewHide(@PathVariable long id,
                                                                           @AuthenticationPrincipal Member member) {
-        boolean reviewHide = articleService.updateArticleReviewHide(id);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "리뷰Hide 수정되었습니다.", reviewHide), HttpStatus.OK);
+        ArticleReviewHideResponseDto responseDto = articleService.updateArticleReviewHide(id);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "리뷰 가리기 성공", responseDto), HttpStatus.OK);
     }
 }

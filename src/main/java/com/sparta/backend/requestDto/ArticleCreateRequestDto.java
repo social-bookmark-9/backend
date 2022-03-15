@@ -26,6 +26,7 @@ public class ArticleCreateRequestDto {
     private final String review = "";
     private final boolean reviewHide = false;
     private final int readCount = 0;
+    private final int buttonDate;
 
     @NotBlank(message = "한 개 이상의 태그를 선택해야 합니다.")
     private final Hashtag hashtag;
