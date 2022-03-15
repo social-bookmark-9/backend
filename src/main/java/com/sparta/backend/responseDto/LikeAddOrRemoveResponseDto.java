@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class LikeAddOrDeleteResponseDto {
+public class LikeAddOrRemoveResponseDto {
     private boolean likeStatus;
 }

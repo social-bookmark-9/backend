@@ -22,6 +22,7 @@ public class Favorite extends Timestamped {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Builder
     public Favorite(Member member, ArticleFolder articleFolder) {
         this.member = member;
         this.articleFolder = articleFolder;

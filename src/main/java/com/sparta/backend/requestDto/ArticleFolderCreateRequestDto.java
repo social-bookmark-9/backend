@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class ArticleFolderCreateRequestDto {
 
@@ -18,5 +17,5 @@ public class ArticleFolderCreateRequestDto {
     private String articleFolderName;
 
     @NotNull(message = "공개여부를 누락")
-    private Boolean folderHide;
+    private boolean folderHide;
 }

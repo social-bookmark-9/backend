@@ -5,7 +5,7 @@ import com.sparta.backend.model.Member;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
 import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
-import com.sparta.backend.responseDto.LikeAddOrDeleteResponseDto;
+import com.sparta.backend.responseDto.LikeAddOrRemoveResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -126,13 +126,13 @@ public class ArticleFolderController {
     }
 
     @ApiOperation(value = "좋아요 추가, 삭제", notes = "좋아요 추가, 삭제 API")
-    @PatchMapping("/articleFolders/{id}/likes")
-    public ResponseEntity<RestResponseMessage<LikeAddOrDeleteResponseDto>> likeAddOrRemove(
+    @PatchMapping("/articleFolders/{folderId}/likes")
+    public ResponseEntity<RestResponseMessage<LikeAddOrRemoveResponseDto>> likeAddOrRemove(
             @AuthenticationPrincipal Member member,
-            @PathVariable long id) {
+            @PathVariable long folderId) {
 
-        articleFolderService.likeAddOrRemove(member, id);
-        return ResponseEntity<>(new ResponseEntity<>(true, "좋아요 추가 또는 삭제", ))
+        LikeAddOrRemoveResponseDto likeAddOrRemoveResponseDto = articleFolderService.likeAddOrRemove(member, folderId);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "좋아요 추가 또는 삭제", likeAddOrRemoveResponseDto), HttpStatus.OK);
     }
 
 }

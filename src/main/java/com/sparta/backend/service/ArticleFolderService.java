@@ -6,6 +6,7 @@ import com.sparta.backend.model.Member;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
 import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
+import com.sparta.backend.responseDto.LikeAddOrRemoveResponseDto;
 
 import java.util.List;
 
@@ -22,5 +23,5 @@ public interface ArticleFolderService {
 
     void deleteArticleInArticleFolder(long folderId, long articleId);
 
-    void likeAddOrRemove(Member member, long id);
+    LikeAddOrRemoveResponseDto likeAddOrRemove(Member member, long folderId);
 }

@@ -62,7 +62,6 @@ class ArticleRepositoryTest {
                 .memberName(memberName)
                 .email(email)
                 .password(password)
-                .expiredDate(expiredDate)
                 .hashtag(hashtag)
                 .memberRoles(Collections.singletonList("ROLE_USER"))
                 .build();

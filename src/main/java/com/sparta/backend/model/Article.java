@@ -45,7 +45,7 @@ public class Article extends Timestamped {
     @JoinColumn(name = "hashtag_id", nullable = false)
     private Hashtag hashtag;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "article_folder_id", nullable = false)
     private ArticleFolder articleFolder;
 
@@ -87,5 +87,6 @@ public class Article extends Timestamped {
         this.readCount = readCount;
         this.hashtag = hashtag;
         this.articleFolder = articleFolder;
+//        articleFolder.getArticles().add(this);
     }
 }
