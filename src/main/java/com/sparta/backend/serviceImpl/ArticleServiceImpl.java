@@ -9,6 +9,7 @@ import com.sparta.backend.requestDto.ArticleCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleReviewRequestDto;
 import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
 import com.sparta.backend.responseDto.ArticleResponseDto;
+import com.sparta.backend.responseDto.ArticleReviewHideResponseDto;
 import com.sparta.backend.responseDto.ArticleReviewResponseDto;
 import com.sparta.backend.service.ArticleService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 특정 아티클 조회
     @Override
-    public ArticleResponseDto getArticle(long id, Member member) {
+    public ArticleResponseDto getArticle(long id) {
         Article article = articleRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         return ArticleResponseDto.builder()
                 .hashtag1(article.getHashtag().getHashtag1())
@@ -34,6 +35,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .contentOg(article.getContentOg())
                 .review(article.getReview())
                 .reviewHide(article.isReviewHide())
+                .readCount(article.getReadCount() + 1)
                 .articleFolder(article.getArticleFolder())
                 // TODO: 함께보면 좋은글
                 // TODO: 리마인드 Patch or Get?
@@ -42,7 +44,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 아티클 생성
     @Override
-    public long createArticle(ArticleCreateRequestDto requestDto, Member member) {
+    public long createArticle(ArticleCreateRequestDto requestDto) {
         Article article = Article.builder()
                 .url(requestDto.getUrl())
                 .titleOg(requestDto.getTitleOg())
@@ -63,7 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 아티클의 아티클 폴더 변경
     @Override
-    public void updateArticle(ArticleUpdateRequestDto requestDto, long id, Member member) {
+    public void updateArticle(ArticleUpdateRequestDto requestDto, long id) {
         Article currentArticle = articleRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 
         // TODO: 1. currentArticle 의 currentArticleFolder 를 찾기
@@ -84,7 +86,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 리뷰 수정
     @Override
-    public ArticleReviewResponseDto updateArticleReview(ArticleReviewRequestDto requestDto, long id, Member member) {
+    public ArticleReviewResponseDto updateArticleReview(ArticleReviewRequestDto requestDto, long id) {
         Article currentArticle = articleRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         String modifiedReview = currentArticle.updateArticleReview(requestDto);
         return ArticleReviewResponseDto.builder()
@@ -94,9 +96,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 리뷰Hide 수정
     @Override
-    public boolean updateArticleReviewHide(long id) {
+    public ArticleReviewHideResponseDto updateArticleReviewHide(long id) {
         Article currentArticle = articleRepository.findById(id).orElseThrow(IllegalAccessError::new);
         boolean reviewHide = currentArticle.isReviewHide();
-        return currentArticle.updateArticleReviewHide(reviewHide);
+        return ArticleReviewHideResponseDto.builder()
+                .reviewHide(currentArticle.updateArticleReviewHide(reviewHide))
+                .build();
     }
 }
