@@ -41,13 +41,15 @@ public class Article extends Timestamped {
     @Column(name = "read_count")
     private int readCount;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "hashtag_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.ALL)
     private Hashtag hashtag;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_folder_id", nullable = false)
     private ArticleFolder articleFolder;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.ALL)
+    private Reminder reminder;
 
     // 아티클 수정
     public void updateArticle(ArticleUpdateRequestDto requestDto) {
@@ -72,6 +74,11 @@ public class Article extends Timestamped {
     public void setArticleFolder(ArticleFolder articleFolder) {
         this.articleFolder = articleFolder;
         articleFolder.getArticles().add(this);
+    }
+
+    // 연관관계 편의 메소드
+    public void setReminder(Reminder reminder) {
+        this.reminder = reminder;
     }
 
     @Builder

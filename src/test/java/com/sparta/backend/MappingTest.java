@@ -19,7 +19,6 @@ public class MappingTest {
     private String memberName;
     private String email;
     private String password;
-    private Long expiredDate;
 
     private String hashtag1;
 
@@ -192,4 +191,18 @@ public class MappingTest {
         Assertions.assertEquals(alarm, alarmRepository.findById(alarm.getId())
                 .orElseThrow(() -> new IllegalArgumentException("알람없음")));
     }
+
+//    @Test
+//    @Order(6)
+//    @DisplayName("멤버 삭제 테스트")
+//    public void deleteMember() {
+//
+//        // given
+//        ArticleFolder articleFolder = articleFolderRepository.findById(1L)
+//                .orElseThrow(() -> new IllegalArgumentException("아티클폴더 없음"));
+//        articleFolderRepository.delete(articleFolder);
+//        Member member = memberRepository.findById(1L)
+//                .orElseThrow(() -> new IllegalArgumentException("멤버없음"));
+//        memberRepository.delete(member);
+//    }
 }
