@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -39,14 +37,20 @@ public class Reminder{
     @Column(name = "url")
     private String url;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id", nullable = false)
+    private Article article;
+
     @Builder
-    public Reminder(LocalDate sendDate, String email, String titleOg, String memberName, String url, int buttonDate) {
+    public Reminder(LocalDate sendDate, String email, String titleOg,
+                    Article article, String memberName, String url, int buttonDate) {
         this.sendDate = sendDate;
         this.email = email;
         this.titleOg = titleOg;
         this.memberName = memberName;
         this.buttonDate = buttonDate;
         this.url = url;
+        this.article = article;
     }
     
     // 리마인더 수정하기

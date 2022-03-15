@@ -24,12 +24,16 @@ public class Hashtag extends Timestamped {
     @Column(name = "hashtag_3")
     private String hashtag3;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id")
+    private Article article;
+
     // 테스트용
     @Builder
-    public Hashtag(String hashtag1, String hashtag2, String hashtag3) {
+    public Hashtag(String hashtag1, String hashtag2, String hashtag3, Article article) {
         this.hashtag1 = hashtag1;
         this.hashtag2 = hashtag2;
         this.hashtag3 = hashtag3;
+        this.article = article;
     }
-
 }
