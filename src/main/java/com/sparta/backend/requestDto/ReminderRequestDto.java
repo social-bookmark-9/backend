@@ -1,7 +1,5 @@
 package com.sparta.backend.requestDto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,10 +18,6 @@ public class ReminderRequestDto {
     @NotBlank(message = "아티클의 주소가 필요합니다.")
     private String url;
 
-    @Builder
-    public ReminderRequestDto(String titleOg, int buttonDate, String url) {
-        this.titleOg = titleOg;
-        this.buttonDate = buttonDate;
-        this.url = url;
-    }
+    @NotBlank(message = "아티클의 ID가 필요합니다")
+    private long articleId;
 }
