@@ -14,5 +14,6 @@ public class ArticleResponseDto {
     private final String contentOg;
     private final String review;
     private final boolean reviewHide;
+    private final int readCount;
     private final ArticleFolder articleFolder;
 }
