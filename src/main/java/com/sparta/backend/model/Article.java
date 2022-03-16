@@ -44,7 +44,7 @@ public class Article extends Timestamped {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.ALL)
     private Hashtag hashtag;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_folder_id", nullable = false)
     private ArticleFolder articleFolder;
 

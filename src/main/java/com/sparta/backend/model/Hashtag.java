@@ -26,14 +26,25 @@ public class Hashtag extends Timestamped {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
-    private Article article;
+    private Article article = null;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member = null;
 
     // 테스트용
     @Builder
-    public Hashtag(String hashtag1, String hashtag2, String hashtag3, Article article) {
+    public Hashtag(String hashtag1, String hashtag2, String hashtag3) {
         this.hashtag1 = hashtag1;
         this.hashtag2 = hashtag2;
         this.hashtag3 = hashtag3;
+    }
+
+    public void setArticle(Article article) {
         this.article = article;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }
