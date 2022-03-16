@@ -81,7 +81,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         String articleFolderName = articleFolderNameUpdateRequestDto.getArticleFolderName();
         Optional<ArticleFolder> folder = getFolder(id);
         folder.ifPresent(
-                articleFolder -> articleFolderRepository.updateArticleFolderTitle(articleFolderName, id)
+                articleFolder -> articleFolderRepository.updateArticleFolderName(articleFolderName, id)
         );
     }
 
@@ -165,22 +165,23 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @param member
      * @param folderId
      * @return LikeAddOrRemoveResponseDto
+     * 비동기 적용 고려
      */
     @Override
     public LikeAddOrRemoveResponseDto likeAddOrRemove(Member member, long folderId) {
         LikeAddOrRemoveResponseDto likeAddOrRemoveResponseDto = new LikeAddOrRemoveResponseDto();
-        Optional<ArticleFolder> folder = getFolder(folderId);
-        Optional<Favorite> isFavoriteExist = favoriteRepository.findByMemberAndArticleFolder(member, folder.get());
+        Optional<ArticleFolder> articleFolder = getFolder(folderId);
+        Optional<Favorite> isFavoriteExist = favoriteRepository.findByMemberAndArticleFolder(member, articleFolder.get());
         if (isFavoriteExist.isPresent()) {
             favoriteRepository.delete(isFavoriteExist.get());
             likeAddOrRemoveResponseDto.setLikeStatus(false);
         } else {
             Favorite favorite = Favorite.builder()
+                    .articleFolder(articleFolder.get())
                     .member(member)
-                    .articleFolder(folder.get())
                     .build();
             favoriteRepository.save(favorite);
-            likeAddOrRemoveResponseDto.setLikeStatus(false);
+            likeAddOrRemoveResponseDto.setLikeStatus(true);
         }
 
         return likeAddOrRemoveResponseDto;
@@ -196,7 +197,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         if (folder.isPresent()) {
             return folder;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("존재하지 않는 회원");
         }
     }
 
