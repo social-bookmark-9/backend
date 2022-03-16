@@ -1,6 +1,5 @@
 package com.sparta.backend.requestDto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +7,6 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ReminderRequestDto {
 
     @NotBlank(message = "아티클의 제목이 있어야 합니다.")
