@@ -10,6 +10,7 @@ import com.sparta.backend.requestDto.ArticleCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleReviewRequestDto;
 import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
 import com.sparta.backend.responseDto.ArticleResponseDto;
+import com.sparta.backend.responseDto.ArticleReviewHideResponseDto;
 import com.sparta.backend.responseDto.ArticleReviewResponseDto;
 import com.sparta.backend.service.ArticleService;
 import lombok.RequiredArgsConstructor;
@@ -101,9 +102,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 리뷰Hide 수정
     @Override
-    public boolean updateArticleReviewHide(long id) {
+    public ArticleReviewHideResponseDto updateArticleReviewHide(long id) {
         Article currentArticle = articleRepository.findById(id).orElseThrow(IllegalAccessError::new);
         boolean reviewHide = currentArticle.isReviewHide();
-        return currentArticle.updateArticleReviewHide(reviewHide);
+        return ArticleReviewHideResponseDto.builder()
+                .reviewHide(reviewHide)
+                .build();
     }
 }
