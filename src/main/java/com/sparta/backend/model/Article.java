@@ -94,5 +94,6 @@ public class Article extends Timestamped {
         this.readCount = readCount;
         this.hashtag = hashtag;
         this.articleFolder = articleFolder;
+//        articleFolder.getArticles().add(this);
     }
 }

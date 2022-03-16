@@ -43,12 +43,15 @@ public class Member extends Timestamped implements UserDetails {
     @Column(name = "profile_image")
     private String profileImage;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "hashtag_id")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hashtag hashtag;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ArticleFolder> articleFolders = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> memberRoles = new ArrayList<>();
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -85,7 +88,7 @@ public class Member extends Timestamped implements UserDetails {
     // 테스트용
     @Builder
     public Member (String memberName, String email, String password,
-                   Long expiredDate,Hashtag hashtag, String kakaoId, List<String> memberRoles, String profileImage) {
+                   Hashtag hashtag, String kakaoId, List<String> memberRoles, String profileImage) {
         this.memberName = memberName;
         this.email = email;
         this.profileImage = profileImage;
