@@ -23,10 +23,13 @@ public class ArticleFolder extends Timestamped {
     private String articleFolderName;
 
     @Column(name = "deleteable", nullable = false)
-    private Boolean deleteable;
+    private boolean deleteable;
+
+    @Column(name = "folder_hide", nullable = false)
+    private boolean folderHide;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @OneToMany(mappedBy = "articleFolder", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -34,10 +37,13 @@ public class ArticleFolder extends Timestamped {
 
     // 테스트용
     @Builder
-    public ArticleFolder(Boolean deleteable, String articleFolderName, Member member) {
+    public ArticleFolder(boolean folderHide, boolean deleteable, String articleFolderName, Member member, Article article) {
+        this.folderHide = folderHide;
         this.deleteable = deleteable;
         this.articleFolderName = articleFolderName;
         this.member = member;
+        this.articles.add(article);
+        member.getArticleFolders().add(this);
     }
 
     // 아티클 폴더에서 해당 아티클 삭제 (아티클 폴더를 수정하기 위함)
