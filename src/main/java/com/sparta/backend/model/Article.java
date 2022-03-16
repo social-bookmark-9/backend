@@ -41,7 +41,7 @@ public class Article extends Timestamped {
     @Column(name = "read_count")
     private int readCount;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hashtag hashtag;
 
     @ManyToOne(fetch = FetchType.LAZY)

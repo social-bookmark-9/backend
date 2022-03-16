@@ -35,7 +35,7 @@ public class ArticleController {
     @GetMapping("/articles/{id}")
     public ResponseEntity<RestResponseMessage<?>> getArticle(@Valid @PathVariable long id,
                                                                    @AuthenticationPrincipal Member member) {
-        ArticleResponseDto responseDto = articleService.getArticle(id);
+        ArticleResponseDto responseDto = articleService.getArticle(id, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 조회 성공", responseDto), HttpStatus.OK);
     }
 
@@ -45,16 +45,16 @@ public class ArticleController {
     @PostMapping("/articles")
     public ResponseEntity<RestResponseMessage<?>> createArticles(@Valid @RequestBody ArticleCreateRequestDto requestDto,
                                                          @AuthenticationPrincipal Member member) {
-        articleService.createArticle(requestDto);
+        articleService.createArticle(requestDto, member);
 
-        if (requestDto.getButtonDate() != 0) {
-            ReminderRequestDto requestDto1 = ReminderRequestDto.builder()
-                    .titleOg(requestDto.getTitleOg())
-                    .buttonDate(requestDto.getButtonDate())
-                    .url(requestDto.getUrl())
-                    .build();
-            reminderService.createReminder(requestDto1, member);
-        }
+//        if (requestDto.getButtonDate() != 0) {
+//            ReminderRequestDto requestDto1 = ReminderRequestDto.builder()
+//                    .titleOg(requestDto.getTitleOg())
+//                    .buttonDate(requestDto.getButtonDate())
+//                    .url(requestDto.getUrl())
+//                    .build();
+//            reminderService.createReminder(requestDto1, member);
+//        }
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 추가 성공", ""), HttpStatus.OK);
     }
 
@@ -64,7 +64,7 @@ public class ArticleController {
     public ResponseEntity<RestResponseMessage<?>> updateArticles(@Valid @RequestBody ArticleUpdateRequestDto requestDto,
                                                          @PathVariable long id,
                                                          @AuthenticationPrincipal Member member) {
-        articleService.updateArticle(requestDto, id);
+        articleService.updateArticle(requestDto, id, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 수정 성공", ""), HttpStatus.OK);
     }
 
@@ -74,7 +74,7 @@ public class ArticleController {
     public ResponseEntity<RestResponseMessage<?>> updateArticleReview(@Valid @RequestBody ArticleReviewRequestDto requestDto,
                                                                       @PathVariable long id,
                                                                       @AuthenticationPrincipal Member member) {
-        ArticleReviewResponseDto responseDto = articleService.updateArticleReview(requestDto, id);
+        ArticleReviewResponseDto responseDto = articleService.updateArticleReview(requestDto, id, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 리뷰 수정 성공", responseDto), HttpStatus.OK);
     }
 
