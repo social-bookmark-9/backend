@@ -6,7 +6,6 @@ import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
-import com.sparta.backend.repository.FavoriteRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
@@ -30,9 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Rollback(value = true)
 class ArticleFolderServiceTest {
 
-    @Autowired MemberRepository memberRepository;
-    @Autowired ArticleRepository articleRepository;
-    @Autowired ArticleFolderRepository articleFolderRepository;
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    ArticleRepository articleRepository;
+    @Autowired
+    ArticleFolderRepository articleFolderRepository;
     @Autowired
     ArticleFolderService articleFolderService;
 
@@ -71,7 +73,7 @@ class ArticleFolderServiceTest {
         em.clear();
 
         // 폴더 생성
-       Optional<Member> findMember = memberRepository.findAll().stream().findFirst();
+        Optional<Member> findMember = memberRepository.findAll().stream().findFirst();
 
         ArticleFolderCreateRequestDto articleFolderCreateRequestDto =
                 new ArticleFolderCreateRequestDto("testFolder", false);
@@ -142,6 +144,7 @@ class ArticleFolderServiceTest {
                 .hashtag(articleHashtag1)
                 .articleFolder(findFolder.get())
                 .build();
+
 
         articleHashtag1.setArticle(article1);
 
@@ -379,6 +382,29 @@ class ArticleFolderServiceTest {
         // 폴더 삭제 시 좋아요도 삭제
         Optional<ArticleFolder> findFolder2 = articleFolderRepository.findAll().stream().findFirst();
         articleFolderService.deleteArticleFolder(findFolder2.get().getId());
+    }
+
+    @Test
+    @DisplayName("임시 테스트")
+    void primitive() {
+        Hashtag memberHashtag = Hashtag.builder()
+                .hashtag1("IT")
+                .hashtag2("sport")
+                .hashtag3("movie")
+                .build();
+
+        Member testMember = Member.builder()
+                .kakaoId("test")
+                .memberName("test")
+                .email("test@test.com")
+                .password("test")
+                .profileImage("https://image.com")
+                .hashtag(memberHashtag)
+                .memberRoles(Arrays.asList("USER", "ADMIN"))
+                .build();
+
+        memberHashtag.setMember(testMember);
+        memberRepository.save(testMember);
     }
 }
 

@@ -16,16 +16,16 @@ public class Alarm extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "alarm_id")
-    private long id;
+    private Long id;
 
     @Column(name = "is_checked")
-    private boolean isChecked;
+    private Boolean isChecked;
 
     @Column(name = "article_folder_id", nullable = false)
-    private long articleFolderId;
+    private Long articleFolderId;
 
     @Column(name = "from_member_id", nullable = false)
-    private long fromMemberId;
+    private Long fromMemberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)

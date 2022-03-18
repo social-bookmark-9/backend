@@ -43,7 +43,6 @@ public class Hashtag extends Timestamped {
     public void setArticle(Article article) {
         this.article = article;
     }
-
     public void setMember(Member member) {
         this.member = member;
     }
