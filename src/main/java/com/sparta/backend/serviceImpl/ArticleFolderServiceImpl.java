@@ -1,5 +1,6 @@
 package com.sparta.backend.serviceImpl;
 
+import com.sparta.backend.exception.EntityNotFoundException;
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Favorite;
@@ -197,9 +198,8 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         Optional<ArticleFolder> folder = articleFolderRepository.findById(id);
         if (folder.isPresent()) {
             return folder;
-        } else {
-            throw new IllegalArgumentException("존재하지 않는 회원");
-        }
+        } else throw new EntityNotFoundException("존재하지 않는 회원");
+
     }
 
 
