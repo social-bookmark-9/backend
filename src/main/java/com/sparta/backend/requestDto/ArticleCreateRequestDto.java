@@ -12,12 +12,6 @@ import javax.validation.constraints.NotNull;
 public class ArticleCreateRequestDto {
     @URL(message = "올바른 URL형식이 아닙니다.")
     private final String url;
-    @NotBlank(message = "titleOg가 없습니다.")
-    private final String titleOg;
-    @NotBlank(message = "imgOg가 없습니다.")
-    private final String imgOg;
-    @NotBlank(message = "contentOg가 없습니다.")
-    private final String contentOg;
     @NotNull(message = "readCount가 없습니다.")
     private final Integer readCount;
     @NotNull(message = "buttonDate가 없습니다.")

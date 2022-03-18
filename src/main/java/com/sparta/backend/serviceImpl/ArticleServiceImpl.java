@@ -6,13 +6,12 @@ import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
-import com.sparta.backend.requestDto.ArticleCreateRequestDto;
-import com.sparta.backend.requestDto.ArticleReviewRequestDto;
-import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
-import com.sparta.backend.requestDto.ReminderRequestDto;
+import com.sparta.backend.requestDto.*;
 import com.sparta.backend.responseDto.*;
 import com.sparta.backend.service.ArticleService;
 import com.sparta.backend.service.ReminderService;
+import com.sparta.backend.utils.OpenGraphScrapper;
+import com.sparta.backend.utils.RandomGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,34 +29,20 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticleFolderRepository articleFolderRepository;
 
-    // 랜덤 아티클 뽑기
-    private HashSet<Article> getRandomArticles(List<Article> articles) {
-        HashSet<Article> relatedArticles = new HashSet<>();
-        Random random = new Random();
-        int bound = articles.size();
-        while (relatedArticles.size() < 9) {
-            int randomNum = random.nextInt(bound);
-            relatedArticles.add(articles.get(randomNum));
-        }
-        return relatedArticles;
-    }
-
     // 특정 아티클 조회
     @Override
     public ArticleGetResponseDto getArticle(Long id, Member member) {
         Article article = articleRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아티클이 없습니다."));
 
-        // 1. 현재 아티클의 1번 해시태그 가져오기
+        // Get Random Article
+        RandomGenerator randomGenerator = new RandomGenerator();
         String mainHashtag = article.getHashtag().getHashtag1();
-
-        // 2. 1번 해시태그와 맞는 모든 아티클 불러오기
         List<Article> articles = articleRepository.findArticlesByHashtag_Hashtag1(mainHashtag);
-
-        // 3. 9개를 랜덤으로 뽑아서 가져오기
         List<Article> randomArticles;
-        if (articles.size() > 8) { randomArticles = new ArrayList<>(getRandomArticles(articles)); }
+        if (articles.size() > 8) { randomArticles = randomGenerator.getRandomArticles(articles); }
         else { randomArticles = articles; }
+
 
         List<ArticleRandomResponseDto> randomResponseDtos = new ArrayList<>();
         for (Article randomArticle : randomArticles) {
@@ -94,6 +79,10 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleCreateResponseDto createArticle(ArticleCreateRequestDto requestDto, Member member) {
 
+        // OGTag Scrapping
+        OpenGraphScrapper scrapper = new OpenGraphScrapper();
+        OpenGraphRequestDto openGraphRequestDto = scrapper.openGraphScrapper(requestDto.getUrl());
+
         ArticleFolder articleFolder = articleFolderRepository.findArticleFolderByArticleFolderName(requestDto.getArticleFolderName());
 
         Hashtag hashtag = Hashtag.builder().
@@ -104,9 +93,9 @@ public class ArticleServiceImpl implements ArticleService {
 
         Article article = Article.builder()
                 .url(requestDto.getUrl())
-                .titleOg(requestDto.getTitleOg())
-                .imgOg(requestDto.getImgOg())
-                .contentOg(requestDto.getContentOg())
+                .titleOg(openGraphRequestDto.getTitleOg())
+                .imgOg(openGraphRequestDto.getImgOg())
+                .contentOg(openGraphRequestDto.getContentOg())
                 .readCount(requestDto.getReadCount())
                 .hashtag(hashtag)
                 .articleFolder(articleFolder)
@@ -119,7 +108,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         if (requestDto.getReminderDate() != 0) {
             ReminderRequestDto requestDto1 = ReminderRequestDto.builder()
-                    .titleOg(requestDto.getTitleOg())
+                    .titleOg(openGraphRequestDto.getTitleOg())
                     .buttonDate(requestDto.getReminderDate())
                     .url(requestDto.getUrl())
                     .articleId(article.getId())

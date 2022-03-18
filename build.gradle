@@ -43,6 +43,9 @@ dependencies {
 
     // aws S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE'
+
+    // https://mvnrepository.com/artifact/net.sourceforge.htmlcleaner/htmlcleaner
+    implementation group: 'net.sourceforge.htmlcleaner', name: 'htmlcleaner', version: '2.10'
 }
 
 tasks.named('test') {
