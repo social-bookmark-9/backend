@@ -8,6 +8,7 @@ import com.sparta.backend.model.RefreshToken;
 import com.sparta.backend.oauthDto.*;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.repository.RefreshTokenRepository;
+import com.sparta.backend.responseDto.MemberLoginResponseDto;
 import com.sparta.backend.service.OauthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,9 +54,23 @@ public class OauthController {
                 refreshTokenRepository.save(refreshToken);
             }
 
+            MemberLoginResponseDto myInfo = MemberLoginResponseDto.builder()
+                    .memberId(member.getId())
+                    .nickName(member.getMemberName())
+                    .email(member.getEmail())
+                    .profileImageUrl(member.getProfileImage())
+                    .userDesc(member.getMemberComment())
+                    .instagramUrl(member.getInstagramUrl())
+                    .githubUrl(member.getGithubUrl())
+                    .brunchUrl(member.getBrunchUrl())
+                    .blogUrl(member.getBlogUrl())
+                    .websiteUrl(member.getWebsiteUrl())
+                    .build();
+
             Map<String, Object> map = new HashMap<>();
             map.put("login", true);
             map.put("token", token);
+            map.put("myInfo", myInfo);
 
             return new ResponseEntity<>(new RestResponseMessage<>(true,"로그인 성공", map), HttpStatus.OK);
 
@@ -75,9 +90,23 @@ public class OauthController {
         // 로그인 ( 토큰 발행 )
         TokenDto token = jwtTokenProvider.createAccessRefreshToken(member.getUsername(), member.getMemberRoles());
 
+        MemberLoginResponseDto myInfo = MemberLoginResponseDto.builder()
+                .memberId(member.getId())
+                .nickName(member.getMemberName())
+                .email(member.getEmail())
+                .profileImageUrl(member.getProfileImage())
+                .userDesc(member.getMemberComment())
+                .instagramUrl(member.getInstagramUrl())
+                .githubUrl(member.getGithubUrl())
+                .brunchUrl(member.getBrunchUrl())
+                .blogUrl(member.getBlogUrl())
+                .websiteUrl(member.getWebsiteUrl())
+                .build();
+
         Map<String, Object> map = new HashMap<>();
         map.put("login", true);
         map.put("token", token);
+        map.put("myInfo", myInfo);
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .key(member.getKakaoId())

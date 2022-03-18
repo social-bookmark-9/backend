@@ -116,6 +116,11 @@ public class Member extends Timestamped implements UserDetails {
         this.memberRoles = memberRoles;
     }
 
+    // 프로필 닉네임 수정하기
+    public void editMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+
     // 프로필 사진 수정하기
     public void editProfileImageUrl(String profileImageUrl) {
         this.profileImage = profileImageUrl;
