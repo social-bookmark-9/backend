@@ -102,8 +102,10 @@ public class JwtTokenProvider {
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            System.out.println("토큰 검증 성공");
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
+            System.out.println("토큰 검증 실패");
             System.out.println(e.getClass());
             return false;
         }

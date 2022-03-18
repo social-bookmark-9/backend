@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class testException {
+public class GlobalExceptionHandler {
 
     //    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
 //    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException e) {
@@ -23,7 +23,7 @@ public class testException {
 //        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
 //    }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     public ResponseEntity<RestResponseMessage<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String errorMessage = e.getBindingResult()
                 .getAllErrors()
