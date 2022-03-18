@@ -98,7 +98,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         // 타켓 아티클 폴더 찾기
         Optional<ArticleFolder> articleFolder = getFolder(id);
 
-        // 폴더 안 모든 아티클 articles에 저장
+        // 타켓 아티클 폴더 안 모든 아티클 articles에 저장
         List<Article> articles = new ArrayList<>();
         articleFolder.map(ArticleFolder::getArticles).ifPresent(
                 articleList -> articleList.forEach(article -> articles.add(article))

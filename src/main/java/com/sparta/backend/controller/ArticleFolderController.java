@@ -47,7 +47,7 @@ public class ArticleFolderController {
             @AuthenticationPrincipal Member member) {
 
         articleFolderService.createArticleFolder(articleFolderRequestDto, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true,"컬렉션을 생성 완료.", null), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true,"컬렉션을 생성 완료.", ""), HttpStatus.OK);
     }
 
     /**
