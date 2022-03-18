@@ -31,8 +31,20 @@ public class Member extends Timestamped implements UserDetails {
     @Column(name = "member_comment")
     private String memberComment;
 
-    @Column(name = "social_url")
-    private String socialUrl;
+    @Column(name = "instagram_url")
+    private String instagramUrl;
+
+    @Column(name = "github_url")
+    private String githubUrl;
+
+    @Column(name = "brunch_url")
+    private String brunchUrl;
+
+    @Column(name = "blog_url")
+    private String blogUrl;
+
+    @Column(name = "website_url")
+    private String websiteUrl;
 
     @Column(name = "email", unique = true)
     private String email;
@@ -96,5 +108,37 @@ public class Member extends Timestamped implements UserDetails {
         this.hashtag = hashtag;
         this.kakaoId = kakaoId;
         this.memberRoles = memberRoles;
+    }
+
+    // 프로필 닉네임 수정하기
+    public void editMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+    
+    // 프로필 사진 수정하기
+    public void editProfileImageUrl(String profileImageUrl) {
+        this.profileImage = profileImageUrl;
+    }
+
+    // 프로필 자기소개 수정하기
+    public void editStatusMessage(String userDesc) {
+        this.memberComment = userDesc;
+    }
+
+    // 프로필 SNS URL 수정하기
+    public void setInstagramUrl(String instagramUrl) {
+        this.instagramUrl = instagramUrl;
+    }
+    public void setGithubUrl(String githubUrl) {
+        this.githubUrl = githubUrl;
+    }
+    public void setBrunchUrl(String brunchUrl) {
+        this.brunchUrl = brunchUrl;
+    }
+    public void setBlogUrl(String blogUrl) {
+        this.blogUrl = blogUrl;
+    }
+    public void setWebsiteUrl(String websiteUrl) {
+        this.websiteUrl = websiteUrl;
     }
 }
