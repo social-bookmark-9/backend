@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.backend.jwt.JwtTokenProvider;
+import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.model.RefreshToken;
@@ -11,6 +12,7 @@ import com.sparta.backend.oauthDto.KakaoMemberInfoRequestDto;
 import com.sparta.backend.oauthDto.KakaoMemberRegisterRequestDto;
 import com.sparta.backend.oauthDto.TokenDto;
 import com.sparta.backend.oauthDto.TokenRequestDto;
+import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,7 @@ public class OauthService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ArticleFolderRepository articleFolderRepository;
 
     public KakaoMemberInfoRequestDto getKakaoInfo(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
@@ -136,6 +139,15 @@ public class OauthService {
         hashtag.setMember(kakaoMember);
 
         memberRepository.save(kakaoMember);
+
+        ArticleFolder articleFolder = ArticleFolder.builder()
+                .articleFolderName("기본 컬렉션")
+                .deleteable(false)
+                .folderHide(false)
+                .member(kakaoMember)
+                .build();
+
+        articleFolderRepository.save(articleFolder);
 
         return kakaoMember;
     }
