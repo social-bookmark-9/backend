@@ -13,6 +13,7 @@ import com.sparta.backend.service.OauthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -131,13 +132,15 @@ public class OauthController {
         return new ResponseEntity<>(new RestResponseMessage<>(true,"로그아웃 성공", ""), HttpStatus.OK);
     }
 
-    // 토큰 테스트 (401)
+    // 토큰 테스트 (403)
+    @Secured("ROLE_USER")
     @PostMapping("/api/users/test")
     public String tokenTest() {
         return "good";
     }
 
     // 토큰 테스트 2 (403)
+    @Secured("ROLE_ADMIN")
     @PostMapping("/api/admins/test")
     public String tokenTest2() {
         return "fail";
