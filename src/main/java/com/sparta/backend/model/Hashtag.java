@@ -47,4 +47,10 @@ public class Hashtag extends Timestamped {
     public void setMember(Member member) {
         this.member = member;
     }
+
+    public void setHashtag(String hashtag1, String hashtag2, String hashtag3) {
+        this.hashtag1 = hashtag1;
+        this.hashtag2 = hashtag2;
+        this.hashtag3 = hashtag3;
+    }
 }
