@@ -89,6 +89,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * 폴더 안 아티클 조회
      * @param member, id
      * @return List<ArticlesInFolderResponseDto>
+     * test 필요
      */
     @Override
     public List<ArticlesInFolderResponseDto> findArticlesInFolder(Member member, long id) {
@@ -103,8 +104,8 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
                 articleList -> articleList.forEach(article -> articles.add(article))
         );
 
-        // 아티클 url로 같은 아티클을 가지고 있는지 판별하기 위해 아티클의 url만 리스트로 저장
-       List<String> myArticlesUrl = new ArrayList<>();
+        // member의 폴더 리스트에서 아티클 url로 같은 아티클을 가지고 있는지 판별하기 위해 아티클의 url만 리스트로 저장
+        List<String> myArticlesUrl = new ArrayList<>();
         member.getArticleFolders()
                 .stream()
                 .map(ArticleFolder::getArticles)

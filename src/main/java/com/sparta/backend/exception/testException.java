@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class testException {
 
-    //    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+//    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
 //    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException e) {
 //        Map<String, String> errors = new HashMap<>();
 //        e.getBindingResult().getAllErrors()
@@ -30,6 +30,6 @@ public class testException {
                 .get(0)
                 .getDefaultMessage();
 
-        return new ResponseEntity<>(new RestResponseMessage(false, errorMessage, ""), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new RestResponseMessage<>(false, errorMessage, ""), HttpStatus.BAD_REQUEST);
     }
 }

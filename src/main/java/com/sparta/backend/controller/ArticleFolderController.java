@@ -45,7 +45,7 @@ public class ArticleFolderController {
     public ResponseEntity<RestResponseMessage<?>> createArticleFolder(
             final @Valid @RequestBody ArticleFolderCreateRequestDto articleFolderRequestDto,
             @AuthenticationPrincipal Member member) {
-//        checkAuth(member);
+
         articleFolderService.createArticleFolder(articleFolderRequestDto, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true,"컬렉션을 생성 완료.", null), HttpStatus.OK);
     }
@@ -62,7 +62,7 @@ public class ArticleFolderController {
     public ResponseEntity<RestResponseMessage<?>> deleteArticleFolder(
             @AuthenticationPrincipal Member member,
             @PathVariable long id) {
-//        checkAuth(member);
+
         articleFolderService.deleteArticleFolder(id);
         return new ResponseEntity<>(new RestResponseMessage<>(true,"아티클 폴더 삭제 완료", ""), HttpStatus.OK);
     }
@@ -81,7 +81,7 @@ public class ArticleFolderController {
             @AuthenticationPrincipal Member member,
             @PathVariable long id,
             @RequestBody ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto) {
-//        checkAuth(member);
+
         articleFolderService.updateArticleFolderName(articleFolderNameUpdateRequestDto, id);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 제목 수정 완료", ""), HttpStatus.OK);
     }
@@ -120,7 +120,7 @@ public class ArticleFolderController {
             @AuthenticationPrincipal Member member,
             @PathVariable Long folderId,
             @PathVariable long articleId) {
-//        checkAuth(member);
+
         articleFolderService.deleteArticleInArticleFolder(folderId, articleId);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "북마크를 삭제했습니다.", ""), HttpStatus.OK);
     }
