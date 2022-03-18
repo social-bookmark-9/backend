@@ -2,6 +2,7 @@ package com.sparta.backend.model;
 
 import com.sparta.backend.requestDto.ArticleReviewRequestDto;
 import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,7 @@ public class Article extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "article_id")
-    private long id;
+    private Long id;
 
     @Column(name = "url", nullable = false)
     private String url;
@@ -36,10 +37,10 @@ public class Article extends Timestamped {
     private String review;
 
     @Column(name = "review_hide")
-    private boolean reviewHide;
+    private Boolean reviewHide;
 
-    @Column(name = "read_count")
-    private int readCount;
+    @Column(name = "read_count", nullable = false)
+    private Integer readCount;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hashtag hashtag;
@@ -81,6 +82,11 @@ public class Article extends Timestamped {
         this.reminder = reminder;
     }
 
+    // 연관관계 편의 메소드
+    public void setHashtag(Hashtag hashtag) {
+        this.hashtag = hashtag;
+    }
+
     @Builder
     public Article(String url, String titleOg, String imgOg, String contentOg,
                    String review, Boolean reviewHide, int readCount,
@@ -94,6 +100,5 @@ public class Article extends Timestamped {
         this.readCount = readCount;
         this.hashtag = hashtag;
         this.articleFolder = articleFolder;
-//        articleFolder.getArticles().add(this);
     }
 }

@@ -6,7 +6,6 @@ import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
-import com.sparta.backend.repository.FavoriteRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
@@ -70,7 +69,7 @@ class ArticleFolderServiceTest {
         em.clear();
 
         // 폴더 생성
-       Optional<Member> findMember = memberRepository.findAll().stream().findFirst();
+        Optional<Member> findMember = memberRepository.findAll().stream().findFirst();
 
         ArticleFolderCreateRequestDto articleFolderCreateRequestDto =
                 new ArticleFolderCreateRequestDto("testFolder", false);
