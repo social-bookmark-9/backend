@@ -43,7 +43,7 @@ public class ArticleFolder extends Timestamped {
         this.articleFolderName = articleFolderName;
         this.member = member;
         this.articles.add(article);
-//        member.getArticleFolders().add(this);
+        member.getArticleFolders().add(this);
     }
 
     // 아티클 폴더에서 해당 아티클 삭제 (아티클 폴더를 수정하기 위함)
