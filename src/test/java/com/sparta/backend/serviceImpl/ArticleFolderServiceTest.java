@@ -33,8 +33,7 @@ class ArticleFolderServiceTest {
     @Autowired MemberRepository memberRepository;
     @Autowired ArticleRepository articleRepository;
     @Autowired ArticleFolderRepository articleFolderRepository;
-    @Autowired
-    ArticleFolderService articleFolderService;
+    @Autowired ArticleFolderService articleFolderService;
 
     @PersistenceContext
     private EntityManager em;
