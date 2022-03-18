@@ -21,7 +21,7 @@ public class RefreshToken extends Timestamped {
     @Column(name = "refresh_token_key", nullable = false)
     private String key;
 
-    @Column(nullable = false)
+    @Column(name = "token", nullable = false)
     private String token;
 
     public RefreshToken updateToken(String token){
