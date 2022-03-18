@@ -55,7 +55,7 @@ public class ArticleController {
 
     // 리뷰 수정
     @ApiOperation(value = "리뷰(메모) 수정", notes = "리뷰(메모) 수정")
-    @PatchMapping("/articles/review/{id}")
+    @PatchMapping("/articles/{id}/review")
     public ResponseEntity<RestResponseMessage<?>> updateArticleReview(@Valid @RequestBody ArticleReviewRequestDto requestDto,
                                                                       @PathVariable long id,
                                                                       @AuthenticationPrincipal Member member) {
@@ -65,7 +65,7 @@ public class ArticleController {
 
     // 리뷰 가리기
     @ApiOperation(value = "리뷰(메모) 보이기 / 숨기기", notes = "리뷰(메모) 보이기 / 숨기기")
-    @PatchMapping("/articles/reviewhide/{id}")
+    @PatchMapping("/articles/{id}/review/hide")
     public ResponseEntity<RestResponseMessage<?>> updateArticleReviewHide(@PathVariable long id,
                                                                           @AuthenticationPrincipal Member member) {
         ArticleReviewHideResponseDto responseDto = articleService.updateArticleReviewHide(id);
