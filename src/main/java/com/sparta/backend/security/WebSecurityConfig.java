@@ -5,6 +5,7 @@ import com.sparta.backend.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     // 토근 생성 및 제공자 DI.
@@ -55,10 +57,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .cors() // CORS 설정 파일은 WebConfig
                 .and()
                     .authorizeRequests() // 요청에 대한 사용권한 체크
-                    .antMatchers("api/users/test").hasRole("USER") // 토큰 유효성 테스트용 401
-                    .antMatchers("api/admins/test").hasRole("ADMIN") // 토큰 권한 테스트용 403
-                    .antMatchers("/**").permitAll() // 개발기간동안 우선 열어놓기.
-                    .anyRequest().permitAll() // 그외 나머지 요청은 누구나 접근 가능
+//                    .antMatchers("api/users/test").hasRole("USER") // 토큰 유효성 테스트용 401
+//                    .antMatchers("api/admins/test").hasRole("ADMIN") // 토큰 권한 테스트용 403
+//                    .antMatchers("/**").permitAll() // 개발기간동안 우선 열어놓기.
+                    .anyRequest().permitAll() // 어떤 요청에도 보안검시 진행.
                 .and()
                     .exceptionHandling()
                     .authenticationEntryPoint(customAuthenticationEntryPoint)
