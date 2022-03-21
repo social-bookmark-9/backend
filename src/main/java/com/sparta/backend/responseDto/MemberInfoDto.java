@@ -1,11 +1,12 @@
 package com.sparta.backend.responseDto;
 
-import lombok.Builder;
+import com.sparta.backend.model.Member;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberInfoDto {
 
     private long memberId;
@@ -19,18 +20,20 @@ public class MemberInfoDto {
     private String blogUrl;
     private String websiteUrl;
 
-    @Builder
-    public MemberInfoDto(long memberId, String memberName, String email, String profileImage, String memberComment,
-                         String instagramUrl, String githubUrl, String brunchUrl, String blogUrl, String websiteUrl) {
-        this.memberId = memberId;
-        this.memberName = memberName;
-        this.email = email;
-        this.profileImage = profileImage;
-        this.memberComment = memberComment;
-        this.instagramUrl = instagramUrl;
-        this.githubUrl = githubUrl;
-        this.brunchUrl = brunchUrl;
-        this.blogUrl = blogUrl;
-        this.websiteUrl = websiteUrl;
+    private MemberInfoDto(Member member) {
+        this.memberId = member.getId();
+        this.memberName = member.getMemberName();
+        this.email = member.getEmail();
+        this.profileImage = member.getProfileImage();
+        this.memberComment = member.getMemberComment();
+        this.instagramUrl = member.getInstagramUrl();
+        this.githubUrl = member.getGithubUrl();
+        this.brunchUrl = member.getBrunchUrl();
+        this.blogUrl = member.getBlogUrl();
+        this.websiteUrl = member.getWebsiteUrl();
+    }
+
+    public static MemberInfoDto of(Member member) {
+        return new MemberInfoDto(member);
     }
 }

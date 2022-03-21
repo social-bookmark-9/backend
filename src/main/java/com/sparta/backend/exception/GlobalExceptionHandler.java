@@ -1,5 +1,6 @@
 package com.sparta.backend.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,4 +51,5 @@ public class GlobalExceptionHandler {
         final ErrorResponseMessage responseMessage = ErrorResponseMessage.of(ErrorCode.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(responseMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }
