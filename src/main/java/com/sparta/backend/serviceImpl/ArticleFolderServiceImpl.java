@@ -1,5 +1,6 @@
 package com.sparta.backend.serviceImpl;
 
+import com.sparta.backend.exception.EntityNotFoundException;
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Favorite;
@@ -51,6 +52,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
                 .articleFolderName(articleFolderRequestDto.getArticleFolderName())
                 .deleteable(true)
                 .folderHide(articleFolderRequestDto.isFolderHide())
+                .likeCount(0)
                 .member(member)
                 .build();
 
@@ -89,6 +91,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * 폴더 안 아티클 조회
      * @param member, id
      * @return List<ArticlesInFolderResponseDto>
+     * test 필요
      */
     @Override
     public List<ArticlesInFolderResponseDto> findArticlesInFolder(Member member, long id) {
@@ -97,14 +100,14 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         // 타켓 아티클 폴더 찾기
         Optional<ArticleFolder> articleFolder = getFolder(id);
 
-        // 폴더 안 모든 아티클 articles에 저장
+        // 타켓 아티클 폴더 안 모든 아티클 articles에 저장
         List<Article> articles = new ArrayList<>();
         articleFolder.map(ArticleFolder::getArticles).ifPresent(
                 articleList -> articleList.forEach(article -> articles.add(article))
         );
 
-        // 아티클 url로 같은 아티클을 가지고 있는지 판별하기 위해 아티클의 url만 리스트로 저장
-       List<String> myArticlesUrl = new ArrayList<>();
+        // member의 폴더 리스트에서 아티클 url로 같은 아티클을 가지고 있는지 판별하기 위해 아티클의 url만 리스트로 저장
+        List<String> myArticlesUrl = new ArrayList<>();
         member.getArticleFolders()
                 .stream()
                 .map(ArticleFolder::getArticles)
@@ -174,6 +177,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         Optional<Favorite> isFavoriteExist = favoriteRepository.findByMemberAndArticleFolder(member, articleFolder.get());
         if (isFavoriteExist.isPresent()) {
             favoriteRepository.delete(isFavoriteExist.get());
+            articleFolder.get().decreaseLikeCount(articleFolder.get().getLikeCount());
             likeAddOrRemoveResponseDto.setLikeStatus(false);
         } else {
             Favorite favorite = Favorite.builder()
@@ -181,6 +185,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
                     .member(member)
                     .build();
             favoriteRepository.save(favorite);
+            articleFolder.get().increaseLikeCount(articleFolder.get().getLikeCount());
             likeAddOrRemoveResponseDto.setLikeStatus(true);
         }
 
@@ -196,9 +201,8 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         Optional<ArticleFolder> folder = articleFolderRepository.findById(id);
         if (folder.isPresent()) {
             return folder;
-        } else {
-            throw new IllegalArgumentException("존재하지 않는 회원");
-        }
+        } else throw new EntityNotFoundException("존재하지 않는 회원");
+
     }
 
 
