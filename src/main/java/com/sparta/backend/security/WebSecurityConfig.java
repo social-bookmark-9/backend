@@ -2,6 +2,7 @@ package com.sparta.backend.security;
 
 import com.sparta.backend.jwt.JwtAuthenticationFilter;
 import com.sparta.backend.jwt.JwtTokenProvider;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,8 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     // 토근 생성 및 제공자 DI.
     private final JwtTokenProvider jwtTokenProvider;
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     // 스웨거 적용
     @Override public void configure(WebSecurity web) {
@@ -51,21 +51,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .httpBasic().disable() // rest api 만을 고려
-                    .csrf().disable() // csrf 보안 토큰 disable처리.
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.
-                .and()
-                    .cors() // CORS 설정 파일은 WebConfig
-                .and()
-                    .authorizeRequests() // 요청에 대한 사용권한 체크
+                .csrf().disable() // csrf 보안 토큰 disable처리.
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.
+                    .and()
+                .cors() // CORS 설정 파일은 WebConfig
+                    .and()
+                .authorizeRequests() // 요청에 대한 사용권한 체크
 //                    .antMatchers("api/users/test").hasRole("USER") // 토큰 유효성 테스트용 401
 //                    .antMatchers("api/admins/test").hasRole("ADMIN") // 토큰 권한 테스트용 403
 //                    .antMatchers("/**").permitAll() // 개발기간동안 우선 열어놓기.
-                    .anyRequest().permitAll() // 어떤 요청에도 보안검시 진행.
-                .and()
-                    .exceptionHandling()
-                    .authenticationEntryPoint(customAuthenticationEntryPoint)
-                    .accessDeniedHandler(customAccessDeniedHandler)
-                .and()
-                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .anyRequest().permitAll() // 어떤 요청에도 보안검시 진행.
+                    .and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                // 토큰 만료를 확인하기 위한 필터
+                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
     }
 }

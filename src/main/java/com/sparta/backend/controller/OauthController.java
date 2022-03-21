@@ -1,6 +1,8 @@
 package com.sparta.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sparta.backend.exception.BusinessException;
+import com.sparta.backend.exception.ErrorCode;
 import com.sparta.backend.jwt.JwtTokenProvider;
 import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
@@ -144,5 +146,11 @@ public class OauthController {
     @PostMapping("/api/admins/test")
     public String tokenTest2() {
         return "fail";
+    }
+
+    // 에러 핸들러 테스트
+    @GetMapping("/error/test")
+    public String errorHandlerTest() {
+        throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
     }
 }
