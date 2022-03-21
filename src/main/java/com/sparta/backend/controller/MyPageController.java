@@ -2,8 +2,8 @@ package com.sparta.backend.controller;
 
 import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
-import com.sparta.backend.responseDto.ArticleFolderListDto;
-import com.sparta.backend.responseDto.MemberInfoDto;
+import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
+import com.sparta.backend.responseDto.MemberInfoResponseDto;
 import com.sparta.backend.responseDto.MyPageResponseDto;
 import com.sparta.backend.service.MyPageService;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +26,7 @@ public class MyPageController {
     private final MyPageService myPageService;
 
     /**
-     * 마이 페이지 데이터
+     * 마이페이지 데이터
      * @param member
      * @param memberId
      * @return MyPageResponseDto
@@ -37,13 +37,13 @@ public class MyPageController {
             @AuthenticationPrincipal Member member,
             @PathVariable long memberId) {
 
-        MemberInfoDto memberInfoDto = member.getId() == memberId ?
+        MemberInfoResponseDto memberInfoResponseDto = member.getId() == memberId ?
                 myPageService.getMyMemberInfo(member) : myPageService.getOtherMemberInfo(memberId);
 
-        List<ArticleFolderListDto> articleFolderListDto = member.getId() == memberId ?
+        List<ArticleFolderListResponseDto> articleFolderListResponseDto = member.getId() == memberId ?
                 myPageService.getMyArticleFolderList(member) : myPageService.getOtherArticleFolderList(memberId);
 
-        MyPageResponseDto myPageResponseDto = MyPageResponseDto.of(memberInfoDto, articleFolderListDto);
+        MyPageResponseDto myPageResponseDto = MyPageResponseDto.of(memberInfoResponseDto, articleFolderListResponseDto);
 
         return new ResponseEntity<>(new RestResponseMessage<>(true, "success", myPageResponseDto), HttpStatus.OK);
     }

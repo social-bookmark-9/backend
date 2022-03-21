@@ -8,14 +8,13 @@ import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
-import com.sparta.backend.responseDto.ArticleFolderListDto;
-import com.sparta.backend.responseDto.MemberInfoDto;
+import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
+import com.sparta.backend.responseDto.MemberInfoResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
 import com.sparta.backend.service.MyPageService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +24,6 @@ import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.*;
 
 
 @SpringBootTest
@@ -224,7 +221,7 @@ class MyPageServiceImplTest {
     @Order(2)
     void getMyMemberInfo() {
         Optional<Member> findMember = memberRepository.findAll().stream().findAny();
-        MemberInfoDto myMemberInfo = myPageService.getMyMemberInfo(findMember.get());
+        MemberInfoResponseDto myMemberInfo = myPageService.getMyMemberInfo(findMember.get());
         System.out.println(myMemberInfo.getMemberName());
     }
 
@@ -233,7 +230,7 @@ class MyPageServiceImplTest {
     @Order(3)
     void getOtherMemberInfo() {
         Optional<Member> findMember = memberRepository.findAll().stream().findAny();
-        MemberInfoDto otherMemberInfo = myPageService.getOtherMemberInfo(findMember.get().getId());
+        MemberInfoResponseDto otherMemberInfo = myPageService.getOtherMemberInfo(findMember.get().getId());
         System.out.println(otherMemberInfo.getMemberName());
     }
 
@@ -242,9 +239,9 @@ class MyPageServiceImplTest {
     @Order(4)
     void getMyArticleFolderList() {
         Optional<Member> findMember = memberRepository.findAll().stream().findAny();
-        List<ArticleFolderListDto> myArticleFolderList = myPageService.getMyArticleFolderList(findMember.get());
-        for (ArticleFolderListDto articleFolderListDto : myArticleFolderList) {
-            System.out.println(articleFolderListDto.getFolderId());
+        List<ArticleFolderListResponseDto> myArticleFolderList = myPageService.getMyArticleFolderList(findMember.get());
+        for (ArticleFolderListResponseDto articleFolderListResponseDto : myArticleFolderList) {
+            System.out.println(articleFolderListResponseDto.getFolderId());
         }
     }
 
@@ -253,9 +250,10 @@ class MyPageServiceImplTest {
     @Order(5)
     void getOtherArticleFolderList() {
         Optional<Member> findMember = memberRepository.findAll().stream().findAny();
-        List<ArticleFolderListDto> otherArticleFolderList = myPageService.getOtherArticleFolderList(findMember.get().getId());
-        for (ArticleFolderListDto articleFolderListDto : otherArticleFolderList) {
-            System.out.println(articleFolderListDto.getFolderId());
+        List<ArticleFolderListResponseDto> otherArticleFolderList = myPageService.getOtherArticleFolderList(findMember.get().getId());
+        for (ArticleFolderListResponseDto articleFolderListResponseDto : otherArticleFolderList) {
+            System.out.println(articleFolderListResponseDto.getFolderId());
         }
     }
+
 }
