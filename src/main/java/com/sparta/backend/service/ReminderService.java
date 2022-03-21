@@ -1,5 +1,7 @@
 package com.sparta.backend.service;
 
+import com.sparta.backend.exception.BusinessException;
+import com.sparta.backend.exception.ErrorCode;
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.model.Reminder;
@@ -23,7 +25,7 @@ public class ReminderService {
     // 리마인더 생성하기
     public void createReminder(ReminderRequestDto reminderRequestDto, Member member) {
         Article article = articleRepository.findById(reminderRequestDto.getArticleId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 아티클이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         Reminder reminder = Reminder.builder()
                 .sendDate(LocalDate.now().plusDays(reminderRequestDto.getButtonDate()))

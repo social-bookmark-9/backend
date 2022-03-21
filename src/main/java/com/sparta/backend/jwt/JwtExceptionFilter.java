@@ -1,4 +1,4 @@
-package com.sparta.backend.security;
+package com.sparta.backend.jwt;
 
 import io.jsonwebtoken.JwtException;
 import net.minidev.json.JSONObject;

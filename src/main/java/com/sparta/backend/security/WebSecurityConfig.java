@@ -1,8 +1,8 @@
 package com.sparta.backend.security;
 
 import com.sparta.backend.jwt.JwtAuthenticationFilter;
+import com.sparta.backend.jwt.JwtExceptionFilter;
 import com.sparta.backend.jwt.JwtTokenProvider;
-import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
