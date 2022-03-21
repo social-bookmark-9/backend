@@ -18,7 +18,8 @@ public enum ErrorCode {
     ENTITY_NOT_FOUND(400, HttpStatus.BAD_REQUEST, "400", "요청한 데이터를 찾을 수 없습니다."),
 
     // Token
-    REFRESH_TOKEN_EXPIRED(401, HttpStatus.UNAUTHORIZED, "401", "리프레시 토큰이 만료되었습니다.");
+    REFRESH_TOKEN_EXPIRED(401, HttpStatus.UNAUTHORIZED, "401", "리프레시 토큰이 만료되었습니다."),
+    REFRESH_TOKEN_NOTMATCH(401, HttpStatus.UNAUTHORIZED, "401", "리프레시 토큰이 일치하지 않습니다.");
 
     private final int statusCode;
     private final HttpStatus httpStatus;
