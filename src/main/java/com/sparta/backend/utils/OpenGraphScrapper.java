@@ -1,25 +1,28 @@
 package com.sparta.backend.utils;
 
 import com.sparta.backend.lib.opengraph.OpenGraph;
-import com.sparta.backend.requestDto.OpenGraphRequestDto;
+import com.sparta.backend.requestDto.OGTagRequestDto;
 
 public class OpenGraphScrapper {
-    public OpenGraphRequestDto openGraphScrapper(String url) {
+    public OGTagRequestDto openGraphScrapper(String url) {
+
+        String titleOg = null;
+        String imgOg = null;
+        String contentOg = null;
 
         try {
             OpenGraph ogTag = new OpenGraph(url, true);
-            return OpenGraphRequestDto.builder()
-                    .titleOg(ogTag.getContent("title"))
-                    .imgOg(ogTag.getContent("image"))
-                    .contentOg(ogTag.getContent("description"))
-                    .build();
+            titleOg = ogTag.getContent("title") == null ? null : ogTag.getContent("title");
+            imgOg = ogTag.getContent("image") == null ? null : ogTag.getContent("image");
+            contentOg = ogTag.getContent("description") == null ? null : ogTag.getContent("description");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return OpenGraphRequestDto.builder()
-                .titleOg("제목을 찾을 수 없습니다.")
-                .imgOg("이미지를 찾을 수 없습니다.")
-                .contentOg("내용을 찾을 수 없습니다.")
+
+        return OGTagRequestDto.builder()
+                .titleOg(titleOg)
+                .imgOg(imgOg)
+                .contentOg(contentOg)
                 .build();
     }
 }

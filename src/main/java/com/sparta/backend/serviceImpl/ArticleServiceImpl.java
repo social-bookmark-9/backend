@@ -1,5 +1,6 @@
 package com.sparta.backend.serviceImpl;
 
+import com.sparta.backend.exception.InvalidValueException;
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Hashtag;
@@ -10,16 +11,14 @@ import com.sparta.backend.requestDto.*;
 import com.sparta.backend.responseDto.*;
 import com.sparta.backend.service.ArticleService;
 import com.sparta.backend.service.ReminderService;
-import com.sparta.backend.utils.OpenGraphScrapper;
+import com.sparta.backend.utils.JsoupParser;
 import com.sparta.backend.utils.RandomGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 
 @RequiredArgsConstructor
 @Transactional
@@ -33,7 +32,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleGetResponseDto getArticle(Long id, Member member) {
         Article article = articleRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 아티클이 없습니다."));
+                () -> new InvalidValueException("존재하지 않습니다.")); // 서버 로그 출력
 
         // Get Random Article
         RandomGenerator randomGenerator = new RandomGenerator();
@@ -80,8 +79,10 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleCreateResponseDto createArticle(ArticleCreateRequestDto requestDto, Member member) {
 
         // OGTag Scrapping
-        OpenGraphScrapper scrapper = new OpenGraphScrapper();
-        OpenGraphRequestDto openGraphRequestDto = scrapper.openGraphScrapper(requestDto.getUrl());
+//        OpenGraphScrapper scrapper = new OpenGraphScrapper();
+//        OpenGraphRequestDto openGraphRequestDto = scrapper.openGraphScrapper(requestDto.getUrl());
+        JsoupParser parser = new JsoupParser();
+        OGTagRequestDto ogTagRequestDto = parser.ogTagScraper(requestDto.getUrl());
 
         ArticleFolder articleFolder = articleFolderRepository.findArticleFolderByArticleFolderName(requestDto.getArticleFolderName());
 
@@ -93,9 +94,9 @@ public class ArticleServiceImpl implements ArticleService {
 
         Article article = Article.builder()
                 .url(requestDto.getUrl())
-                .titleOg(openGraphRequestDto.getTitleOg())
-                .imgOg(openGraphRequestDto.getImgOg())
-                .contentOg(openGraphRequestDto.getContentOg())
+                .titleOg(ogTagRequestDto.getTitleOg())
+                .imgOg(ogTagRequestDto.getImgOg())
+                .contentOg(ogTagRequestDto.getContentOg())
                 .readCount(requestDto.getReadCount())
                 .hashtag(hashtag)
                 .articleFolder(articleFolder)
@@ -108,7 +109,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         if (requestDto.getReminderDate() != 0) {
             ReminderRequestDto requestDto1 = ReminderRequestDto.builder()
-                    .titleOg(openGraphRequestDto.getTitleOg())
+                    .titleOg(ogTagRequestDto.getTitleOg())
                     .buttonDate(requestDto.getReminderDate())
                     .url(requestDto.getUrl())
                     .articleId(article.getId())
@@ -127,7 +128,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .hashtag2(article.getHashtag().getHashtag2())
                 .hashtag3(article.getHashtag().getHashtag3())
                 .isMe(true)
-                .isRead(true)
+                .isRead(false)
                 .isSaved(true)
                 .build();
     }
