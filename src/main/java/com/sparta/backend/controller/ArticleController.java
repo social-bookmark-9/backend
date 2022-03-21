@@ -28,7 +28,7 @@ public class ArticleController {
     // ✅️ 특정 아티클 조회
     @ApiOperation(value = "특정 아티클 조회", notes = "특정 아티클 조회 API")
     @GetMapping("/articles/{articleId}")
-    public ResponseEntity<RestResponseMessage<?>> getArticle(@Valid @PathVariable long articleId,
+    public ResponseEntity<RestResponseMessage<?>> getArticle(@Valid @PathVariable Long articleId,
                                                                    @AuthenticationPrincipal Member member) {
         ArticleGetResponseDto responseDto = articleService.getArticle(articleId, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 조회 성공", responseDto), HttpStatus.OK);
@@ -47,7 +47,7 @@ public class ArticleController {
     @ApiOperation(value = "아티클 수정", notes = "아티클 수정 API")
     @PatchMapping("/articles/{id}")
     public ResponseEntity<RestResponseMessage<?>> updateArticles(@Valid @RequestBody ArticleUpdateRequestDto requestDto,
-                                                         @PathVariable long id,
+                                                         @PathVariable Long id,
                                                          @AuthenticationPrincipal Member member) {
         articleService.updateArticle(requestDto, id, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 수정 성공", ""), HttpStatus.OK);
@@ -57,7 +57,7 @@ public class ArticleController {
     @ApiOperation(value = "리뷰(메모) 수정", notes = "리뷰(메모) 수정")
     @PatchMapping("/articles/{id}/review")
     public ResponseEntity<RestResponseMessage<?>> updateArticleReview(@Valid @RequestBody ArticleReviewRequestDto requestDto,
-                                                                      @PathVariable long id,
+                                                                      @PathVariable Long id,
                                                                       @AuthenticationPrincipal Member member) {
         ArticleReviewResponseDto responseDto = articleService.updateArticleReview(requestDto, id, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 리뷰 수정 성공", responseDto), HttpStatus.OK);
@@ -66,7 +66,7 @@ public class ArticleController {
     // 리뷰 가리기
     @ApiOperation(value = "리뷰(메모) 보이기 / 숨기기", notes = "리뷰(메모) 보이기 / 숨기기")
     @PatchMapping("/articles/{id}/review/hide")
-    public ResponseEntity<RestResponseMessage<?>> updateArticleReviewHide(@PathVariable long id,
+    public ResponseEntity<RestResponseMessage<?>> updateArticleReviewHide(@PathVariable Long id,
                                                                           @AuthenticationPrincipal Member member) {
         ArticleReviewHideResponseDto responseDto = articleService.updateArticleReviewHide(id);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "리뷰 가리기 성공", responseDto), HttpStatus.OK);
