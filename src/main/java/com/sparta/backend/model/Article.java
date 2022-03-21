@@ -23,13 +23,13 @@ public class Article extends Timestamped {
     @Column(name = "url", nullable = false)
     private String url;
 
-    @Column(name = "title_og", nullable = false)
+    @Column(name = "title_og")
     private String titleOg;
 
-    @Column(name = "img_og", nullable = false)
+    @Column(name = "img_og")
     private String imgOg;
 
-    @Column(name = "content_og", nullable = false)
+    @Column(name = "content_og")
     private String contentOg;
 
     @Column(name = "review")

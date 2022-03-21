@@ -44,8 +44,12 @@ dependencies {
     // aws S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE'
 
+    // 이제 안씀
     // https://mvnrepository.com/artifact/net.sourceforge.htmlcleaner/htmlcleaner
     implementation group: 'net.sourceforge.htmlcleaner', name: 'htmlcleaner', version: '2.10'
+
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
 }
 
 tasks.named('test') {

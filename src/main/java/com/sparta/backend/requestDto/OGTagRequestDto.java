@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class OpenGraphRequestDto {
+public class OGTagRequestDto {
     private String titleOg;
     private String imgOg;
     private String contentOg;
