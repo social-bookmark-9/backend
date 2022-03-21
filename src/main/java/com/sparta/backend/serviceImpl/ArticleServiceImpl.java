@@ -39,7 +39,7 @@ public class ArticleServiceImpl implements ArticleService {
         String mainHashtag = article.getHashtag().getHashtag1();
         List<Article> articles = articleRepository.findArticlesByHashtag_Hashtag1(mainHashtag);
         List<Article> randomArticles;
-        if (articles.size() > 8) { randomArticles = randomGenerator.getRandomArticles(articles); }
+        if (articles.size() > 8) { randomArticles = randomGenerator.getRandomArticles(articles, 9); }
         else { randomArticles = articles; }
 
 

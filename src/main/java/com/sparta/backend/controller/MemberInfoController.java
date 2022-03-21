@@ -1,6 +1,8 @@
 package com.sparta.backend.controller;
 
 import com.sparta.backend.amazons3.AmazonS3Uploader;
+import com.sparta.backend.exception.BusinessException;
+import com.sparta.backend.exception.ErrorCode;
 import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
@@ -58,7 +60,7 @@ public class MemberInfoController {
     public ResponseEntity<RestResponseMessage> editProfileImage(@RequestParam("image") MultipartFile multipartFile, @AuthenticationPrincipal Member member) throws IOException {
 
         Member editMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버는 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         // 만약 S3에 올려져 있는 파일이라면 삭제 후 수정.
         if(editMember.getProfileImage().contains("bubbled-profile.s3.ap-northeast-2.amazonaws.com/bubbled-profile-image/")) {
@@ -76,7 +78,7 @@ public class MemberInfoController {
     public ResponseEntity<RestResponseMessage> editProfileSnsUrl(@RequestBody MemberInfoEditRequestDto memberInfoEditRequestDto, @AuthenticationPrincipal Member member) {
 
         Member editMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버는 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         memberInfoService.editProfileSnsUrl(memberInfoEditRequestDto, editMember);
 
@@ -88,7 +90,7 @@ public class MemberInfoController {
     public ResponseEntity<RestResponseMessage> editStatusMessage(@RequestBody MemberInfoEditRequestDto memberInfoEditRequestDto, @AuthenticationPrincipal Member member) {
 
         Member editMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버는 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         memberInfoService.editProfileStatusMessage(memberInfoEditRequestDto, editMember);
 
@@ -100,7 +102,7 @@ public class MemberInfoController {
     public ResponseEntity<RestResponseMessage> editMemberName(@RequestBody MemberInfoEditRequestDto memberInfoEditRequestDto, @AuthenticationPrincipal Member member) {
 
         Member editMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버는 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         memberInfoService.editProfileMemberName(memberInfoEditRequestDto.getNickname(), editMember);
 
@@ -112,7 +114,7 @@ public class MemberInfoController {
     public ResponseEntity<RestResponseMessage> editHashtag(@RequestBody MemberInfoEditRequestDto memberInfoEditRequestDto, @AuthenticationPrincipal Member member) {
 
         Hashtag editHashtag = hashtagRepository.findById(member.getHashtag().getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 해쉬태그가 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         memberInfoService.editHashtag(memberInfoEditRequestDto, editHashtag);
 
