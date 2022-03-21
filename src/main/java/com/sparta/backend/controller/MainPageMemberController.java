@@ -23,9 +23,7 @@ public class MainPageMemberController {
     public ResponseEntity<RestResponseMessage> getRecommendedMembers() {
 
         List<Member> memberList = memberRepository.findAll();
-
         List<RecommendedMemberResponseDto> recommendedMemberResponseDtos = new ArrayList<>();
-
         for(Member member:memberList) {
             RecommendedMemberResponseDto recommendedMemberResponseDto = RecommendedMemberResponseDto.builder()
                     .memberId(member.getId())
