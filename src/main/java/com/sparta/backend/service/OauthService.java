@@ -3,6 +3,8 @@ package com.sparta.backend.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.backend.exception.BusinessException;
+import com.sparta.backend.exception.ErrorCode;
 import com.sparta.backend.jwt.JwtTokenProvider;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Hashtag;
@@ -156,7 +158,7 @@ public class OauthService {
     public TokenDto reissue(TokenRequestDto tokenRequestDto) {
         // 리프레시 토큰도 만료되었을 경우 에러
         if (!jwtTokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-            throw new IllegalArgumentException("리프레시 토큰이 만료되었습니다.");
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
 
         // AccessToken 에서 userPk 가져오기
@@ -165,13 +167,13 @@ public class OauthService {
 
         // userPk로 유저 검색 혹은 토큰 DB에 리프레시 토큰이 없을시 에러
         Member member = memberRepository.findMemberByKakaoId(authentication.getName())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저는 존재하지 않습니다"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
         RefreshToken refreshToken = refreshTokenRepository.findByKey(member.getKakaoId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 토큰은 존재하지 않습니다"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         // 리프레시 토큰 불일치시 에러
         if (!refreshToken.getToken().equals(tokenRequestDto.getRefreshToken()))
-            throw new IllegalArgumentException("리프레시 토큰이 일치하지 않습니다.");
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOTMATCH);
 
         // AccessToken ,Refresh Token 재발급 및 리프레시 토큰 저장
         TokenDto newToken = jwtTokenProvider.createAccessRefreshToken(member.getUsername(), member.getMemberRoles());
