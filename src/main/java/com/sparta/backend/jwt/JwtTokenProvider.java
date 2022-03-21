@@ -28,7 +28,6 @@ public class JwtTokenProvider {
     private String secretKey;
 
     // 테스트용 엑세스 토큰 발급 시간
-
 //    private long accessTokenValidTime = 1 * 60 * 1000L;
     private long accessTokenValidTime = 1400 * 60 * 1000L;
 

@@ -78,11 +78,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleCreateResponseDto createArticle(ArticleCreateRequestDto requestDto, Member member) {
 
-        // OGTag Scrapping
-//        OpenGraphScrapper scrapper = new OpenGraphScrapper();
-//        OpenGraphRequestDto openGraphRequestDto = scrapper.openGraphScrapper(requestDto.getUrl());
         JsoupParser parser = new JsoupParser();
         OGTagRequestDto ogTagRequestDto = parser.ogTagScraper(requestDto.getUrl());
+
+        // TODO: 셀레니움 테스트
+//        String ogTagSeleniumTest = parser.seleniumParser(requestDto.getUrl());
 
         ArticleFolder articleFolder = articleFolderRepository.findArticleFolderByArticleFolderName(requestDto.getArticleFolderName());
 
