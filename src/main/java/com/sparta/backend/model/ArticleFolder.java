@@ -28,6 +28,9 @@ public class ArticleFolder extends Timestamped {
     @Column(name = "folder_hide", nullable = false)
     private boolean folderHide;
 
+    @Column(name = "like_count", nullable = false)
+    private int likeCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
@@ -37,13 +40,22 @@ public class ArticleFolder extends Timestamped {
 
     // 테스트용
     @Builder
-    public ArticleFolder(boolean folderHide, boolean deleteable, String articleFolderName, Member member, Article article) {
+    public ArticleFolder(boolean folderHide, boolean deleteable, String articleFolderName, int likeCount, Member member, Article article) {
         this.folderHide = folderHide;
         this.deleteable = deleteable;
         this.articleFolderName = articleFolderName;
+        this.likeCount = likeCount;
         this.member = member;
         this.articles.add(article);
         member.getArticleFolders().add(this);
+    }
+
+    public void increaseLikeCount(int currentLikeCount) {
+        this.likeCount = ++currentLikeCount;
+    }
+
+    public void decreaseLikeCount(int currentLikeCount) {
+        this.likeCount = --currentLikeCount;
     }
 
     // 아티클 폴더에서 해당 아티클 삭제 (아티클 폴더를 수정하기 위함)

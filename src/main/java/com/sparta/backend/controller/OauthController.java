@@ -39,7 +39,7 @@ public class OauthController {
             Member member = memberRepository.findMemberByKakaoId(kakaoMemberInfoRequestDto.getKakaoId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다."));
 
-            TokenDto token = jwtTokenProvider.createAccessRefreshToken(member.getUsername(), member.getMemberRoles());
+            TokenDto token = jwtTokenProvider.createAccessRefreshToken(((Member) member).getUsername(), member.getMemberRoles());
 
             // Refresh Token이 이미 존재할 경우 업데이트, 없으면 생성.
             if (refreshTokenRepository.findByKey(member.getKakaoId()).isPresent()) {

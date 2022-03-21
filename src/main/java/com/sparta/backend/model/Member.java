@@ -1,6 +1,12 @@
 package com.sparta.backend.model;
 
-import lombok.*;
+import com.sparta.backend.model.ArticleFolder;
+import com.sparta.backend.model.Hashtag;
+import com.sparta.backend.model.Timestamped;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -114,7 +120,7 @@ public class Member extends Timestamped implements UserDetails {
     public void editMemberName(String memberName) {
         this.memberName = memberName;
     }
-    
+
     // 프로필 사진 수정하기
     public void editProfileImageUrl(String profileImageUrl) {
         this.profileImage = profileImageUrl;

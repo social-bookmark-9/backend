@@ -22,21 +22,16 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
 @Rollback(value = true)
 class ArticleFolderServiceTest {
 
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    ArticleRepository articleRepository;
-    @Autowired
-    ArticleFolderRepository articleFolderRepository;
-    @Autowired
-    ArticleFolderService articleFolderService;
+    @Autowired MemberRepository memberRepository;
+    @Autowired ArticleRepository articleRepository;
+    @Autowired ArticleFolderRepository articleFolderRepository;
+    @Autowired ArticleFolderService articleFolderService;
 
     @PersistenceContext
     private EntityManager em;
@@ -144,7 +139,6 @@ class ArticleFolderServiceTest {
                 .hashtag(articleHashtag1)
                 .articleFolder(findFolder.get())
                 .build();
-
 
         articleHashtag1.setArticle(article1);
 
@@ -382,29 +376,6 @@ class ArticleFolderServiceTest {
         // 폴더 삭제 시 좋아요도 삭제
         Optional<ArticleFolder> findFolder2 = articleFolderRepository.findAll().stream().findFirst();
         articleFolderService.deleteArticleFolder(findFolder2.get().getId());
-    }
-
-    @Test
-    @DisplayName("임시 테스트")
-    void primitive() {
-        Hashtag memberHashtag = Hashtag.builder()
-                .hashtag1("IT")
-                .hashtag2("sport")
-                .hashtag3("movie")
-                .build();
-
-        Member testMember = Member.builder()
-                .kakaoId("test")
-                .memberName("test")
-                .email("test@test.com")
-                .password("test")
-                .profileImage("https://image.com")
-                .hashtag(memberHashtag)
-                .memberRoles(Arrays.asList("USER", "ADMIN"))
-                .build();
-
-        memberHashtag.setMember(testMember);
-        memberRepository.save(testMember);
     }
 }
 
