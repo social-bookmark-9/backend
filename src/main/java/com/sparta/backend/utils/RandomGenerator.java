@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Random;
 
 public class RandomGenerator {
-    public List<Article> getRandomArticles(List<Article> articles) {
+    public List<Article> getRandomArticles(List<Article> articles, int cnt) {
         HashSet<Article> relatedArticles = new HashSet<>();
         Random random = new Random();
         int bound = articles.size();
-        while (relatedArticles.size() < 9) {
+        while (relatedArticles.size() < cnt) {
             int randomNum = random.nextInt(bound);
             relatedArticles.add(articles.get(randomNum));
         }
