@@ -52,6 +52,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
                 .articleFolderName(articleFolderRequestDto.getArticleFolderName())
                 .deleteable(true)
                 .folderHide(articleFolderRequestDto.isFolderHide())
+                .likeCount(0)
                 .member(member)
                 .build();
 
@@ -176,6 +177,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         Optional<Favorite> isFavoriteExist = favoriteRepository.findByMemberAndArticleFolder(member, articleFolder.get());
         if (isFavoriteExist.isPresent()) {
             favoriteRepository.delete(isFavoriteExist.get());
+            articleFolder.get().decreaseLikeCount(articleFolder.get().getLikeCount());
             likeAddOrRemoveResponseDto.setLikeStatus(false);
         } else {
             Favorite favorite = Favorite.builder()
@@ -183,6 +185,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
                     .member(member)
                     .build();
             favoriteRepository.save(favorite);
+            articleFolder.get().increaseLikeCount(articleFolder.get().getLikeCount());
             likeAddOrRemoveResponseDto.setLikeStatus(true);
         }
 
