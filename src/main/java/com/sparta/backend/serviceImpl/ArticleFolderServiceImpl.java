@@ -119,20 +119,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         for (Article article : articles) {
             boolean isRead = article.getReadCount() > 0;
             boolean isSaved = myArticlesUrl.contains(article.getUrl());
-            ArticlesInFolderResponseDto articlesInFolderResponseDto = ArticlesInFolderResponseDto.builder()
-                    .articleId(article.getId())
-                    .url(article.getUrl())
-                    .titleOg(article.getTitleOg())
-                    .imgOg(article.getTitleOg())
-                    .contentOg(article.getContentOg())
-                    .hashtag1(article.getHashtag().getHashtag1())
-                    .hashtag2(article.getHashtag().getHashtag2())
-                    .hashtag3(article.getHashtag().getHashtag3())
-                    .isMe(isMe)
-                    .isRead(isRead)
-                    .isSaved(isSaved)
-                    .build();
-
+            ArticlesInFolderResponseDto articlesInFolderResponseDto = ArticlesInFolderResponseDto.of(article, isMe, isRead, isSaved);
             articlesInFolderResponseDtoList.add(articlesInFolderResponseDto);
         }
 

@@ -13,15 +13,15 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MyPageResponseDto {
 
-    private MemberInfoDto memberInfoDto;
-    private List<ArticleFolderListDto> articleFolderListDto = new ArrayList<>();
+    private MemberInfoResponseDto memberInfoResponseDto;
+    private List<ArticleFolderListResponseDto> articleFolderListResponseDto = new ArrayList<>();
 
-    private MyPageResponseDto(MemberInfoDto memberInfoDto, List<ArticleFolderListDto> articleFolderListDto) {
-        this.memberInfoDto = memberInfoDto;
-        this.articleFolderListDto.addAll(articleFolderListDto);
+    private MyPageResponseDto(MemberInfoResponseDto memberInfoResponseDto, List<ArticleFolderListResponseDto> articleFolderListResponseDto) {
+        this.memberInfoResponseDto = memberInfoResponseDto;
+        this.articleFolderListResponseDto.addAll(articleFolderListResponseDto);
     }
 
-    public static MyPageResponseDto of(MemberInfoDto memberInfoDto, List<ArticleFolderListDto> articleFolderListDto) {
-        return new MyPageResponseDto(memberInfoDto, articleFolderListDto);
+    public static MyPageResponseDto of(MemberInfoResponseDto memberInfoResponseDto, List<ArticleFolderListResponseDto> articleFolderListResponseDto) {
+        return new MyPageResponseDto(memberInfoResponseDto, articleFolderListResponseDto);
     }
 }

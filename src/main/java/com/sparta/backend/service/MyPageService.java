@@ -1,18 +1,18 @@
 package com.sparta.backend.service;
 
 import com.sparta.backend.model.Member;
-import com.sparta.backend.responseDto.ArticleFolderListDto;
-import com.sparta.backend.responseDto.MemberInfoDto;
+import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
+import com.sparta.backend.responseDto.MemberInfoResponseDto;
 
 import java.util.List;
 
 public interface MyPageService {
 
-    MemberInfoDto getMyMemberInfo(Member member);
+    MemberInfoResponseDto getMyMemberInfo(Member member);
 
-    MemberInfoDto getOtherMemberInfo(long memberId);
+    MemberInfoResponseDto getOtherMemberInfo(long memberId);
 
-    List<ArticleFolderListDto> getMyArticleFolderList(Member member);
+    List<ArticleFolderListResponseDto> getMyArticleFolderList(Member member);
 
-    List<ArticleFolderListDto> getOtherArticleFolderList(long memberId);
+    List<ArticleFolderListResponseDto> getOtherArticleFolderList(long memberId);
 }

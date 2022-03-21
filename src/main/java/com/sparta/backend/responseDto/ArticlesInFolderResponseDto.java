@@ -1,5 +1,6 @@
 package com.sparta.backend.responseDto;
 
+import com.sparta.backend.model.Article;
 import com.sparta.backend.model.Hashtag;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,21 +26,21 @@ public class ArticlesInFolderResponseDto {
     private boolean isRead;
     private boolean isSaved;
 
-    @Builder
-    public ArticlesInFolderResponseDto(Long articleId, String url, String titleOg,
-                                       String imgOg, String contentOg, String hashtag1,
-                                       String hashtag2, String hashtag3,
-                                       Boolean isMe, Boolean isRead, Boolean isSaved) {
-        this.articleId = articleId;
-        this.url = url;
-        this.titleOg = titleOg;
-        this.imgOg = imgOg;
-        this.contentOg = contentOg;
-        this.hashtag1 = hashtag1;
-        this.hashtag2 = hashtag2;
-        this.hashtag3 = hashtag3;
+    private ArticlesInFolderResponseDto(Article article, boolean isMe, boolean isRead, boolean isSaved) {
+        this.articleId = article.getId();
+        this.url = article.getUrl();
+        this.titleOg = article.getTitleOg();
+        this.imgOg = article.getImgOg();
+        this.contentOg = article.getContentOg();
+        this.hashtag1 = article.getHashtag().getHashtag1();
+        this.hashtag2 = article.getHashtag().getHashtag2();
+        this.hashtag3 = article.getHashtag().getHashtag2();
         this.isMe = isMe;
         this.isRead = isRead;
         this.isSaved = isSaved;
+    }
+
+    public static ArticlesInFolderResponseDto of(Article article, boolean isMe, boolean isRead, boolean isSaved) {
+        return new ArticlesInFolderResponseDto(article, isMe, isRead, isSaved);
     }
 }

@@ -4,11 +4,12 @@ import com.sparta.backend.exception.EntityNotFoundException;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.MemberRepository;
-import com.sparta.backend.responseDto.ArticleFolderListDto;
-import com.sparta.backend.responseDto.MemberInfoDto;
+import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
+import com.sparta.backend.responseDto.MemberInfoResponseDto;
 import com.sparta.backend.service.MyPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MyPageServiceImpl implements MyPageService {
 
@@ -27,8 +29,8 @@ public class MyPageServiceImpl implements MyPageService {
      * @return MemberInfoDto
      */
     @Override
-    public MemberInfoDto getMyMemberInfo(Member member) {
-        return MemberInfoDto.of(member);
+    public MemberInfoResponseDto getMyMemberInfo(Member member) {
+        return MemberInfoResponseDto.of(member);
     }
 
     /**
@@ -37,11 +39,11 @@ public class MyPageServiceImpl implements MyPageService {
      * @return MemberInfoDto
      */
     @Override
-    public MemberInfoDto getOtherMemberInfo(long memberId) {
+    public MemberInfoResponseDto getOtherMemberInfo(long memberId) {
         Optional<Member> member = memberRepository.findById(memberId);
             member.orElseThrow(() -> new EntityNotFoundException("해당 유저 없음"));
 
-        return MemberInfoDto.of(member.get());
+        return MemberInfoResponseDto.of(member.get());
     }
 
     /**
@@ -50,8 +52,9 @@ public class MyPageServiceImpl implements MyPageService {
      * @return List<ArticleFolderListDto>
      */
     @Override
-    public List<ArticleFolderListDto> getMyArticleFolderList(Member member) {
-        List<ArticleFolder> myArticleFolders = member.getArticleFolders();
+    public List<ArticleFolderListResponseDto> getMyArticleFolderList(Member member) {
+        Optional<Member> findMember = memberRepository.findById(member.getId());
+        List<ArticleFolder> myArticleFolders = findMember.get().getArticleFolders();
 
         return getArticleFolderListDtoList(myArticleFolders);
     }
@@ -62,7 +65,7 @@ public class MyPageServiceImpl implements MyPageService {
      * @return List<ArticleFolderListDto>
      */
     @Override
-    public List<ArticleFolderListDto> getOtherArticleFolderList(long memberId) {
+    public List<ArticleFolderListResponseDto> getOtherArticleFolderList(long memberId) {
         Optional<Member> member = memberRepository.findById(memberId);
             member.orElseThrow(() -> new EntityNotFoundException("해당 유저 없음"));
 
@@ -71,18 +74,19 @@ public class MyPageServiceImpl implements MyPageService {
         return getArticleFolderListDtoList(otherArticleFolders);
     }
 
-    private List<ArticleFolderListDto> getArticleFolderListDtoList(List<ArticleFolder> articleFolders) {
-        List<ArticleFolderListDto> articleFolderListDtoList = new ArrayList<>();
+    private List<ArticleFolderListResponseDto> getArticleFolderListDtoList(List<ArticleFolder> articleFolders) {
+        List<ArticleFolderListResponseDto> articleFolderListDtoListResponse = new ArrayList<>();
 
         for (ArticleFolder articleFolder : articleFolders) {
+            ArticleFolderListResponseDto articleFolderListResponseDto;
             if (articleFolder.getArticles().isEmpty()) {
-                ArticleFolderListDto articleFolderListDto = ArticleFolderListDto.of(articleFolder);
-                articleFolderListDtoList.add(articleFolderListDto);
+                articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder);
+            } else {
+                articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder, articleFolder.getArticles());
             }
-            ArticleFolderListDto articleFolderListDto = ArticleFolderListDto.of(articleFolder, articleFolder.getArticles());
-            articleFolderListDtoList.add(articleFolderListDto);
+            articleFolderListDtoListResponse.add(articleFolderListResponseDto);
         }
 
-        return articleFolderListDtoList;
+        return articleFolderListDtoListResponse;
     }
 }

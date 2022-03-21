@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberInfoDto {
+public class MemberInfoResponseDto {
 
     private long memberId;
     private String memberName;
@@ -20,7 +20,7 @@ public class MemberInfoDto {
     private String blogUrl;
     private String websiteUrl;
 
-    private MemberInfoDto(Member member) {
+    private MemberInfoResponseDto(Member member) {
         this.memberId = member.getId();
         this.memberName = member.getMemberName();
         this.email = member.getEmail();
@@ -33,7 +33,7 @@ public class MemberInfoDto {
         this.websiteUrl = member.getWebsiteUrl();
     }
 
-    public static MemberInfoDto of(Member member) {
-        return new MemberInfoDto(member);
+    public static MemberInfoResponseDto of(Member member) {
+        return new MemberInfoResponseDto(member);
     }
 }
