@@ -25,7 +25,7 @@ public class Reminder{
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "title_og", nullable = false)
+    @Column(name = "title_og")
     private String titleOg;
 
     @Column(name = "member_name", nullable = false)
