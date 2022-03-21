@@ -3,6 +3,7 @@ package com.sparta.backend.jwt;
 import com.sparta.backend.oauthDto.TokenDto;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 // JWT를 생성하고 검증하는 컴포넌트!
@@ -26,10 +28,10 @@ public class JwtTokenProvider {
     private String secretKey;
 
     // 테스트용 엑세스 토큰 발급 시간
-    private long accessTokenValidTime = 30 * 60 * 1000L;
+    private long accessTokenValidTime = 1 * 60 * 1000L;
 
     // 테스트용 리프레시 토큰 발급 시간
-    private long refreshTokenValidTime = 30 * 60 * 1000L;
+    private long refreshTokenValidTime = 3 * 60 * 1000L;
 
     private final UserDetailsService userDetailsService;
 
@@ -93,7 +95,7 @@ public class JwtTokenProvider {
         }
     }
 
-    // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
+    // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값"
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("X-AUTH-TOKEN");
     }
@@ -104,10 +106,31 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
             System.out.println("토큰 검증 성공");
             return !claims.getBody().getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            System.out.println(e.getClass());
+            log.info("만료된 JWT 토큰입니다.");
+            throw new JwtException("Expired");
+        } catch (MalformedJwtException e) {
+            System.out.println(e.getClass());
+            log.info("잘못된 JWT 토큰입니다.");
+            throw new JwtException("잘못된 JWT 서명입니다.");
+        } catch (UnsupportedJwtException e) {
+            System.out.println(e.getClass());
+            log.info("지원하지 않는 JWT 토큰입니다.");
+            throw new JwtException("지원하지 않는 JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getClass());
+            log.info("잘못된 JWT 토큰입니다.");
+            throw new JwtException("JWT 토큰이 잘못되었습니다.");
+        } catch (SignatureException e) {
+            System.out.println(e.getClass());
+            log.info("JWT 서명이 잘못되었습니다.");
+            throw new JwtException("잘못된 JWT 서명입니다.");
         } catch (Exception e) {
+            // 토큰이 들어오지 않았을 경우 AccessDeniedHandler를 통해 403 에러를 내보낸다.
             System.out.println("토큰 검증 실패");
             System.out.println(e.getClass());
-            return false;
         }
+        return false;
     }
 }
