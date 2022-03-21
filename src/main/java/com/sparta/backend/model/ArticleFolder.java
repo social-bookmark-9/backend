@@ -71,5 +71,4 @@ public class ArticleFolder extends Timestamped {
             }
         }
     }
-
 }
