@@ -1,6 +1,8 @@
 plugins {
     id 'org.springframework.boot' version '2.4.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    //querydsl 플러그인
+//    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
     id 'java'
 }
 
@@ -24,6 +26,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+//    //querydsl 라이브러리
+//    implementation 'com.querydsl:querydsl-jpa'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
@@ -55,3 +59,20 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+////querydsl 추가(빌드와 관련된 프로세싱)
+//def querydslDir = '$buildDir/generated/querydsl'
+//
+//querydsl {
+//    jpa =true
+//    querydslSourcesDir = querydslDir
+//}
+//sourceSets {
+//    main.java.srcDir querydslDir
+//}
+//configurations {
+//    querydsl.extendsFrom compileClasspath
+//}
+//compileQuerydsl {
+//    options.annotationProcessorPath = configurations.querydsl
+//}
