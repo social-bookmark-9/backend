@@ -30,6 +30,8 @@ public class QReminder extends EntityPathBase<Reminder> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath imgOg = createString("imgOg");
+
     public final StringPath memberName = createString("memberName");
 
     public final DatePath<java.time.LocalDate> sendDate = createDate("sendDate", java.time.LocalDate.class);
