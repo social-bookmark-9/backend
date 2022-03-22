@@ -130,6 +130,7 @@ class MyPageServiceImplTest {
                 .readCount(1)
                 .hashtag(articleHashtag1)
                 .articleFolder(findFolder.get())
+                .member(findMember.get())
                 .build();
 
         articleHashtag1.setArticle(article1);
@@ -144,6 +145,7 @@ class MyPageServiceImplTest {
                 .readCount(0)
                 .hashtag(articleHashtag2)
                 .articleFolder(findFolder.get())
+                .member(findMember.get())
                 .build();
 
         articleHashtag2.setArticle(article2);
@@ -158,6 +160,7 @@ class MyPageServiceImplTest {
                 .readCount(3)
                 .hashtag(articleHashtag3)
                 .articleFolder(findFolder.get())
+                .member(findMember.get())
                 .build();
 
         articleHashtag3.setArticle(article3);
@@ -172,7 +175,7 @@ class MyPageServiceImplTest {
                 .readCount(4)
                 .hashtag(articleHashtag4)
                 .articleFolder(findFolder.get())
-
+                .member(findMember.get())
                 .build();
 
         articleHashtag4.setArticle(article4);
@@ -187,6 +190,7 @@ class MyPageServiceImplTest {
                 .readCount(1)
                 .hashtag(articleHashtag5)
                 .articleFolder(findFolder.get())
+                .member(findMember.get())
                 .build();
 
         articleHashtag5.setArticle(article5);
@@ -201,6 +205,7 @@ class MyPageServiceImplTest {
                 .readCount(0)
                 .hashtag(articleHashtag6)
                 .articleFolder(findFolder.get())
+                .member(findMember.get())
                 .build();
 
         articleHashtag6.setArticle(article6);
