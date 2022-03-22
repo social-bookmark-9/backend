@@ -16,4 +16,6 @@ public interface ArticleFolderRepository extends JpaRepository<ArticleFolder, Lo
     @Modifying(clearAutomatically = true)
     @Query("UPDATE ArticleFolder articleFolder SET articleFolder.articleFolderName = :articleFolderName WHERE articleFolder.id = :id")
     void updateArticleFolderName(@Param("articleFolderName") String articleFolderName, @Param("id") long id);
+
+
 }

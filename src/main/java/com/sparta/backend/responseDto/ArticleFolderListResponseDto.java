@@ -31,6 +31,11 @@ public class ArticleFolderListResponseDto {
         this.likeCount = articleFolder.getLikeCount();
         this.isHide = articleFolder.isFolderHide();
         this.isdDeleteable = articleFolder.isDeleteable();
+        this.completeRate = 0;
+        this.hashTag1 = null;
+        this.hashTag2 = null;
+        this.hashTag3 = null;
+        this.articleListDtoList = new ArrayList<>();
     }
 
     private ArticleFolderListResponseDto(ArticleFolder articleFolder, List<ArticleListDto> articleListDtoList, DecideFolderInfo decideFolderInfo) {
