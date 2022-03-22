@@ -37,6 +37,8 @@ public class QArticle extends EntityPathBase<Article> {
 
     public final StringPath imgOg = createString("imgOg");
 
+    public final QMember member;
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
@@ -72,6 +74,7 @@ public class QArticle extends EntityPathBase<Article> {
         super(type, metadata, inits);
         this.articleFolder = inits.isInitialized("articleFolder") ? new QArticleFolder(forProperty("articleFolder"), inits.get("articleFolder")) : null;
         this.hashtag = inits.isInitialized("hashtag") ? new QHashtag(forProperty("hashtag"), inits.get("hashtag")) : null;
+        this.member = inits.isInitialized("member") ? new QMember(forProperty("member"), inits.get("member")) : null;
         this.reminder = inits.isInitialized("reminder") ? new QReminder(forProperty("reminder"), inits.get("reminder")) : null;
     }
 

@@ -96,6 +96,7 @@ public class nplus1test {
                 .readCount(0)
                 .hashtag(articleHashtag1)
                 .articleFolder(findFolder.get())
+                .member(findMember.get())
                 .build();
 
         articleHashtag1.setArticle(article1);
@@ -110,6 +111,7 @@ public class nplus1test {
                 .readCount(0)
                 .hashtag(articleHashtag2)
                 .articleFolder(findFolder.get())
+                .member(findMember.get())
                 .build();
 
         articleHashtag2.setArticle(article2);
