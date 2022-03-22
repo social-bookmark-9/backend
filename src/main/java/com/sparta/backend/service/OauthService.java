@@ -145,7 +145,7 @@ public class OauthService {
         ArticleFolder articleFolder = ArticleFolder.builder()
                 .articleFolderName("미분류 컬렉션")
                 .deleteable(false)
-                .folderHide(false)
+                .folderHide(true)
                 .member(kakaoMember)
                 .build();
 
