@@ -7,4 +7,5 @@ import lombok.Getter;
 @Builder
 public class ArticleReviewResponseDto {
     private final String review;
+//    private final Boolean reviewHide;
 }

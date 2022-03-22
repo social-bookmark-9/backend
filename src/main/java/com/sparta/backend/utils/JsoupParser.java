@@ -15,10 +15,10 @@ import java.io.IOException;
 
 public class JsoupParser {
 
-    public static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
-    public static final String WEB_DRIVER_PATH = "chromedriver";
-
     // TODO: 셀레니움 테스트
+//    public static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
+//    public static final String WEB_DRIVER_PATH = "chromedriver";
+//
 //    public String seleniumParser(String url) {
 //        try {
 //            System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
