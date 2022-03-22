@@ -480,6 +480,7 @@ class ArticleFolderServiceTest {
                 .readCount(0)
                 .hashtag(articleHashtag1)
                 .articleFolder(articleFolders.get(0))
+                .member(testMember1)
                 .build();
 
         articleHashtag1.setArticle(article1);
@@ -494,6 +495,7 @@ class ArticleFolderServiceTest {
                 .readCount(1)
                 .hashtag(articleHashtag2)
                 .articleFolder(articleFolders.get(0))
+                .member(testMember1)
                 .build();
 
         articleHashtag2.setArticle(article2);
@@ -508,6 +510,7 @@ class ArticleFolderServiceTest {
                 .readCount(0)
                 .hashtag(articleHashtag3)
                 .articleFolder(articleFolders.get(1))
+                .member(testMember1)
                 .build();
 
         articleHashtag3.setArticle(article3);
@@ -522,6 +525,7 @@ class ArticleFolderServiceTest {
                 .readCount(1)
                 .hashtag(articleHashtag4)
                 .articleFolder(articleFolders.get(1))
+                .member(testMember1)
                 .build();
 
         articleHashtag4.setArticle(article4);
