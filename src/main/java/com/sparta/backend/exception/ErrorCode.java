@@ -19,7 +19,10 @@ public enum ErrorCode {
 
     // Token
     REFRESH_TOKEN_EXPIRED(401, HttpStatus.UNAUTHORIZED, "401", "리프레시 토큰이 만료되었습니다."),
-    REFRESH_TOKEN_NOTMATCH(401, HttpStatus.UNAUTHORIZED, "401", "리프레시 토큰이 일치하지 않습니다.");
+    REFRESH_TOKEN_NOTMATCH(401, HttpStatus.UNAUTHORIZED, "401", "리프레시 토큰이 일치하지 않습니다."),
+
+    // Reminder
+    REMINDER_DUPLICATED(400, HttpStatus.BAD_REQUEST, "400", "이미 해당 아티클의 리마인더가 존재합니다.");
 
     private final int statusCode;
     private final HttpStatus httpStatus;
