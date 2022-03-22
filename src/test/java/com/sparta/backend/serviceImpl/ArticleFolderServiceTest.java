@@ -9,6 +9,7 @@ import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
+import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -28,10 +30,14 @@ import static org.assertj.core.api.Assertions.*;
 @Rollback(value = true)
 class ArticleFolderServiceTest {
 
-    @Autowired MemberRepository memberRepository;
-    @Autowired ArticleRepository articleRepository;
-    @Autowired ArticleFolderRepository articleFolderRepository;
-    @Autowired ArticleFolderService articleFolderService;
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    ArticleRepository articleRepository;
+    @Autowired
+    ArticleFolderRepository articleFolderRepository;
+    @Autowired
+    ArticleFolderService articleFolderService;
 
     @PersistenceContext
     private EntityManager em;
@@ -376,6 +382,160 @@ class ArticleFolderServiceTest {
         // 폴더 삭제 시 좋아요도 삭제
         Optional<ArticleFolder> findFolder2 = articleFolderRepository.findAll().stream().findFirst();
         articleFolderService.deleteArticleFolder(findFolder2.get().getId());
+    }
+
+    @Test
+    @DisplayName("폴더 안 아티클 조회")
+    void find_article_in_folder() {
+        Hashtag memberHashtag1 = Hashtag.builder()
+                .hashtag1("IT")
+                .hashtag2("sport")
+                .hashtag3("movie")
+                .build();
+
+        Hashtag memberHashtag2 = Hashtag.builder()
+                .hashtag1("SPRING")
+                .hashtag2("LOVE")
+                .hashtag3("JPA")
+                .build();
+
+        Member testMember1 = Member.builder()
+                .kakaoId("test")
+                .memberName("test")
+                .email("test@test.com")
+                .password("test")
+                .profileImage("https://image.com")
+                .hashtag(memberHashtag1)
+                .memberRoles(Arrays.asList("USER", "ADMIN"))
+                .build();
+
+        Member testMember2 = Member.builder()
+                .kakaoId("test2")
+                .memberName("test2")
+                .email("test2@test2.com")
+                .password("test2")
+                .profileImage("https://image2.com")
+                .hashtag(memberHashtag2)
+                .memberRoles(Arrays.asList("USER", "ADMIN"))
+                .build();
+
+        memberHashtag1.setMember(testMember1);
+        memberHashtag2.setMember(testMember2);
+        Member saveMember1 = memberRepository.save(testMember1);
+        Member saveMember2 = memberRepository.save(testMember2);
+
+        em.flush();
+
+        // 폴더 생성
+        ArticleFolderCreateRequestDto articleFolderCreateRequestDto1 =
+                new ArticleFolderCreateRequestDto("testFolder1", false);
+
+        ArticleFolderCreateRequestDto articleFolderCreateRequestDto2 =
+                new ArticleFolderCreateRequestDto("testFolder2", false);
+
+        articleFolderService.createArticleFolder(articleFolderCreateRequestDto1, saveMember1);
+        articleFolderService.createArticleFolder(articleFolderCreateRequestDto2, saveMember2);
+
+        em.flush();
+        em.clear();
+
+        // 폴더 안에 아티클 생성 후 등록
+        List<ArticleFolder> articleFolders = articleFolderRepository.findAll();
+
+        Hashtag articleHashtag1 = Hashtag.builder()
+                .hashtag1("IT")
+                .hashtag2("sport")
+                .hashtag3("movie")
+                .build();
+
+        Hashtag articleHashtag2 = Hashtag.builder()
+                .hashtag1("IT")
+                .hashtag2("cartoon")
+                .hashtag3("movie")
+                .build();
+
+        Hashtag articleHashtag3 = Hashtag.builder()
+                .hashtag1("SPRING")
+                .hashtag2("JPA")
+                .hashtag3("movie")
+                .build();
+
+        Hashtag articleHashtag4 = Hashtag.builder()
+                .hashtag1("STOCK")
+                .hashtag2("READ")
+                .hashtag3("movie")
+                .build();
+
+        Article article1 = Article.builder()
+                .url("https://testArticle1.com")
+                .titleOg("https://testTitleOg1.com")
+                .imgOg("https://testImgOg1.com")
+                .contentOg("https://testContentOg1.com")
+                .review("testReview1")
+                .reviewHide(false)
+                .readCount(0)
+                .hashtag(articleHashtag1)
+                .articleFolder(articleFolders.get(0))
+                .build();
+
+        articleHashtag1.setArticle(article1);
+
+        Article article2 = Article.builder()
+                .url("https://testArticle2.com")
+                .titleOg("https://testTitleOg2.com")
+                .imgOg("https://testImgOg2.com")
+                .contentOg("https://testContentOg2.com")
+                .review("testReview2")
+                .reviewHide(false)
+                .readCount(1)
+                .hashtag(articleHashtag2)
+                .articleFolder(articleFolders.get(0))
+                .build();
+
+        articleHashtag2.setArticle(article2);
+
+        Article article3 = Article.builder()
+                .url("https://testArticle3.com")
+                .titleOg("https://testTitleOg3.com")
+                .imgOg("https://testImgOg3.com")
+                .contentOg("https://testContentOg3.com")
+                .review("testReview3")
+                .reviewHide(false)
+                .readCount(0)
+                .hashtag(articleHashtag3)
+                .articleFolder(articleFolders.get(1))
+                .build();
+
+        articleHashtag3.setArticle(article3);
+
+        Article article4 = Article.builder()
+                .url("https://testArticle4.com")
+                .titleOg("https://testTitleOg4.com")
+                .imgOg("https://testImgOg4.com")
+                .contentOg("https://testContentOg4.com")
+                .review("testReview4")
+                .reviewHide(false)
+                .readCount(1)
+                .hashtag(articleHashtag4)
+                .articleFolder(articleFolders.get(1))
+                .build();
+
+        articleHashtag4.setArticle(article4);
+
+        articleRepository.save(article1);
+        articleRepository.save(article2);
+        articleRepository.save(article3);
+        articleRepository.save(article4);
+
+        em.flush();
+        em.clear();
+
+        System.out.println("=====================================================");
+        List<ArticleFolder> findFolders = articleFolderRepository.findAll();
+        List<Member> findMember = memberRepository.findAll();
+
+        List<ArticlesInFolderResponseDto> articlesInFolder = articleFolderService.findArticlesInFolder(findMember.get(0), findFolders.get(0).getId());
+        System.out.println("articlesInFolder = " + articlesInFolder);
     }
 }
 
