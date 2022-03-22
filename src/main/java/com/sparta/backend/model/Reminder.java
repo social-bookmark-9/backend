@@ -34,6 +34,9 @@ public class Reminder{
     @Column(name = "button_date", nullable = false)
     private int buttonDate;
 
+    @Column(name = "img_og")
+    private String imgOg;
+
     @Column(name = "url")
     private String url;
 
@@ -43,14 +46,15 @@ public class Reminder{
 
     @Builder
     public Reminder(LocalDate sendDate, String email, String titleOg,
-                    Article article, String memberName, String url, int buttonDate) {
+                    Article article, String memberName, String imgOg, int buttonDate, String url) {
         this.sendDate = sendDate;
         this.email = email;
         this.titleOg = titleOg;
         this.memberName = memberName;
         this.buttonDate = buttonDate;
-        this.url = url;
+        this.imgOg = imgOg;
         this.article = article;
+        this.url = url;
     }
     
     // 리마인더 수정하기
