@@ -78,13 +78,13 @@ public class MyPageServiceImpl implements MyPageService {
         List<ArticleFolderListResponseDto> articleFolderListDtoListResponse = new ArrayList<>();
 
         for (ArticleFolder articleFolder : articleFolders) {
-            ArticleFolderListResponseDto articleFolderListResponseDto;
             if (articleFolder.getArticles().isEmpty()) {
-                articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder);
+                ArticleFolderListResponseDto noArticlesInFolder = ArticleFolderListResponseDto.of(articleFolder);
+                articleFolderListDtoListResponse.add(noArticlesInFolder);
             } else {
-                articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder, articleFolder.getArticles());
+                ArticleFolderListResponseDto articlesInFolder = ArticleFolderListResponseDto.of(articleFolder, articleFolder.getArticles());
+                articleFolderListDtoListResponse.add(articlesInFolder);
             }
-            articleFolderListDtoListResponse.add(articleFolderListResponseDto);
         }
 
         return articleFolderListDtoListResponse;

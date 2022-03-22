@@ -530,12 +530,14 @@ class ArticleFolderServiceTest {
         em.flush();
         em.clear();
 
-        System.out.println("=====================================================");
+        System.out.println("==============================================================================================");
         List<ArticleFolder> findFolders = articleFolderRepository.findAll();
         List<Member> findMember = memberRepository.findAll();
 
         List<ArticlesInFolderResponseDto> articlesInFolder = articleFolderService.findArticlesInFolder(findMember.get(0), findFolders.get(0).getId());
-        System.out.println("articlesInFolder = " + articlesInFolder);
+        for (ArticlesInFolderResponseDto articlesInFolderResponseDto : articlesInFolder) {
+            System.out.println("articlesInFolderResponseDto = " + articlesInFolderResponseDto);
+        }
     }
 }
 
