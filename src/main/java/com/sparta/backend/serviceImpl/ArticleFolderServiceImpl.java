@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,12 +49,14 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      */
     @Override
     public void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member) {
+        Optional<Member> findMember = getMember(member.getId());
+
         ArticleFolder articleFolder = ArticleFolder.builder()
                 .articleFolderName(articleFolderRequestDto.getArticleFolderName())
                 .deleteable(true)
                 .folderHide(articleFolderRequestDto.isFolderHide())
                 .likeCount(0)
-                .member(member)
+                .member(findMember.get())
                 .build();
 
         articleFolderRepository.save(articleFolder);
@@ -98,29 +101,35 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         List<ArticlesInFolderResponseDto> articlesInFolderResponseDtoList = new ArrayList<>();
 
         // 타켓 아티클 폴더 찾기
-        Optional<ArticleFolder> articleFolder = getFolder(id);
-
+        Optional<ArticleFolder> findArticleFolder = getFolder(id);
         // 타켓 아티클 폴더 안 모든 아티클 articles에 저장
         List<Article> articles = new ArrayList<>();
-        articleFolder.map(ArticleFolder::getArticles).ifPresent(
-                articleList -> articleList.forEach(article -> articles.add(article))
+        findArticleFolder.map(ArticleFolder::getArticles).ifPresent(
+                articleList -> articles.addAll(articleList)
         );
 
         // member의 폴더 리스트에서 아티클 url로 같은 아티클을 가지고 있는지 판별하기 위해 아티클의 url만 리스트로 저장
+        Optional<Member> findMember = getMember(member.getId());
+
         List<String> myArticlesUrl = new ArrayList<>();
-        member.getArticleFolders()
+        findMember.get().getArticleFolders()
                 .stream()
                 .map(ArticleFolder::getArticles)
-                .forEach(myArticleList -> myArticleList.forEach(myArticle -> myArticlesUrl.add(myArticle.getUrl())));
+                .forEach(myArticleList -> myArticleList
+                            .forEach(myArticle -> myArticlesUrl.add(myArticle.getUrl())));
 
-        // isMe
-        boolean isMe = articleFolder.isPresent() && articleFolder.get().getMember().equals(member);
+        // isMe(내가 소유한 폴더인지 아닌지)
+        boolean isMe = findArticleFolder.isPresent() && findArticleFolder.get().getMember().equals(findMember.get());
 
-        for (Article article : articles) {
-            boolean isRead = article.getReadCount() > 0;
-            boolean isSaved = myArticlesUrl.contains(article.getUrl());
-            ArticlesInFolderResponseDto articlesInFolderResponseDto = ArticlesInFolderResponseDto.of(article, isMe, isRead, isSaved);
-            articlesInFolderResponseDtoList.add(articlesInFolderResponseDto);
+        if (!articles.isEmpty()) {
+            for (Article article : articles) {
+                boolean isRead = article.getReadCount() > 0;
+                boolean isSaved = myArticlesUrl.contains(article.getUrl());
+                ArticlesInFolderResponseDto articlesInFolderResponseDto = ArticlesInFolderResponseDto.of(article, isMe, isRead, isSaved);
+                articlesInFolderResponseDtoList.add(articlesInFolderResponseDto);
+            }
+        } else {
+            articlesInFolderResponseDtoList.add(null);
         }
 
         return articlesInFolderResponseDtoList;
@@ -180,6 +189,17 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
     }
 
     /**
+     * Member 조회
+     * @param id
+     */
+    private Optional<Member> getMember(long id) {
+        Optional<Member> member = memberRepository.findById(id);
+        if (member.isPresent()) {
+            return member;
+        } else throw new EntityNotFoundException("존재하지 않는 회원");
+    }
+
+    /**
      * 폴더 ID에 해당되는 폴더 조회 메소드
      * @param id
      * @return Optional<ArticleFolder>
@@ -188,7 +208,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         Optional<ArticleFolder> folder = articleFolderRepository.findById(id);
         if (folder.isPresent()) {
             return folder;
-        } else throw new EntityNotFoundException("존재하지 않는 회원");
+        } else throw new EntityNotFoundException("존재하지 않는 폴더");
 
     }
 

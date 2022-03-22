@@ -37,10 +37,12 @@ public class MyPageController {
             @AuthenticationPrincipal Member member,
             @PathVariable long memberId) {
 
-        MemberInfoResponseDto memberInfoResponseDto = member.getId() == memberId ?
+        boolean loginStatus = member != null;
+
+        MemberInfoResponseDto memberInfoResponseDto = loginStatus && member.getId() == memberId ?
                 myPageService.getMyMemberInfo(member) : myPageService.getOtherMemberInfo(memberId);
 
-        List<ArticleFolderListResponseDto> articleFolderListResponseDto = member.getId() == memberId ?
+        List<ArticleFolderListResponseDto> articleFolderListResponseDto = loginStatus && member.getId() == memberId ?
                 myPageService.getMyArticleFolderList(member) : myPageService.getOtherArticleFolderList(memberId);
 
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.of(memberInfoResponseDto, articleFolderListResponseDto);
