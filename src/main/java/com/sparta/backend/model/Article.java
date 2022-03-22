@@ -48,6 +48,10 @@ public class Article extends Timestamped {
     @JoinColumn(name = "article_folder_id", nullable = false)
     private ArticleFolder articleFolder;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.ALL)
     private Reminder reminder;
 
@@ -89,7 +93,7 @@ public class Article extends Timestamped {
     @Builder
     public Article(String url, String titleOg, String imgOg, String contentOg,
                    String review, Boolean reviewHide, int readCount,
-                   Hashtag hashtag, ArticleFolder articleFolder) {
+                   Hashtag hashtag, ArticleFolder articleFolder, Member member) {
         this.url = url;
         this.titleOg = titleOg;
         this.imgOg = imgOg;
@@ -99,5 +103,6 @@ public class Article extends Timestamped {
         this.readCount = readCount;
         this.hashtag = hashtag;
         this.articleFolder = articleFolder;
+        this.member = member;
     }
 }

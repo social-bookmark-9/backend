@@ -138,6 +138,7 @@ class ArticleFolderServiceTest {
                 .readCount(1)
                 .hashtag(articleHashtag1)
                 .articleFolder(findFolder.get())
+                .member(findMember.get())
                 .build();
 
         articleHashtag1.setArticle(article1);
@@ -152,6 +153,7 @@ class ArticleFolderServiceTest {
                 .readCount(0)
                 .hashtag(articleHashtag2)
                 .articleFolder(findFolder.get())
+                .member(findMember.get())
                 .build();
 
         articleHashtag2.setArticle(article2);
@@ -286,6 +288,7 @@ class ArticleFolderServiceTest {
                 .readCount(1)
                 .hashtag(articleHashtag1)
                 .articleFolder(articleFolder.get())
+                .member(findMember.get())
                 .build();
 
         articleHashtag1.setArticle(article1);
@@ -300,6 +303,7 @@ class ArticleFolderServiceTest {
                 .readCount(0)
                 .hashtag(articleHashtag2)
                 .articleFolder(articleFolder.get())
+                .member(findMember.get())
                 .build();
 
         articleHashtag2.setArticle(article2);

@@ -7,6 +7,7 @@ import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
+import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.*;
 import com.sparta.backend.responseDto.*;
 import com.sparta.backend.service.ArticleService;
@@ -25,6 +26,7 @@ import java.util.List;
 @Service
 public class ArticleServiceImpl implements ArticleService {
     private final ReminderService reminderService;
+    private final MemberRepository memberRepository;
     private final ArticleRepository articleRepository;
     private final ArticleFolderRepository articleFolderRepository;
 
@@ -84,7 +86,9 @@ public class ArticleServiceImpl implements ArticleService {
         // TODO: 셀레니움 테스트
 //        String ogTagSeleniumTest = parser.seleniumParser(requestDto.getUrl());
 
-        ArticleFolder articleFolder = articleFolderRepository.findArticleFolderByArticleFolderName(requestDto.getArticleFolderName());
+        Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
+                () -> new InvalidValueException("사용자가 존재하지 않습니다."));
+        ArticleFolder articleFolder = articleFolderRepository.findArticleFolderByArticleFolderNameAndMember(requestDto.getArticleFolderName(), currentMember);
 
         Hashtag hashtag = Hashtag.builder().
                 hashtag1(requestDto.getHashtag1())
@@ -100,6 +104,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .readCount(requestDto.getReadCount())
                 .hashtag(hashtag)
                 .articleFolder(articleFolder)
+                .member(currentMember)
                 .build();
 
         article.setArticleFolder(articleFolder);
@@ -133,28 +138,29 @@ public class ArticleServiceImpl implements ArticleService {
                 .build();
     }
 
-    // 아티클의 아티클 폴더 변경
+    // 아티클의 폴더 이동
     @Override
-    public void updateArticle(ArticleUpdateRequestDto requestDto, Long id, Member member) {
-        Article currentArticle = articleRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public void moveMyArticleToAnotherFolder(ArticleUpdateRequestDto requestDto, Long id, Member member) {
+        Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
+                () -> new IllegalArgumentException("찾을 수 없습니다."));
+        Article currentArticle = articleRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("찾을 수 없습니다."));
 
-        // 1. currentArticle 의 currentArticleFolder 를 찾기
         ArticleFolder currentArticleFolder = currentArticle.getArticleFolder();
         String enteredArticleFolderName = requestDto.getArticleFolder().getArticleFolderName();
-        // 2. currentArticleFolder 에서 currentArticle 을 제거
         currentArticleFolder.deleteArticleFromArticleFolder(currentArticle);
-        // 3. 입력받은 ArticleFolderName 으로 ArticleFolder 객체를 찾기
-        ArticleFolder toMoveArticleFolder = articleFolderRepository.findArticleFolderByArticleFolderName(enteredArticleFolderName);
-        // 4. 찾은 ArticleFolder 에 currentArticle 을 Add 하기
+        ArticleFolder toMoveArticleFolder = articleFolderRepository.findArticleFolderByArticleFolderNameAndMember(enteredArticleFolderName, currentMember);
         toMoveArticleFolder.getArticles().add(currentArticle);
         currentArticle.updateArticle(requestDto);
     }
 
-    // 리뷰 수정
+    // 리뷰(메모) 수정
     @Override
     public ArticleReviewResponseDto updateArticleReview(ArticleReviewRequestDto requestDto, Long id, Member member) {
+        System.out.println("리뷰수정");
         Article currentArticle = articleRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아티클이 존재하지 않습니다."));
+
         String modifiedReview = currentArticle.updateArticleReview(requestDto);
         return ArticleReviewResponseDto.builder().review(modifiedReview).build();
     }
@@ -166,5 +172,20 @@ public class ArticleServiceImpl implements ArticleService {
                 () -> new IllegalArgumentException("아티클이 존재하지 않습니다."));
         boolean reviewHide = currentArticle.getReviewHide();
         return ArticleReviewHideResponseDto.builder().reviewHide(reviewHide).build();
+    }
+
+    @Override
+    public ArticleReviewResponseDtos getReviews(Member member) {
+        // TODO: 1. member 의 아티클의 모든 리뷰, 리뷰하이드 조회
+        // TODO: 2. ArticleReviewResponseDto 생성 후
+        // TODO: 3. ArticleReviewResponseDtos 에 삽입 후 응답
+        Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
+                () -> new InvalidValueException("사용자가 존재하지 않습니다."));
+        List<Article> allArticlesByMember = articleRepository.findAllByMember(currentMember);
+        for (Article article : allArticlesByMember) {
+            System.out.println(article.getReview());
+            System.out.println(article.getReviewHide());
+        }
+        return null;
     }
 }
