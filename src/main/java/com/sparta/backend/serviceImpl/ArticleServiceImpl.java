@@ -111,7 +111,7 @@ public class ArticleServiceImpl implements ArticleService {
             ReminderRequestDto requestDto1 = ReminderRequestDto.builder()
                     .titleOg(ogTagRequestDto.getTitleOg())
                     .buttonDate(requestDto.getReminderDate())
-                    .url(requestDto.getUrl())
+                    .imgOg(ogTagRequestDto.getImgOg())
                     .articleId(article.getId())
                     .build();
             reminderService.createReminder(requestDto1, member);
