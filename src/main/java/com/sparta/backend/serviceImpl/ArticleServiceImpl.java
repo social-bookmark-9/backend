@@ -101,6 +101,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .titleOg(ogTagRequestDto.getTitleOg())
                 .imgOg(ogTagRequestDto.getImgOg())
                 .contentOg(ogTagRequestDto.getContentOg())
+                .reviewHide(false)
                 .readCount(requestDto.getReadCount())
                 .hashtag(hashtag)
                 .articleFolder(articleFolder)
@@ -170,22 +171,27 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleReviewHideResponseDto updateArticleReviewHide(Long id) {
         Article currentArticle = articleRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아티클이 존재하지 않습니다."));
-        boolean reviewHide = currentArticle.getReviewHide();
-        return ArticleReviewHideResponseDto.builder().reviewHide(reviewHide).build();
+        boolean updateHide = currentArticle.updateArticleReviewHide(currentArticle.getReviewHide());
+        return ArticleReviewHideResponseDto.builder().reviewHide(updateHide).build();
     }
 
+    // 모든 아티클 가져오기
     @Override
     public ArticleReviewResponseDtos getReviews(Member member) {
-        // TODO: 1. member 의 아티클의 모든 리뷰, 리뷰하이드 조회
-        // TODO: 2. ArticleReviewResponseDto 생성 후
-        // TODO: 3. ArticleReviewResponseDtos 에 삽입 후 응답
         Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
                 () -> new InvalidValueException("사용자가 존재하지 않습니다."));
         List<Article> allArticlesByMember = articleRepository.findAllByMember(currentMember);
+
+        List<ArticleReviewResponseDto> responseDtos = new ArrayList<>();
         for (Article article : allArticlesByMember) {
-            System.out.println(article.getReview());
-            System.out.println(article.getReviewHide());
+            ArticleReviewResponseDto responseDto = ArticleReviewResponseDto.builder()
+                    .review(article.getReview())
+                    .reviewHide(article.getReviewHide())
+                    .build();
+            responseDtos.add(responseDto);
         }
-        return null;
+        return ArticleReviewResponseDtos.builder()
+                .reviewList(responseDtos)
+                .build();
     }
 }
