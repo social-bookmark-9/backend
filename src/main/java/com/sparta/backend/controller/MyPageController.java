@@ -38,7 +38,7 @@ public class MyPageController {
             @PathVariable long memberId) {
 
         boolean loginStatus = member != null;
-
+        System.out.println(member);
         MemberInfoResponseDto memberInfoResponseDto = loginStatus && member.getId() == memberId ?
                 myPageService.getMyMemberInfo(member) : myPageService.getOtherMemberInfo(memberId);
 
