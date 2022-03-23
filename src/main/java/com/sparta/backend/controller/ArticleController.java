@@ -6,10 +6,7 @@ import com.sparta.backend.model.Member;
 import com.sparta.backend.requestDto.ArticleCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleReviewRequestDto;
 import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
-import com.sparta.backend.responseDto.ArticleCreateResponseDto;
-import com.sparta.backend.responseDto.ArticleGetResponseDto;
-import com.sparta.backend.responseDto.ArticleReviewHideResponseDto;
-import com.sparta.backend.responseDto.ArticleReviewResponseDto;
+import com.sparta.backend.responseDto.*;
 import com.sparta.backend.service.ArticleService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -51,20 +48,20 @@ public class ArticleController {
                                                                                @PathVariable Long id,
                                                                                @AuthenticationPrincipal Member member) {
         articleService.moveMyArticleToAnotherFolder(requestDto, id, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 수정 성공", ""), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 폴더 이동 성공", ""), HttpStatus.OK);
     }
 
-    // 리뷰(메모) 수정
+    // ✅ 리뷰(메모) 수정
     @ApiOperation(value = "리뷰(메모) 수정", notes = "리뷰(메모) 수정")
     @PatchMapping("/articles/{id}/review")
     public ResponseEntity<RestResponseMessage<?>> updateArticleReview(@Valid @RequestBody ArticleReviewRequestDto requestDto,
                                                                       @PathVariable Long id,
                                                                       @AuthenticationPrincipal Member member) {
         ArticleReviewResponseDto responseDto = articleService.updateArticleReview(requestDto, id, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 폴더 이동 성공", responseDto), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 리뷰 수정 성공", responseDto), HttpStatus.OK);
     }
 
-    // 리뷰 가리기
+    // ✅ 리뷰 가리기
     @ApiOperation(value = "리뷰(메모) 보이기 / 숨기기", notes = "리뷰(메모) 보이기 / 숨기기")
     @PatchMapping("/articles/{id}/review/hide")
     public ResponseEntity<RestResponseMessage<?>> updateArticleReviewHide(@PathVariable Long id,
@@ -73,16 +70,11 @@ public class ArticleController {
         return new ResponseEntity<>(new RestResponseMessage<>(true, "리뷰 가리기 성공", responseDto), HttpStatus.OK);
     }
 
-    // 리뷰만 가져오기
-//    @ApiOperation(value = "리뷰 가져오기", notes = "리뷰 가져오기 API")
-//    @GetMapping("/reviews")
-//    public ResponseEntity<RestResponseMessage<?>> getReviews(@AuthenticationPrincipal Member member) {
-//
-//    }
-
-    @ApiOperation(value = "리뷰 가져오기", notes = "리뷰 가져오기 API")
+    // ✅ 리뷰만 가져오기
+    @ApiOperation(value = "모든 리뷰 가져오기", notes = "모든 리뷰 가져오기 API")
     @GetMapping("/reviews")
-    public void getReviews(@AuthenticationPrincipal Member member) {
-        articleService.getReviews(member);
+    public ResponseEntity<RestResponseMessage<?>> getReviews(@AuthenticationPrincipal Member member) {
+        ArticleReviewResponseDtos responseDtos = articleService.getReviews(member);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "모든 리뷰 가져오기 성공", responseDtos), HttpStatus.OK);
     }
 }
