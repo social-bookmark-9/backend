@@ -10,6 +10,10 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findMemberByKakaoId(String kakaoId);
-
+    
+    // 메인 페이지 검색용
+    List<Member> findMembersByHashtag_Hashtag1(String hashtag);
+    
+    // 테스트용
     List<Member> findAll();
 }
