@@ -20,6 +20,7 @@ public class ArticleCreateRequestDto {
     private Integer readCount;
     @NotNull(message = "buttonDate가 없습니다.")
     private Integer reminderDate;
+    private Boolean reviewHide;
     @NotBlank(message = "한 개 이상의 태그를 선택해야 합니다.")
     private String hashtag1;
     private String hashtag2;
