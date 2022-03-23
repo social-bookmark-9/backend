@@ -38,12 +38,12 @@ public class MyPageController {
             @PathVariable long memberId) {
 
         boolean loginStatus = member != null;
-        System.out.println(member);
-        MemberInfoResponseDto memberInfoResponseDto = loginStatus && member.getId() == memberId ?
-                myPageService.getMyMemberInfo(member) : myPageService.getOtherMemberInfo(memberId);
 
-        List<ArticleFolderListResponseDto> articleFolderListResponseDto = loginStatus && member.getId() == memberId ?
-                myPageService.getMyArticleFolderList(member) : myPageService.getOtherArticleFolderList(memberId);
+        MemberInfoResponseDto memberInfoResponseDto =
+                loginStatus && member.getId() == memberId ? myPageService.getMyMemberInfo(member) : myPageService.getOtherMemberInfo(memberId);
+
+        List<ArticleFolderListResponseDto> articleFolderListResponseDto =
+                loginStatus && member.getId() == memberId ? myPageService.getMyArticleFolderList(member) : myPageService.getOtherArticleFolderList(memberId);
 
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.of(memberInfoResponseDto, articleFolderListResponseDto);
 

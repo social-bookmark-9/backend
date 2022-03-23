@@ -38,7 +38,6 @@ public class ArticleFolder extends Timestamped {
     @OneToMany(mappedBy = "articleFolder", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Article> articles = new ArrayList<>();
 
-    // 테스트용
     @Builder
     public ArticleFolder(boolean folderHide, boolean deleteable, String articleFolderName, int likeCount, Member member, Article article) {
         this.folderHide = folderHide;
