@@ -27,9 +27,8 @@ public class Favorite extends Timestamped {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    @Builder
-    public Favorite(Member member, ArticleFolder articleFolder) {
-        this.member = member;
+    public Favorite(ArticleFolder articleFolder, Member member) {
         this.articleFolder = articleFolder;
+        this.member = member;
     }
 }

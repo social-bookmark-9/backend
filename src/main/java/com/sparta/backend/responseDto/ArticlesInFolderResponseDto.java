@@ -1,11 +1,7 @@
 package com.sparta.backend.responseDto;
 
 import com.sparta.backend.model.Article;
-import com.sparta.backend.model.Hashtag;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @Getter
@@ -34,7 +30,7 @@ public class ArticlesInFolderResponseDto {
         this.contentOg = article.getContentOg();
         this.hashtag1 = article.getHashtag().getHashtag1();
         this.hashtag2 = article.getHashtag().getHashtag2();
-        this.hashtag3 = article.getHashtag().getHashtag2();
+        this.hashtag3 = article.getHashtag().getHashtag3();
         this.isMe = isMe;
         this.isRead = isRead;
         this.isSaved = isSaved;

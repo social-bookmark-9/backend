@@ -5,9 +5,11 @@ import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
+import com.sparta.backend.responseDto.ArticleFolderNameAndIdResponseDto;
 import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
 import com.sparta.backend.responseDto.LikeAddOrRemoveResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +71,19 @@ public class ArticleFolderController {
     }
 
     /**
+     * 아티클 폴더 타이틀 목록 조회
+     * @param member
+     * @return List<ArticleFolderNameAndIdResponseDto>
+     */
+    @ApiOperation(value = "아티클 폴더 타이틀 목록 조회", notes = "아티클 폴더 타이틀 목록 조회 API")
+    @GetMapping("/articleFolders/folderName")
+    public ResponseEntity<RestResponseMessage<List<ArticleFolderNameAndIdResponseDto>>> getArticleFoldersName(
+            @AuthenticationPrincipal Member member) {
+        List<ArticleFolderNameAndIdResponseDto> articleFolderNameAndIdResponseDtoList = articleFolderService.getArticleFoldersName(member);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 폴더 타이틀 목록 조회", articleFolderNameAndIdResponseDtoList), HttpStatus.OK);
+    }
+
+   /**
      * 아티클 폴더 제목 수정
      *
      * @param member
@@ -141,5 +156,6 @@ public class ArticleFolderController {
         LikeAddOrRemoveResponseDto likeAddOrRemoveResponseDto = articleFolderService.likeAddOrRemove(member, folderId);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "좋아요 추가 또는 삭제", likeAddOrRemoveResponseDto), HttpStatus.OK);
     }
+
 
 }

@@ -36,6 +36,6 @@ public class MainPageArticleFolderController {
             articleFolderList.add(articleFolderListResponseDto);
         }
 
-        return new ResponseEntity<>(new RestResponseMessage<>(true,"추천 큐레이션 검색 결과", ""), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true,"추천 큐레이션 검색 결과", articleFolderList), HttpStatus.OK);
     }
 }

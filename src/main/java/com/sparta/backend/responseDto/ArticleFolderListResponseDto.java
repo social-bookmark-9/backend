@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class ArticleFolderListResponseDto {
 
     private long folderId;
