@@ -1,6 +1,5 @@
 package com.sparta.backend.controller;
 
-import com.sparta.backend.jwt.JwtTokenProvider;
 import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.requestDto.ArticleCreateRequestDto;
@@ -28,17 +27,30 @@ public class ArticleController {
     @GetMapping("/articles/{articleId}")
     public ResponseEntity<RestResponseMessage<?>> getArticle(@Valid @PathVariable Long articleId,
                                                              @AuthenticationPrincipal Member member) {
-        ArticleGetResponseDto responseDto = articleService.getArticle(articleId, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 조회 성공", responseDto), HttpStatus.OK);
+        if (member == null) {
+            ArticleGetResponseDto responseDto = articleService.getArticleForGuest(articleId);
+            return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 조회 성공(게스트)", responseDto), HttpStatus.OK);
+        }
+        ArticleGetResponseDto responseDto = articleService.getArticleForMember(articleId, member);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 조회 성공(로그인)", responseDto), HttpStatus.OK);
     }
 
     // ✅ 아티클 생성
-    @ApiOperation(value = "아티클 생성", notes = "아티클 생성")
+    @ApiOperation(value = "아티클 생성", notes = "아티클 생성 API")
     @PostMapping("/articles")
     public ResponseEntity<RestResponseMessage<?>> createArticles(@Valid @RequestBody ArticleCreateRequestDto requestDto,
                                                                  @AuthenticationPrincipal Member member) {
         ArticleCreateResponseDto responseDto = articleService.createArticle(requestDto, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 생성 성공", responseDto), HttpStatus.OK);
+    }
+
+    // ✅ 아티클 제거
+    @ApiOperation(value = "아티클 제거", notes = "아티클 제거 API")
+    @DeleteMapping("/articles/{id}")
+    public ResponseEntity<RestResponseMessage<?>> deleteArticle(@PathVariable Long id,
+                                                                 @AuthenticationPrincipal Member member) {
+        articleService.deleteArticle(id, member);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 삭제 성공", ""), HttpStatus.OK);
     }
 
     // 아티클의 폴더 이동
@@ -61,7 +73,7 @@ public class ArticleController {
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 리뷰 수정 성공", responseDto), HttpStatus.OK);
     }
 
-    // ✅ 리뷰 가리기
+    // ✅ 리뷰 공개여부 수정
     @ApiOperation(value = "리뷰(메모) 보이기 / 숨기기", notes = "리뷰(메모) 보이기 / 숨기기")
     @PatchMapping("/articles/{id}/review/hide")
     public ResponseEntity<RestResponseMessage<?>> updateArticleReviewHide(@PathVariable Long id,
@@ -70,7 +82,7 @@ public class ArticleController {
         return new ResponseEntity<>(new RestResponseMessage<>(true, "리뷰 가리기 성공", responseDto), HttpStatus.OK);
     }
 
-    // ✅ 리뷰만 가져오기
+    // ✅ 모든 리뷰 가져오기
     @ApiOperation(value = "모든 리뷰 가져오기", notes = "모든 리뷰 가져오기 API")
     @GetMapping("/reviews")
     public ResponseEntity<RestResponseMessage<?>> getReviews(@AuthenticationPrincipal Member member) {
