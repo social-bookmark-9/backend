@@ -33,7 +33,6 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseMessage> handleAccessDeniedException(AccessDeniedException e) {
         log.error("handleAccessDeniedException", e);
         final ErrorResponseMessage responseMessage = ErrorResponseMessage.of(ErrorCode.HANDLE_ACCESS_DENIED);
-        // TODO: valueOf ??
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(ErrorCode.HANDLE_ACCESS_DENIED.getStatusCode()));
     }
 
