@@ -39,11 +39,11 @@ public class MyPageController {
 
         boolean loginStatus = member != null;
 
-        MemberInfoResponseDto memberInfoResponseDto = loginStatus && member.getId() == memberId ?
-                myPageService.getMyMemberInfo(member) : myPageService.getOtherMemberInfo(memberId);
+        MemberInfoResponseDto memberInfoResponseDto =
+                loginStatus && member.getId() == memberId ? myPageService.getMyMemberInfo(member) : myPageService.getOtherMemberInfo(memberId);
 
-        List<ArticleFolderListResponseDto> articleFolderListResponseDto = loginStatus && member.getId() == memberId ?
-                myPageService.getMyArticleFolderList(member) : myPageService.getOtherArticleFolderList(memberId);
+        List<ArticleFolderListResponseDto> articleFolderListResponseDto =
+                loginStatus && member.getId() == memberId ? myPageService.getMyArticleFolderList(member) : myPageService.getOtherArticleFolderList(memberId);
 
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.of(memberInfoResponseDto, articleFolderListResponseDto);
 
