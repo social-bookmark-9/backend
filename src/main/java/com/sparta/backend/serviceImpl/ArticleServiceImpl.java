@@ -1,5 +1,7 @@
 package com.sparta.backend.serviceImpl;
 
+import com.sparta.backend.exception.ArticleAccessDeniedException;
+import com.sparta.backend.exception.ErrorCode;
 import com.sparta.backend.exception.InvalidValueException;
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.ArticleFolder;
@@ -30,20 +32,14 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticleFolderRepository articleFolderRepository;
 
-    // 특정 아티클 조회
-    @Override
-    public ArticleGetResponseDto getArticle(Long id, Member member) {
-        Article article = articleRepository.findById(id).orElseThrow(
-                () -> new InvalidValueException("존재하지 않습니다.")); // 서버 로그 출력
-
-        // Get Random Article
+    // 랜덤 아티클 생성
+    public ArticleGetResponseDto randomArticleGenerator(Long id, Article article) {
         RandomGenerator randomGenerator = new RandomGenerator();
         String mainHashtag = article.getHashtag().getHashtag1();
-        List<Article> articles = articleRepository.findArticlesByHashtag_Hashtag1(mainHashtag);
+        List<Article> togetherArticles = articleRepository.findArticlesByIdNotAndHashtag_Hashtag1AndArticleFolder_FolderHide(id ,mainHashtag, false);
         List<Article> randomArticles;
-        if (articles.size() > 8) { randomArticles = randomGenerator.getRandomArticles(articles, 9); }
-        else { randomArticles = articles; }
-
+        if (togetherArticles.size() > 8) { randomArticles = randomGenerator.getRandomArticles(togetherArticles, 9); }
+        else { randomArticles = togetherArticles; }
 
         List<ArticleRandomResponseDto> randomResponseDtos = new ArrayList<>();
         for (Article randomArticle : randomArticles) {
@@ -76,15 +72,42 @@ public class ArticleServiceImpl implements ArticleService {
                 .build();
     }
 
+    // 특정 아티클 조회 (로그인)
+    @Override
+    public ArticleGetResponseDto getArticleForMember(Long id, Member member) {
+        Article currentArticle = articleRepository.findById(id).orElseThrow(
+                () -> new InvalidValueException("존재하지 않습니다."));
+        Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
+                () -> new InvalidValueException("존재하지 않습니다."));
+        Member currentArticleMember = currentArticle.getMember();
+
+        boolean currentArticleFolderHide = currentArticle.getArticleFolder().isFolderHide();
+
+        if (currentArticleMember == currentMember) { return randomArticleGenerator(id, currentArticle); }
+        else {
+            if (currentArticleFolderHide) { throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED); }
+            else { return randomArticleGenerator(id, currentArticle); }
+        }
+    }
+
+    // 특정 아티클 조회 (비로그인)
+    @Override
+    public ArticleGetResponseDto getArticleForGuest(Long id) {
+        Article currentArticle = articleRepository.findById(id).orElseThrow(
+                () -> new InvalidValueException("존재하지 않습니다."));
+        boolean currentArticleFolderHide = currentArticle.getArticleFolder().isFolderHide();
+
+        if (currentArticleFolderHide) { throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED); }
+        else { return randomArticleGenerator(id, currentArticle); }
+    }
+
+
     // 아티클 생성
     @Override
     public ArticleCreateResponseDto createArticle(ArticleCreateRequestDto requestDto, Member member) {
-
+        // String ogTagSeleniumTest = parser.seleniumParser(requestDto.getUrl()); // 셀레니움 테스트
         JsoupParser parser = new JsoupParser();
         OGTagRequestDto ogTagRequestDto = parser.ogTagScraper(requestDto.getUrl());
-
-        // TODO: 셀레니움 테스트
-//        String ogTagSeleniumTest = parser.seleniumParser(requestDto.getUrl());
 
         Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
                 () -> new InvalidValueException("사용자가 존재하지 않습니다."));
@@ -139,12 +162,25 @@ public class ArticleServiceImpl implements ArticleService {
                 .build();
     }
 
+    // 아티클 제거
+    @Override
+    public void deleteArticle(Long id, Member member) {
+        Article currentArticle = articleRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("아티클이 존재하지 않습니다."));
+        Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
+                () -> new IllegalArgumentException("아티클이 존재하지 않습니다."));
+        Member writerMember = currentArticle.getMember();
+
+        if (currentMember == writerMember) { articleRepository.delete(currentArticle); }
+        else { throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED); }
+    }
+
     // 아티클의 폴더 이동
     @Override
     public void moveMyArticleToAnotherFolder(ArticleUpdateRequestDto requestDto, Long id, Member member) {
-        Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
-                () -> new IllegalArgumentException("찾을 수 없습니다."));
         Article currentArticle = articleRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("찾을 수 없습니다."));
+        Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
                 () -> new IllegalArgumentException("찾을 수 없습니다."));
 
         ArticleFolder currentArticleFolder = currentArticle.getArticleFolder();
@@ -158,15 +194,13 @@ public class ArticleServiceImpl implements ArticleService {
     // 리뷰(메모) 수정
     @Override
     public ArticleReviewResponseDto updateArticleReview(ArticleReviewRequestDto requestDto, Long id, Member member) {
-        System.out.println("리뷰수정");
         Article currentArticle = articleRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아티클이 존재하지 않습니다."));
-
         String modifiedReview = currentArticle.updateArticleReview(requestDto);
         return ArticleReviewResponseDto.builder().review(modifiedReview).build();
     }
 
-    // 리뷰Hide 수정
+    // 리뷰 공개여부 수정
     @Override
     public ArticleReviewHideResponseDto updateArticleReviewHide(Long id) {
         Article currentArticle = articleRepository.findById(id).orElseThrow(
@@ -175,7 +209,7 @@ public class ArticleServiceImpl implements ArticleService {
         return ArticleReviewHideResponseDto.builder().reviewHide(updateHide).build();
     }
 
-    // 모든 아티클 가져오기
+    // 모든 리뷰 가져오기
     @Override
     public ArticleReviewResponseDtos getReviews(Member member) {
         Member currentMember = memberRepository.findById(member.getId()).orElseThrow(

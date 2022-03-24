@@ -7,8 +7,10 @@ import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
 import com.sparta.backend.responseDto.*;
 
 public interface ArticleService {
-    ArticleGetResponseDto getArticle(Long id, Member member);
+    ArticleGetResponseDto getArticleForMember(Long id, Member member);
+    ArticleGetResponseDto getArticleForGuest(Long id);
     ArticleCreateResponseDto createArticle(ArticleCreateRequestDto requestDto, Member member);
+    void deleteArticle(Long id, Member member);
     void moveMyArticleToAnotherFolder(ArticleUpdateRequestDto requestDto, Long id, Member member);
     ArticleReviewResponseDto updateArticleReview(ArticleReviewRequestDto requestDto, Long id, Member member);
     ArticleReviewHideResponseDto updateArticleReviewHide(Long id);
