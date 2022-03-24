@@ -43,7 +43,7 @@ public class DummyArticleFolder {
                     .articleFolderName("더미 아티클 폴더 " + i)
                     .deleteable(true)
                     .folderHide(false)
-                    .likeCount(0)
+                    .likeCount((int) (Math.random() * 10))
                     .member(currentMember)
                     .build();
 
@@ -93,7 +93,7 @@ public class DummyArticleFolder {
                     .articleFolderName("더미 아티클 폴더 " + i)
                     .deleteable(true)
                     .folderHide(false)
-                    .likeCount(0)
+                    .likeCount((int) (Math.random() * 10))
                     .member(currentMember)
                     .build();
 
@@ -143,7 +143,7 @@ public class DummyArticleFolder {
                     .articleFolderName("더미 아티클 폴더 " + i)
                     .deleteable(true)
                     .folderHide(false)
-                    .likeCount(0)
+                    .likeCount((int) (Math.random() * 10))
                     .member(currentMember)
                     .build();
 
@@ -193,7 +193,7 @@ public class DummyArticleFolder {
                     .articleFolderName("더미 아티클 폴더 " + i)
                     .deleteable(true)
                     .folderHide(false)
-                    .likeCount(0)
+                    .likeCount((int) (Math.random() * 10))
                     .member(currentMember)
                     .build();
 
