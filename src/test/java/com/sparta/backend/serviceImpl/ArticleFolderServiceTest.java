@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback(value = false)
+@Rollback(value = true)
 class ArticleFolderServiceTest {
 
     @Autowired

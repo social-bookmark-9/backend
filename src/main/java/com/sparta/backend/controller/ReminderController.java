@@ -2,7 +2,6 @@ package com.sparta.backend.controller;
 
 import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
-import com.sparta.backend.repository.ReminderRepository;
 import com.sparta.backend.requestDto.ReminderRequestDto;
 import com.sparta.backend.responseDto.ReminderResponseDto;
 import com.sparta.backend.service.ReminderService;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
