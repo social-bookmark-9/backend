@@ -1,42 +1,31 @@
 package com.sparta.backend.responseDto;
 
-import com.sparta.backend.model.Article;
-import lombok.*;
+import com.sparta.backend.model.ArticleFolder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class ArticlesInFolderResponseDto {
 
-    private Long articleId;
-    private String url;
-    private String titleOg;
-    private String imgOg;
-    private String contentOg;
-    private String hashtag1;
-    private String hashtag2;
-    private String hashtag3;
-
+    private long folderId;
+    private String folderName;
+    private int likeCount;
     private boolean isMe;
-    private boolean isRead;
-    private boolean isSaved;
+    private List<ArticlesInfoInFolderResponseDto> articlesInfoInFolderResponseDtoList = new ArrayList<>();
 
-    private ArticlesInFolderResponseDto(Article article, boolean isMe, boolean isRead, boolean isSaved) {
-        this.articleId = article.getId();
-        this.url = article.getUrl();
-        this.titleOg = article.getTitleOg();
-        this.imgOg = article.getImgOg();
-        this.contentOg = article.getContentOg();
-        this.hashtag1 = article.getHashtag().getHashtag1();
-        this.hashtag2 = article.getHashtag().getHashtag2();
-        this.hashtag3 = article.getHashtag().getHashtag3();
+    public ArticlesInFolderResponseDto(ArticleFolder articleFolder, boolean isMe, List<ArticlesInfoInFolderResponseDto> articlesInfoInFolderResponseDtoList) {
+        this.folderId = articleFolder.getId();
+        this.folderName = articleFolder.getArticleFolderName();
+        this.likeCount = articleFolder.getLikeCount();
         this.isMe = isMe;
-        this.isRead = isRead;
-        this.isSaved = isSaved;
+        this.articlesInfoInFolderResponseDtoList.addAll(articlesInfoInFolderResponseDtoList);
     }
 
-    public static ArticlesInFolderResponseDto of(Article article, boolean isMe, boolean isRead, boolean isSaved) {
-        return new ArticlesInFolderResponseDto(article, isMe, isRead, isSaved);
+    public static ArticlesInFolderResponseDto of(ArticleFolder articleFolder, boolean isMe, List<ArticlesInfoInFolderResponseDto> articlesInfoInFolderResponseDtoList) {
+        return new ArticlesInFolderResponseDto(articleFolder, isMe, articlesInfoInFolderResponseDtoList);
     }
 }

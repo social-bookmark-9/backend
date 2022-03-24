@@ -10,6 +10,7 @@ import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
 import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
+import com.sparta.backend.responseDto.ArticlesInfoInFolderResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -542,10 +543,6 @@ class ArticleFolderServiceTest {
         List<ArticleFolder> findFolders = articleFolderRepository.findAll();
         List<Member> findMember = memberRepository.findAll();
 
-        List<ArticlesInFolderResponseDto> articlesInFolder = articleFolderService.findArticlesInFolder(findMember.get(0), findFolders.get(0).getId());
-        for (ArticlesInFolderResponseDto articlesInFolderResponseDto : articlesInFolder) {
-            System.out.println("articlesInFolderResponseDto = " + articlesInFolderResponseDto);
-        }
     }
 }
 

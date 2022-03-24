@@ -13,6 +13,7 @@ import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
 import com.sparta.backend.responseDto.ArticleFolderNameAndIdResponseDto;
 import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
+import com.sparta.backend.responseDto.ArticlesInfoInFolderResponseDto;
 import com.sparta.backend.responseDto.LikeAddOrRemoveResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -94,8 +93,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * test 필요
      */
     @Override
-    public List<ArticlesInFolderResponseDto> findArticlesInFolder(Member member, long folderId) {
-        List<ArticlesInFolderResponseDto> articlesInFolderResponseDtoList = new ArrayList<>();
+    public ArticlesInFolderResponseDto findArticlesInFolder(Member member, long folderId) {
 
         // 타켓 아티클 폴더 찾기
         Optional<ArticleFolder> findArticleFolder = Optional.of(getFolder(folderId));
@@ -118,18 +116,20 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         // isMe(내가 소유한 폴더인지 아닌지)
         boolean isMe = findArticleFolder.get().getMember().equals(findMember);
 
+        List<ArticlesInfoInFolderResponseDto> articlesInfoInFolderResponseDtoList = new ArrayList<>();
+
         if (!articles.isEmpty()) {
             for (Article article : articles) {
                 boolean isRead = article.getReadCount() > 0;
                 boolean isSaved = myArticlesUrl.contains(article.getUrl());
-                ArticlesInFolderResponseDto articlesInFolderResponseDto = ArticlesInFolderResponseDto.of(article, isMe, isRead, isSaved);
-                articlesInFolderResponseDtoList.add(articlesInFolderResponseDto);
+                ArticlesInfoInFolderResponseDto articlesInfoInFolderResponseDto = ArticlesInfoInFolderResponseDto.of(article, isRead, isSaved);
+                articlesInfoInFolderResponseDtoList.add(articlesInfoInFolderResponseDto);
             }
         } else {
-            articlesInFolderResponseDtoList.add(null);
+            articlesInfoInFolderResponseDtoList.add(null);
         }
 
-        return articlesInFolderResponseDtoList;
+        return ArticlesInFolderResponseDto.of(findArticleFolder.get(), isMe, articlesInfoInFolderResponseDtoList);
     }
 
     /**
