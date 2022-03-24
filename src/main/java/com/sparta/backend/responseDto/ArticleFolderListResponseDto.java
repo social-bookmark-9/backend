@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class ArticleFolderListResponseDto {
 
     private long folderId;
@@ -23,7 +23,7 @@ public class ArticleFolderListResponseDto {
     private String hashTag1;
     private String hashTag2;
     private String hashTag3;
-    List<ArticleListDto> articleListDtoList = new ArrayList<>();
+    private List<ArticleListDto> articleListDtoList = new ArrayList<>();
 
     private ArticleFolderListResponseDto(ArticleFolder articleFolder) {
         this.folderId = articleFolder.getId();
