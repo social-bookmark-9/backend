@@ -1,15 +1,14 @@
 package com.sparta.backend.controller;
 
-import com.sparta.backend.exception.EntityNotFoundException;
 import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
 import com.sparta.backend.responseDto.ArticleFolderNameAndIdResponseDto;
 import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
+import com.sparta.backend.responseDto.ArticlesInfoInFolderResponseDto;
 import com.sparta.backend.responseDto.LikeAddOrRemoveResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -110,16 +109,13 @@ public class ArticleFolderController {
      */
     @ApiOperation(value = "아티클 폴더 안 모든 아티클 조회", notes = "아티클 폴더 안 모든 아티클 조회 API")
     @GetMapping("/articleFolders/{id}")
-    public ResponseEntity<RestResponseMessage<Map<String, List<ArticlesInFolderResponseDto>>>> findArticlesInFolder(
+    public ResponseEntity<RestResponseMessage<ArticlesInFolderResponseDto>> findArticlesInFolder(
             @AuthenticationPrincipal Member member,
             @PathVariable long id) {
-        List<ArticlesInFolderResponseDto> articlesInFolderResponseDtoList
-                = articleFolderService.findArticlesInFolder(member, id);
 
-        Map<String, List<ArticlesInFolderResponseDto>> dataMap = new HashMap<>();
-        dataMap.put("articles", articlesInFolderResponseDtoList);
+        ArticlesInFolderResponseDto articlesInFolder = articleFolderService.findArticlesInFolder(member, id);
 
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "폴더 안 아티클 조회", dataMap), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "폴더 안 아티클 조회", articlesInFolder), HttpStatus.OK);
     }
 
     /**
