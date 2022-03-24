@@ -13,6 +13,6 @@ import java.util.List;
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findArticlesByIdNotAndHashtag_Hashtag1AndArticleFolder_FolderHide(Long id ,String mainHashtag, boolean folderHide);
     List<Article> findAllByMember(Member member);
-    // 메인페이지 태그 검색용 / 한달 내에 생성된 것들.
-    List<Article> findArticlesByHashtag_Hashtag1AndCreatedAtBetween(String mainHashtag, LocalDateTime start, LocalDateTime end);
+    // 메인페이지 아티클 검색용(Folder Hide 반영)
+    List<Article> findArticlesByHashtag_Hashtag1AndArticleFolder_FolderHideAndCreatedAtBetween(String mainHashtag, boolean folderHide, LocalDateTime start, LocalDateTime end);
 }
