@@ -1,6 +1,8 @@
 package com.sparta.backend.serviceImpl;
 
 import com.sparta.backend.exception.EntityNotFoundException;
+import com.sparta.backend.exception.ErrorCode;
+import com.sparta.backend.exception.InvalidValueException;
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Favorite;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -49,17 +52,24 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      */
     @Override
     public void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member) {
-        Member findMember = getMember(member.getId());
+        // TODO: 한 유저가 1개 이상의 동일한 아티클 폴더 이름을 생성할 수 없음 (현우)
+        Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
+                () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
 
-        ArticleFolder articleFolder = ArticleFolder.builder()
-                .articleFolderName(articleFolderRequestDto.getArticleFolderName())
-                .deleteable(true)
-                .folderHide(articleFolderRequestDto.isFolderHide())
-                .likeCount(0)
-                .member(findMember)
-                .build();
+        ArticleFolder savedArticleFolder = articleFolderRepository
+                .findArticleFolderByArticleFolderNameAndMember(articleFolderRequestDto.getArticleFolderName(), currentMember);
 
-        articleFolderRepository.save(articleFolder);
+        if (savedArticleFolder == null) {
+            ArticleFolder articleFolder = ArticleFolder.builder()
+                    .articleFolderName(articleFolderRequestDto.getArticleFolderName())
+                    .deleteable(true)
+                    .folderHide(articleFolderRequestDto.isFolderHide())
+                    .likeCount(0)
+                    .member(currentMember)
+                    .build();
+
+            articleFolderRepository.save(articleFolder);
+        } else { throw new InvalidValueException(ErrorCode.DUPLICATED_VALUE); }
     }
 
     /**
