@@ -16,4 +16,5 @@ public interface MemberInfoService {
 
     void editProfileSnsUrl(MemberInfoEditRequestDto memberInfoEditRequestDto, Member member);
 
+    void editEmail(MemberInfoEditRequestDto memberInfoEditRequestDto, Member member);
 }

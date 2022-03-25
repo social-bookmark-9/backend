@@ -1,6 +1,7 @@
 package com.sparta.backend.utils;
 
 import com.sparta.backend.model.Article;
+import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
 import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
 
 import java.util.ArrayList;
@@ -30,5 +31,17 @@ public class RandomGenerator {
             randomMembers.add(memberResponseDtos.get(randomNum));
         }
         return new ArrayList<>(randomMembers);
+    }
+
+    // 메인페이지 아티클 폴더 추천용
+    public List<ArticleFolderListResponseDto> getRecommendedAtricleFolders(List<ArticleFolderListResponseDto> articleFolderResponseDtos, int cnt) {
+        HashSet<ArticleFolderListResponseDto> randomArticleFolders = new HashSet<>();
+        Random random = new Random();
+        int bound = articleFolderResponseDtos.size();
+        while (randomArticleFolders.size() < cnt) {
+            int randomNum = random.nextInt(bound);
+            randomArticleFolders.add(articleFolderResponseDtos.get(randomNum));
+        }
+        return new ArrayList<>(randomArticleFolders);
     }
 }
