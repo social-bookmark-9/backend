@@ -65,7 +65,7 @@ public class ArticleFolderController {
             @AuthenticationPrincipal Member member,
             @PathVariable long id) {
 
-        articleFolderService.deleteArticleFolder(id);
+        articleFolderService.deleteArticleFolder(member, id);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 폴더 삭제 완료", ""), HttpStatus.OK);
     }
 

@@ -17,6 +17,7 @@ import com.sparta.backend.responseDto.ArticlesInfoInFolderResponseDto;
 import com.sparta.backend.responseDto.LikeAddOrRemoveResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,12 +65,15 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
 
     /**
      * 아티클 폴더 삭제
-     * @param id
+     * @param folderId
      * @return void
      */
     @Override
-    public void deleteArticleFolder(long id) {
-        articleFolderRepository.delete(getFolder(id));
+    public void deleteArticleFolder(Member member, long folderId) {
+        ArticleFolder findFolder = getFolder(folderId);
+        if (findFolder.getMember().getId() == member.getId()) {
+            articleFolderRepository.delete(findFolder);
+        } else throw new AccessDeniedException("접근 권한 없음");
     }
 
     /**
@@ -94,7 +98,6 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      */
     @Override
     public ArticlesInFolderResponseDto findArticlesInFolder(Member member, long folderId) {
-
         // 타켓 아티클 폴더 찾기
         Optional<ArticleFolder> findArticleFolder = Optional.of(getFolder(folderId));
         // 타켓 아티클 폴더 안 모든 아티클 articles에 저장

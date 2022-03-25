@@ -3,6 +3,8 @@ package com.sparta.backend.responseDto;
 import com.sparta.backend.model.Article;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @NoArgsConstructor
@@ -13,6 +15,7 @@ public class ArticlesInfoInFolderResponseDto {
     private String titleOg;
     private String imgOg;
     private String contentOg;
+    private LocalDateTime createdAt;
     private String hashtag1;
     private String hashtag2;
     private String hashtag3;
@@ -25,6 +28,7 @@ public class ArticlesInfoInFolderResponseDto {
         this.titleOg = article.getTitleOg();
         this.imgOg = article.getImgOg();
         this.contentOg = article.getContentOg();
+        this.createdAt = article.getCreatedAt();
         this.hashtag1 = article.getHashtag().getHashtag1();
         this.hashtag2 = article.getHashtag().getHashtag2();
         this.hashtag3 = article.getHashtag().getHashtag3();

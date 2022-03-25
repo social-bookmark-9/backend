@@ -16,7 +16,7 @@ public interface ArticleFolderService {
 
     void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member);
 
-    void deleteArticleFolder(long id);
+    void deleteArticleFolder(Member member, long id);
 
     void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, long id);
 
