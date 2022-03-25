@@ -32,9 +32,8 @@ public class Hashtag extends Timestamped {
     @JoinColumn(name = "member_id")
     private Member member = null;
 
-    // 테스트용
-    @Builder
-    public Hashtag(String hashtag1, String hashtag2, String hashtag3) {
+    // 해시태그 설정
+    public void setHashtag(String hashtag1, String hashtag2, String hashtag3) {
         this.hashtag1 = hashtag1;
         this.hashtag2 = hashtag2;
         this.hashtag3 = hashtag3;
@@ -47,7 +46,9 @@ public class Hashtag extends Timestamped {
         this.member = member;
     }
 
-    public void setHashtag(String hashtag1, String hashtag2, String hashtag3) {
+    // 테스트용
+    @Builder
+    public Hashtag(String hashtag1, String hashtag2, String hashtag3) {
         this.hashtag1 = hashtag1;
         this.hashtag2 = hashtag2;
         this.hashtag3 = hashtag3;

@@ -16,6 +16,7 @@ public enum ErrorCode {
     HANDLE_ACCESS_DENIED(403, HttpStatus.FORBIDDEN, "403", "권한이 없습니다."),
     INTERNAL_SERVER_ERROR(500, HttpStatus.INTERNAL_SERVER_ERROR, "500", "서버 오류"),
     ENTITY_NOT_FOUND(400, HttpStatus.BAD_REQUEST, "400", "요청한 데이터를 찾을 수 없습니다."),
+    DUPLICATED_VALUE(400, HttpStatus.BAD_REQUEST, "400", "중복된 값입니다."),
 
     // Token
     REFRESH_TOKEN_EXPIRED(401, HttpStatus.UNAUTHORIZED, "401", "리프레시 토큰이 만료되었습니다."),

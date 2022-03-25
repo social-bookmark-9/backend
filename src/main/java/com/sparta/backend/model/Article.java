@@ -1,6 +1,7 @@
 package com.sparta.backend.model;
 
 import com.sparta.backend.requestDto.ArticleReviewRequestDto;
+import com.sparta.backend.requestDto.ArticleTitleRequestDto;
 import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -68,11 +69,18 @@ public class Article extends Timestamped {
         return this.review = requestDto.getReview();
     }
 
-    // 리뷰Hide 수정
-    public boolean updateArticleReviewHide(boolean reviewHide) {
+    // 리뷰 공개여부 수정
+    public Boolean updateArticleReviewHide(boolean reviewHide) {
         return this.reviewHide = !reviewHide;
     }
 
+    // 읽은 횟수 수정
+    public Integer addReadCount() {
+        return this.readCount += 1;
+    }
+
+    // 아티클 타이틀 수정
+    public String updateTitle(String titleOg) { return this.titleOg = titleOg; }
 
     // 연관관계 편의 메소드
     public void setArticleFolder(ArticleFolder articleFolder) {
