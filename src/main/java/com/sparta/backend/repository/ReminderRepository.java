@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ReminderRepository extends JpaRepository<Reminder, Long> {
-    Long deleteReminderByMemberNameAndTitleOg(String memberName, String titleOg);
+    void deleteReminderByMemberNameAndTitleOg(String memberName, String titleOg);
 
     Reminder findReminderByMemberNameAndTitleOg(String memberName, String titleOg);
 

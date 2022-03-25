@@ -82,7 +82,7 @@ public class MemberInfoController {
 
         memberInfoService.editProfileSnsUrl(memberInfoEditRequestDto, editMember);
 
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "프로필 URL이 업데이트 되었습니다.", memberInfoEditRequestDto), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "프로필 URL이 업데이트 되었습니다.", ""), HttpStatus.OK);
     }
 
     // 유저 프로필 자기소개 수정하기
@@ -118,6 +118,18 @@ public class MemberInfoController {
 
         memberInfoService.editHashtag(memberInfoEditRequestDto, editHashtag);
 
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "프로필 관심분야가 업데이트 되었습니다.", memberInfoEditRequestDto), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "프로필 관심분야가 업데이트 되었습니다.", ""), HttpStatus.OK);
+    }
+
+    // 유저 이메일 수정하기
+    @PatchMapping("/api/mypage/reminder")
+    public ResponseEntity<RestResponseMessage> editEmail(@RequestBody MemberInfoEditRequestDto memberInfoEditRequestDto, @AuthenticationPrincipal Member member) {
+        
+        Member editMember = memberRepository.findById(member.getId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+        
+        memberInfoService.editEmail(memberInfoEditRequestDto, editMember);
+
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "리마인더 이메일이 업데이트 되었습니다.", ""), HttpStatus.OK);
     }
 }
