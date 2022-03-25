@@ -1,6 +1,7 @@
 package com.sparta.backend.responseDto;
 
 import com.sparta.backend.model.Article;
+import com.sparta.backend.model.Member;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,6 +11,8 @@ import java.util.List;
 @Builder
 public class ArticleGetResponseDto {
     private final Long articleId;
+    private final Long writerMemberId;
+    private final String writerMemberName;
     private final String url;
     private final String titleOg;
     private final String imgOg;
