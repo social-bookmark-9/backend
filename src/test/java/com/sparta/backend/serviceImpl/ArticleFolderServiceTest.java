@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback(value = false)
+@Rollback(value = true)
 class ArticleFolderServiceTest {
 
     @Autowired
@@ -169,9 +169,10 @@ class ArticleFolderServiceTest {
         articleRepository.save(article2);
 
         // 폴더 삭제
+
         Optional<ArticleFolder> articleFolder = articleFolderRepository.findAll().stream().findFirst();
 
-        articleFolderService.deleteArticleFolder(articleFolder.get().getId());
+        articleFolderService.deleteArticleFolder(articleFolder.get().getMember(), articleFolder.get().getId());
 
         // 예외
 //        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
@@ -386,7 +387,7 @@ class ArticleFolderServiceTest {
 
         // 폴더 삭제 시 좋아요도 삭제
         Optional<ArticleFolder> findFolder2 = articleFolderRepository.findAll().stream().findFirst();
-        articleFolderService.deleteArticleFolder(findFolder2.get().getId());
+        articleFolderService.deleteArticleFolder(findFolder2.get().getMember(), findFolder2.get().getId());
     }
 
     @Test
