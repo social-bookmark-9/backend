@@ -83,4 +83,10 @@ public class MemberInfoServiceImpl implements MemberInfoService {
             }
         }
     }
+    
+    // 프로필 이메일 수정하기
+    @Override
+    public void editEmail(MemberInfoEditRequestDto memberInfoEditRequestDto, Member member) {
+        member.editEmail(memberInfoEditRequestDto.getEmail());
+    }
 }

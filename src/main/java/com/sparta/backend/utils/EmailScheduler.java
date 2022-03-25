@@ -8,6 +8,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -21,6 +23,7 @@ public class EmailScheduler {
 
     private final ReminderRepository reminderRepository;
     private final JavaMailSender javaMailSender;
+    private final TemplateEngine templateEngine;
 
     // 초, 분, 시, 일, 월, 주
     @Scheduled(cron = "0 0 5 * * *") // 매일 오전 5시에 메일 보내기.
@@ -31,10 +34,17 @@ public class EmailScheduler {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             try {
                 MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+
                 mimeMessageHelper.setTo(reminder.getEmail()); // 메일 수신자
                 mimeMessageHelper.setSubject("오늘 읽을 아티클이 왔어요!"); // 메일 제목
-                mimeMessageHelper.setText(
-                        reminder.getMemberName() + " 님, 오늘 " + reminder.getTitleOg() + "를 읽어야 해요! " + reminder.getUrl() , false); // 메일 본문 내용, HTML 여부
+
+                Context context = new Context(); // 메일 본문 내용 작성
+                context.setVariable("memberName", reminder.getMemberName());
+                context.setVariable("title", reminder.getTitleOg());
+                context.setVariable("url", reminder.getUrl());
+                String message = templateEngine.process("mail", context);
+                mimeMessageHelper.setText(message, true); 
+                
                 javaMailSender.send(mimeMessage);
                 reminderRepository.delete(reminder);
                 log.info("Mail send Success!!");
