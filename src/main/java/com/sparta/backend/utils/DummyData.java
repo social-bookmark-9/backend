@@ -41,7 +41,8 @@ public class DummyData {
     // 유저 1 아티클폴더 1,000 아티클 100 = 16분 ( 아티클 총 100,000개 )
 
     // 유저 10 아티클폴더 10 아티클 10 = 12초 ( 아티클 총 1,000개 )
-    // 유저 100 아티클폴더 100 아티클 10 = 2분 ( 아티클 총 10,000개 )
+    // 유저 100 아티클폴더 10 아티클 10 = 2분 ( 아티클 총 10,000개 )
+    // 유저 1000 아티클폴더 10 아티클 10 = 22분 ( 아티클 총 100,000 개 )
 
     @PostMapping("/dummy")
     public String createDummyArticles1000(@RequestBody DummyRequestDto dummyRequestDto) {
@@ -99,7 +100,7 @@ public class DummyData {
                         .articleFolderName("더미 아티클 폴더 " + k)
                         .deleteable(true)
                         .folderHide(false)
-                        .likeCount((int) (Math.random() * 10))
+                        .likeCount((int) (Math.random() * 100))
                         .member(kakaoMember)
                         .build();
 
