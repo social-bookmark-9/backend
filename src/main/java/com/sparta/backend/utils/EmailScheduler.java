@@ -39,9 +39,14 @@ public class EmailScheduler {
                 mimeMessageHelper.setSubject("오늘 읽을 아티클이 왔어요!"); // 메일 제목
 
                 Context context = new Context(); // 메일 본문 내용 작성
-                context.setVariable("memberName", reminder.getMemberName());
-                context.setVariable("title", reminder.getTitleOg());
-                context.setVariable("url", reminder.getUrl());
+                context.setVariable("hashtag1", reminder.getArticle().getHashtag().getHashtag1());
+                context.setVariable("hashtag2", reminder.getArticle().getHashtag().getHashtag2());
+                context.setVariable("hashtag3", reminder.getArticle().getHashtag().getHashtag3());
+                context.setVariable("content", reminder.getArticle().getContentOg());
+                context.setVariable("day", reminder.getSendDate().getDayOfMonth());
+                context.setVariable("month", reminder.getSendDate().getMonth());
+                context.setVariable("title", reminder.getArticle().getTitleOg());
+                context.setVariable("url", reminder.getArticle().getUrl());
                 String message = templateEngine.process("mail", context);
                 mimeMessageHelper.setText(message, true); 
                 
