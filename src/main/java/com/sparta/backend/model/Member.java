@@ -146,4 +146,9 @@ public class Member extends Timestamped implements UserDetails {
     public void setWebsiteUrl(String websiteUrl) {
         this.websiteUrl = websiteUrl;
     }
+
+    // 프로필 이메일 수정하기
+    public void editEmail(String email) {
+        this.email = email;
+    }
 }

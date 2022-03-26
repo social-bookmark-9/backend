@@ -1,6 +1,7 @@
 package com.sparta.backend.serviceImpl;
 
 import com.sparta.backend.exception.ArticleAccessDeniedException;
+import com.sparta.backend.exception.BusinessException;
 import com.sparta.backend.exception.ErrorCode;
 import com.sparta.backend.exception.InvalidValueException;
 import com.sparta.backend.model.Article;
@@ -181,7 +182,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 아티클 제목 수정 ✅
     @Override
-    public ArticleTitleResponseDto updateTitle(ArticleTitleRequestDto requestDto, Long id, Member member) {
+    public ArticleTitleResponseDto updateArticleTitle(ArticleTitleRequestDto requestDto, Long id, Member member) {
         Article currentArticle = articleRepository.findById(id).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
         if (isIdentityVerified(currentArticle, member)) {
@@ -192,7 +193,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 아티클 해시태그 수정 ✅
     @Override
-    public void updateHashtag(HashtagUpdateRequestDto requestDto, Long id, Member member) {
+    public void updateArticleHashtag(HashtagUpdateRequestDto requestDto, Long id, Member member) {
         Article currentArticle = articleRepository.findById(id).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
         if (isIdentityVerified(currentArticle, member)) {
@@ -227,7 +228,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 아티클 모든 리뷰 조회 ✅
     @Override
-    public ArticleReviewResponseDtos getReviews(Member member) {
+    public ArticleReviewResponseDtos getArticleReviews(Member member) {
         Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
         List<Article> allArticlesByMember = articleRepository.findAllByMember(currentMember);
@@ -247,26 +248,70 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 아티클 읽은 횟수 증가 ✅
     @Override
-    public void addReadCount(Long id, Member member) {
+    public void addArticleReadCount(Long id, Member member) {
         Article currentArticle = articleRepository.findById(id).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
         if (isIdentityVerified(currentArticle, member)) { currentArticle.addReadCount(); }
         else { throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED);}
     }
 
-    // 아티클의 폴더 이동
+    // 아티클의 폴더 이동 ✅
     @Override
-    public void moveMyArticleToAnotherFolder(ArticleUpdateRequestDto requestDto, Long id, Member member) {
+    public void updateArticleFolderChange(ArticleFolderChangeUpdateRequestDto requestDto, Long id, Member member) {
         Article currentArticle = articleRepository.findById(id).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
-        Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
+
+        if (isIdentityVerified(currentArticle, member)) {
+            Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
+                    () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
+            ArticleFolder articleFolder = articleFolderRepository
+                    .findArticleFolderByArticleFolderNameAndMember(requestDto.getArticleFolderName(), currentMember);
+
+            if (articleFolder == null) { throw new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()); }
+            else { currentArticle.updateArticleFolder(articleFolder); }
+
+        } else { throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED); }
+    }
+
+    // 타유저 아티클 모두 저장 ✅
+    @Override
+    public void saveAllArticlesByOtherUser(ArticleFolderChangeUpdateRequestDto requestDto, Long id, Member member) {
+        ArticleFolder otherUserArticleFolder = articleFolderRepository.findById(id).orElseThrow(
+                () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
+        Member myMember = memberRepository.findById(member.getId()).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
 
-        ArticleFolder currentArticleFolder = currentArticle.getArticleFolder();
-        String enteredArticleFolderName = requestDto.getArticleFolder().getArticleFolderName();
-        currentArticleFolder.deleteArticleFromArticleFolder(currentArticle);
-        ArticleFolder toMoveArticleFolder = articleFolderRepository.findArticleFolderByArticleFolderNameAndMember(enteredArticleFolderName, currentMember);
-        toMoveArticleFolder.getArticles().add(currentArticle);
-        currentArticle.updateArticle(requestDto);
+        ArticleFolder myArticleFolder = articleFolderRepository
+                .findArticleFolderByArticleFolderNameAndMember(requestDto.getArticleFolderName(), myMember);
+        Member otherUserArticleFolderMember = otherUserArticleFolder.getMember();
+
+        if (otherUserArticleFolder.isFolderHide()) { throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED); }
+        if (myMember == otherUserArticleFolderMember) { throw new BusinessException(ErrorCode.NOT_ANOTHER_USER); }
+        else {
+            // 가져오려는 폴더에 있는 아티클들
+            List<Article> otherUserArticlesInArticleFolder = otherUserArticleFolder.getArticles();
+            // 저장할 내 폴더에 있는 아티클들
+            List<Article> myArticlesInArticleFolder = myArticleFolder.getArticles();
+
+            List<Article> toSaveArticles = new ArrayList<>();
+            // 저장할 내 폴더에 가져오려는 폴더의 아티클들 추가
+            // 다른 사용자의 아티클들을 순회하며 각각의 값을 가져와 저장할 아티클을 생성
+            for (Article otherUserArticle : otherUserArticlesInArticleFolder) {
+                Article toSaveArticle = Article.builder()
+                        .url(otherUserArticle.getUrl())
+                        .titleOg(otherUserArticle.getTitleOg())
+                        .imgOg(otherUserArticle.getImgOg())
+                        .contentOg(otherUserArticle.getContentOg())
+                        .reviewHide(false)
+                        .readCount(0)
+                        .hashtag(otherUserArticle.getHashtag())
+                        .articleFolder(myArticleFolder)
+                        .member(myMember)
+                        .build();
+                toSaveArticles.add(toSaveArticle);
+                myArticlesInArticleFolder.add(toSaveArticle);
+            }
+            articleRepository.saveAll(toSaveArticles);
+        }
     }
 }
