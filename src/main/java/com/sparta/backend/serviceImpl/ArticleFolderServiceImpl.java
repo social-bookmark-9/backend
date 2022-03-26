@@ -19,6 +19,7 @@ import com.sparta.backend.responseDto.ArticlesInfoInFolderResponseDto;
 import com.sparta.backend.responseDto.LikeAddOrRemoveResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,12 +75,15 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
 
     /**
      * 아티클 폴더 삭제
-     * @param id
+     * @param folderId
      * @return void
      */
     @Override
-    public void deleteArticleFolder(long id) {
-        articleFolderRepository.delete(getFolder(id));
+    public void deleteArticleFolder(Member member, long folderId) {
+        ArticleFolder findFolder = getFolder(folderId);
+        if (findFolder.getMember().getId() == member.getId()) {
+            articleFolderRepository.delete(findFolder);
+        } else throw new AccessDeniedException("접근 권한 없음");
     }
 
     /**
@@ -100,11 +104,9 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * 폴더 안 아티클 조회
      * @param member, id
      * @return List<ArticlesInFolderResponseDto>
-     * test 필요
      */
     @Override
-    public ArticlesInFolderResponseDto findArticlesInFolder(Member member, long folderId) {
-
+    public ArticlesInFolderResponseDto findArticlesInFolderLoginTrue(Member member, long folderId) {
         // 타켓 아티클 폴더 찾기
         Optional<ArticleFolder> findArticleFolder = Optional.of(getFolder(folderId));
         // 타켓 아티클 폴더 안 모든 아티클 articles에 저장
@@ -140,6 +142,34 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         }
 
         return ArticlesInFolderResponseDto.of(findArticleFolder.get(), isMe, articlesInfoInFolderResponseDtoList);
+    }
+
+    /**
+     * 폴더 안 아티클 조회(비로그인)
+     * @param folderId
+     * @return List<ArticlesInFolderResponseDto>
+     */
+    @Override
+    public ArticlesInFolderResponseDto findArticlesInFolderLoginFalse(long folderId) {
+        Optional<ArticleFolder> findArticleFolder = Optional.of(getFolder(folderId));
+
+        List<Article> articles = new ArrayList<>();
+        findArticleFolder.map(ArticleFolder::getArticles).ifPresent(
+                articleList -> articles.addAll(articleList)
+        );
+
+        List<ArticlesInfoInFolderResponseDto> articlesInfoInFolderResponseDtoList = new ArrayList<>();
+
+        if (!articles.isEmpty()) {
+            for (Article article : articles) {
+                ArticlesInfoInFolderResponseDto articlesInfoInFolderResponseDto = ArticlesInfoInFolderResponseDto.of(article);
+                articlesInfoInFolderResponseDtoList.add(articlesInfoInFolderResponseDto);
+            }
+        } else {
+            articlesInfoInFolderResponseDtoList.add(null);
+        }
+
+        return ArticlesInFolderResponseDto.of(findArticleFolder.get(), articlesInfoInFolderResponseDtoList);
     }
 
     /**
@@ -183,7 +213,11 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         }
     }
 
-
+    /**
+     * 아티클 폴더 타이틀 목록 조회
+     * @param member
+     * @return List<ArticleFolderNameAndIdResponseDto>
+     */
     @Override
     public List<ArticleFolderNameAndIdResponseDto> getArticleFoldersName(Member member) {
         List<ArticleFolderNameAndIdResponseDto> articleFolderNameAndIdResponseDtoList = new ArrayList<>();
