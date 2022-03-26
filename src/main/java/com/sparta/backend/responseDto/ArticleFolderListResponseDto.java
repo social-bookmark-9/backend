@@ -25,7 +25,7 @@ public class ArticleFolderListResponseDto {
     private String hashTag3;
     private List<ArticleListDto> articleListDtoList = new ArrayList<>();
 
-    private ArticleFolderListResponseDto(ArticleFolder articleFolder) {
+    public ArticleFolderListResponseDto(ArticleFolder articleFolder) {
         this.folderId = articleFolder.getId();
         this.folderName = articleFolder.getArticleFolderName();
         this.likeCount = articleFolder.getLikeCount();
@@ -38,7 +38,7 @@ public class ArticleFolderListResponseDto {
         this.articleListDtoList = new ArrayList<>();
     }
 
-    private ArticleFolderListResponseDto(ArticleFolder articleFolder, List<ArticleListDto> articleListDtoList, DecideFolderInfo decideFolderInfo) {
+    public ArticleFolderListResponseDto(ArticleFolder articleFolder, List<ArticleListDto> articleListDtoList, DecideFolderInfo decideFolderInfo) {
         this.folderId = articleFolder.getId();
         this.folderName = articleFolder.getArticleFolderName();
         this.likeCount = articleFolder.getLikeCount();

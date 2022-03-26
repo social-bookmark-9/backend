@@ -16,7 +16,7 @@ public class MyPageResponseDto {
     private MemberInfoResponseDto memberInfoResponseDto;
     private List<ArticleFolderListResponseDto> articleFolderListResponseDto = new ArrayList<>();
 
-    private MyPageResponseDto(MemberInfoResponseDto memberInfoResponseDto, List<ArticleFolderListResponseDto> articleFolderListResponseDto) {
+    public MyPageResponseDto(MemberInfoResponseDto memberInfoResponseDto, List<ArticleFolderListResponseDto> articleFolderListResponseDto) {
         this.memberInfoResponseDto = memberInfoResponseDto;
         this.articleFolderListResponseDto.addAll(articleFolderListResponseDto);
     }
