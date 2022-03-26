@@ -6,6 +6,7 @@ import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
 import com.sparta.backend.responseDto.ArticleRandomResponseDto;
 import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
 import com.sparta.backend.service.MainPageService;
+import com.sparta.backend.utils.RandomGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +27,9 @@ public class MainPageController {
 
     @GetMapping("/api/mainpage")
     public ResponseEntity<RestResponseMessage> getMainPage(@AuthenticationPrincipal Member getMember) {
-
-        List<String> hashtags = new ArrayList<>();
-        hashtags.add("커리어"); hashtags.add("업무스킬"); hashtags.add("IT"); hashtags.add("디자인"); hashtags.add("마케팅");hashtags.add("투자");
-        hashtags.add("장소"); hashtags.add("동기부여"); hashtags.add("인간관계"); hashtags.add("패션");hashtags.add("예술"); hashtags.add("과학");
-        String randomHashtag = hashtags.get((int) (Math.random() * 11));
+        
+        // 랜덤 해시태그 생성
+        String randomHashtag = String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag());
 
         // 유저
         List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembers(getMember, randomHashtag);
