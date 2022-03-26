@@ -173,7 +173,7 @@ public class MainPageServiceImpl implements MainPageService {
             String recommendHashtag = getMember.getHashtag().getHashtag1();
 
             // 전체 아티클 가져오기
-            List<ArticleFolder> articleFolders = articleFolderRepository.findAll();
+            List<ArticleFolder> articleFolders = articleFolderRepository.findArticleFoldersByFolderHide(false);
             for (ArticleFolder articleFolder : articleFolders) {
                 ArticleFolderListResponseDto articleFolderListResponseDto;
                 if (articleFolder.getArticles().isEmpty()) {

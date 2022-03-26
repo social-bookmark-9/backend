@@ -33,7 +33,7 @@ public class TestMailController {
             context.setVariable("memberName", "시연용 멤버네임");
             context.setVariable("title", "시연용 제목");
             context.setVariable("url", "naver.com");
-            String message = templateEngine.process("mail", context);
+            String message = templateEngine.process("email", context);
             mimeMessageHelper.setText(message, true);
 
             javaMailSender.send(mimeMessage);
