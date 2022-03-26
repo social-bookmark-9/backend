@@ -103,7 +103,6 @@ public class Member extends Timestamped implements UserDetails {
         return true;
     }
 
-    // 테스트용
     @Builder
     public Member (String memberName, String email, String password,
                    Hashtag hashtag, String kakaoId, List<String> memberRoles, String profileImage) {

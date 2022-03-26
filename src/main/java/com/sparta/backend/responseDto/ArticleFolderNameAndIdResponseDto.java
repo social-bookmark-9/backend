@@ -11,7 +11,7 @@ public class ArticleFolderNameAndIdResponseDto {
     private long articleFolderId;
     private String articleFolderName;
 
-    private ArticleFolderNameAndIdResponseDto(ArticleFolder articleFolder) {
+    public ArticleFolderNameAndIdResponseDto(ArticleFolder articleFolder) {
         this.articleFolderId = articleFolder.getId();
         this.articleFolderName = articleFolder.getArticleFolderName();
     }
