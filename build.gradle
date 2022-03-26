@@ -25,9 +25,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
-    annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
@@ -44,18 +46,18 @@ dependencies {
     // aws S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE'
 
-    // 이제 안씀
-    // https://mvnrepository.com/artifact/net.sourceforge.htmlcleaner/htmlcleaner
-    implementation group: 'net.sourceforge.htmlcleaner', name: 'htmlcleaner', version: '2.10'
-
-    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    // Jsoup
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
 
-    // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    // Selenium (보류중)
     implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
 
     // 이메일 html 생성 타임리프
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // Mockito
+    testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+
 }
 
 tasks.named('test') {
