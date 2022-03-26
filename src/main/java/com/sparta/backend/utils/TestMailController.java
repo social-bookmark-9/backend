@@ -26,13 +26,14 @@ public class TestMailController {
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
 
-            mimeMessageHelper.setTo("bubbledreminder@gmail.com"); // 메일 수신자
+            mimeMessageHelper.setTo("leeyuwk@naver.com"); // 메일 수신자
             mimeMessageHelper.setSubject("오늘 읽을 아티클이 왔어요!"); // 메일 제목
 
             Context context = new Context(); // 메일 본문 내용 작성
-            context.setVariable("memberName", "시연용 멤버네임");
+            context.setVariable("month", "1");
+            context.setVariable("days", "1");
             context.setVariable("title", "시연용 제목");
-            context.setVariable("url", "naver.com");
+            context.setVariable("url", "https://naver.com");
             String message = templateEngine.process("email", context);
             mimeMessageHelper.setText(message, true);
 
