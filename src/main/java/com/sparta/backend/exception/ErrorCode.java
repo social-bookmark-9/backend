@@ -18,6 +18,9 @@ public enum ErrorCode {
     ENTITY_NOT_FOUND(400, HttpStatus.BAD_REQUEST, "400", "요청한 데이터를 찾을 수 없습니다."),
     DUPLICATED_VALUE(400, HttpStatus.BAD_REQUEST, "400", "중복된 값입니다."),
 
+    // Article
+    NOT_ANOTHER_USER(400, HttpStatus.BAD_REQUEST, "400", "내 컬렉션에선 아티클을 저장할 수 없습니다."),
+
     // Token
     REFRESH_TOKEN_EXPIRED(401, HttpStatus.UNAUTHORIZED, "401", "리프레시 토큰이 만료되었습니다."),
     REFRESH_TOKEN_NOTMATCH(401, HttpStatus.UNAUTHORIZED, "401", "리프레시 토큰이 일치하지 않습니다."),
