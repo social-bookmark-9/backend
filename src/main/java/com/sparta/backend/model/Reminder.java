@@ -25,20 +25,11 @@ public class Reminder{
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "title_og")
-    private String titleOg;
-
     @Column(name = "member_name", nullable = false)
     private String memberName;
 
     @Column(name = "button_date", nullable = false)
     private int buttonDate;
-
-    @Column(name = "img_og")
-    private String imgOg;
-
-    @Column(name = "url")
-    private String url;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", nullable = false)
@@ -49,12 +40,9 @@ public class Reminder{
                     Article article, String memberName, String imgOg, int buttonDate, String url) {
         this.sendDate = sendDate;
         this.email = email;
-        this.titleOg = titleOg;
         this.memberName = memberName;
         this.buttonDate = buttonDate;
-        this.imgOg = imgOg;
         this.article = article;
-        this.url = url;
     }
     
     // 리마인더 수정하기
