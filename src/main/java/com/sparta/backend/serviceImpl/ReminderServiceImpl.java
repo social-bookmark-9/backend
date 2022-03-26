@@ -35,8 +35,9 @@ public class ReminderServiceImpl implements ReminderService {
         for(Reminder reminder : reminders) {
             ReminderResponseDto reminderResponseDto = ReminderResponseDto.builder()
                     .articleId(reminder.getArticle().getId())
-                    .imgOg(reminder.getImgOg())
-                    .titleOg(reminder.getTitleOg())
+                    .imgOg(reminder.getArticle().getImgOg())
+                    .titleOg(reminder.getArticle().getTitleOg())
+                    .contentOg(reminder.getArticle().getContentOg())
                     .hashtag1(reminder.getArticle().getHashtag().getHashtag1())
                     .hashtag2(reminder.getArticle().getHashtag().getHashtag2())
                     .hashtag3(reminder.getArticle().getHashtag().getHashtag3())
@@ -53,7 +54,7 @@ public class ReminderServiceImpl implements ReminderService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         // 리마인더가 존재하는지 확인
-        if(reminderRepository.existsReminderByMemberNameAndTitleOg(member.getMemberName(), reminderRequestDto.getTitleOg())) {
+        if(reminderRepository.existsReminderByMemberNameAndArticle(member.getMemberName(), article)) {
             throw new BusinessException(ErrorCode.REMINDER_DUPLICATED);
         }
 
@@ -76,13 +77,19 @@ public class ReminderServiceImpl implements ReminderService {
     // 리마인더 수정하기
     @Override
     public void editReminder(ReminderRequestDto reminderRequestDto, Member member) {
-        Reminder reminder = reminderRepository.findReminderByMemberNameAndTitleOg(member.getMemberName(), reminderRequestDto.getTitleOg());
+        Article article = articleRepository.findById(reminderRequestDto.getArticleId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        Reminder reminder = reminderRepository.findReminderByMemberNameAndArticle(member.getMemberName(), article);
         reminder.editDate(reminderRequestDto.getButtonDate());
     }
 
     // 리마인더 삭제하기
     @Override
     public void deleteReminder(ReminderRequestDto reminderRequestDto, Member member) {
-        reminderRepository.deleteReminderByMemberNameAndTitleOg(member.getMemberName(), reminderRequestDto.getTitleOg());
+        Article article = articleRepository.findById(reminderRequestDto.getArticleId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        reminderRepository.deleteReminderByMemberNameAndArticle(member.getMemberName(), article);
     }
 }
