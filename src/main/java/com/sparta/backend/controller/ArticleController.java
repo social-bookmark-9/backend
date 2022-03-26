@@ -15,7 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @RestController
@@ -23,10 +22,7 @@ public class ArticleController {
     private final ArticleService articleService;
 
     public void isLoggedIn(Member member) {
-        if (member == null) {
-            throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED);
-        }
-    }
+        if (member == null) { throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED); }}
 
     // 아티클 생성 ✅
     @ApiOperation(value = "아티클 생성", notes = "아티클 생성 API")
