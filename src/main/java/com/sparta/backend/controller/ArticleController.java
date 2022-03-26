@@ -22,13 +22,17 @@ import javax.validation.Valid;
 public class ArticleController {
     private final ArticleService articleService;
 
-    public void isLoggedIn(Member member) { if (member == null) { throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED); }}
+    public void isLoggedIn(Member member) {
+        if (member == null) {
+            throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED);
+        }
+    }
 
     // 아티클 생성 ✅
     @ApiOperation(value = "아티클 생성", notes = "아티클 생성 API")
     @PostMapping("/articles")
-    public ResponseEntity<RestResponseMessage<?>> createArticles(@Valid @RequestBody ArticleCreateRequestDto requestDto,
-                                                                 @AuthenticationPrincipal Member member) {
+    public ResponseEntity<RestResponseMessage<?>> createArticle(@Valid @RequestBody ArticleCreateRequestDto requestDto,
+                                                                @AuthenticationPrincipal Member member) {
         isLoggedIn(member);
         ArticleCreateResponseDto responseDto = articleService.createArticle(requestDto, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 생성 성공", responseDto), HttpStatus.OK);
@@ -60,22 +64,22 @@ public class ArticleController {
     // 아티클 제목 수정 ✅
     @ApiOperation(value = "아티클 제목 수정", notes = "아티클 제목 수정")
     @PatchMapping("/articles/{id}/title")
-    public ResponseEntity<RestResponseMessage<?>> updateTitle(@Valid @RequestBody ArticleTitleRequestDto requestDto,
-                                                              @PathVariable Long id,
-                                                              @AuthenticationPrincipal Member member) {
+    public ResponseEntity<RestResponseMessage<?>> updateArticleTitle(@Valid @RequestBody ArticleTitleRequestDto requestDto,
+                                                                     @PathVariable Long id,
+                                                                     @AuthenticationPrincipal Member member) {
         isLoggedIn(member);
-        ArticleTitleResponseDto responseDto = articleService.updateTitle(requestDto, id, member);
+        ArticleTitleResponseDto responseDto = articleService.updateArticleTitle(requestDto, id, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 제목 수정 성공", responseDto), HttpStatus.OK);
     }
 
     // 아티클 해시태그 수정 ✅
     @ApiOperation(value = "아티클 해시태그 수정", notes = "아티클 해시태그 수정 API")
     @PatchMapping("/articles/{id}/hashtag")
-    public ResponseEntity<RestResponseMessage<?>> updateHashtag(@Valid @RequestBody HashtagUpdateRequestDto requestDto,
-                                                                @PathVariable Long id,
-                                                                @AuthenticationPrincipal Member member) {
+    public ResponseEntity<RestResponseMessage<?>> updateArticleHashtag(@Valid @RequestBody HashtagUpdateRequestDto requestDto,
+                                                                       @PathVariable Long id,
+                                                                       @AuthenticationPrincipal Member member) {
         isLoggedIn(member);
-        articleService.updateHashtag(requestDto, id, member);
+        articleService.updateArticleHashtag(requestDto, id, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 해시태그 수정 성공", ""), HttpStatus.OK);
     }
 
@@ -103,30 +107,41 @@ public class ArticleController {
     // 아티클 모든 리뷰 조회 ✅
     @ApiOperation(value = "모든 리뷰 가져오기", notes = "모든 리뷰 가져오기 API")
     @GetMapping("/reviews")
-    public ResponseEntity<RestResponseMessage<?>> getReviews(@AuthenticationPrincipal Member member) {
+    public ResponseEntity<RestResponseMessage<?>> getArticleReviews(@AuthenticationPrincipal Member member) {
         isLoggedIn(member);
-        ArticleReviewResponseDtos responseDtos = articleService.getReviews(member);
+        ArticleReviewResponseDtos responseDtos = articleService.getArticleReviews(member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "모든 리뷰 가져오기 성공", responseDtos), HttpStatus.OK);
     }
 
     // 아티클 읽은 횟수 증가 ✅
     @ApiOperation(value = "아티클 읽은 횟수 증가", notes = "아티클 읽은 횟수 증가 API")
     @PatchMapping("/articles/{id}/readcount")
-    public ResponseEntity<RestResponseMessage<?>> addReadCount(@PathVariable Long id,
-                                                               @AuthenticationPrincipal Member member) {
+    public ResponseEntity<RestResponseMessage<?>> addArticleReadCount(@PathVariable Long id,
+                                                                      @AuthenticationPrincipal Member member) {
         isLoggedIn(member);
-        articleService.addReadCount(id, member);
+        articleService.addArticleReadCount(id, member);
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 읽은 횟수 증가 성공", ""), HttpStatus.OK);
     }
 
-    // 아티클의 폴더 이동
+    // 아티클의 폴더 이동 ✅
     @ApiOperation(value = "아티클의 폴더 이동", notes = "아티클의 폴더 이동 API")
-    @PatchMapping("/articles/{id}")
-    public ResponseEntity<RestResponseMessage<?>> moveMyArticleToAnotherFolder(@Valid @RequestBody ArticleUpdateRequestDto requestDto,
-                                                                               @PathVariable Long id,
-                                                                               @AuthenticationPrincipal Member member) {
+    @PatchMapping("/articles/{id}/folder")
+    public ResponseEntity<RestResponseMessage<?>> updateArticleFolderChange(@Valid @RequestBody ArticleFolderChangeUpdateRequestDto requestDto,
+                                                                            @PathVariable Long id,
+                                                                            @AuthenticationPrincipal Member member) {
         isLoggedIn(member);
-        articleService.moveMyArticleToAnotherFolder(requestDto, id, member);
-        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 폴더 이동 성공", ""), HttpStatus.OK);
+        articleService.updateArticleFolderChange(requestDto, id, member);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클의 폴더 이동 성공", ""), HttpStatus.OK);
+    }
+
+    // 타유저 아티클 모두 저장
+    @ApiOperation(value = "타유저 아티클 모두 저장", notes = "타유저 아티클 모두 저장 API")
+    @PatchMapping("/articles/articlefolder/{id}")
+    public ResponseEntity<RestResponseMessage<?>> saveAllArticlesByOtherUser(@Valid @RequestBody ArticleFolderChangeUpdateRequestDto requestDto,
+                                                                             @PathVariable Long id,
+                                                                             @AuthenticationPrincipal Member member) {
+        isLoggedIn(member);
+        articleService.saveAllArticlesByOtherUser(requestDto, id, member);
+        return new ResponseEntity<>(new RestResponseMessage<>(true, "타유저 아티클 모두 저장 성공", ""), HttpStatus.OK);
     }
 }

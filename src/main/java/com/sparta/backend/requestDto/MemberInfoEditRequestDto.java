@@ -22,4 +22,6 @@ public class MemberInfoEditRequestDto {
     private String hashtag1;
     private String hashtag2;
     private String hashtag3;
+
+    private String email;
 }

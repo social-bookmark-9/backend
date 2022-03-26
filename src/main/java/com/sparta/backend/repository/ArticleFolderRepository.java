@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ArticleFolderRepository extends JpaRepository<ArticleFolder, Long> {
 
@@ -16,4 +18,6 @@ public interface ArticleFolderRepository extends JpaRepository<ArticleFolder, Lo
     @Modifying(clearAutomatically = true)
     @Query("UPDATE ArticleFolder articleFolder SET articleFolder.articleFolderName = :articleFolderName WHERE articleFolder.id = :id")
     void updateArticleFolderName(@Param("articleFolderName") String articleFolderName, @Param("id") long id);
+
+    List<ArticleFolder> findTop50ByOrderByLikeCountDesc();
 }
