@@ -1,8 +1,6 @@
 package com.sparta.backend.model;
 
 import com.sparta.backend.requestDto.ArticleReviewRequestDto;
-import com.sparta.backend.requestDto.ArticleTitleRequestDto;
-import com.sparta.backend.requestDto.ArticleUpdateRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,14 +54,6 @@ public class Article extends Timestamped {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.ALL)
     private Reminder reminder;
 
-    // 아티클 수정
-    public void updateArticle(ArticleUpdateRequestDto requestDto) {
-        this.review = requestDto.getReview();
-        this.reviewHide = requestDto.isReviewHide();
-        this.hashtag = requestDto.getHashtag();
-        this.articleFolder = requestDto.getArticleFolder();
-    }
-
     // 리뷰 수정
     public String updateArticleReview(ArticleReviewRequestDto requestDto) {
         return this.review = requestDto.getReview();
@@ -75,12 +65,15 @@ public class Article extends Timestamped {
     }
 
     // 읽은 횟수 수정
-    public Integer addReadCount() {
-        return this.readCount += 1;
+    public void addReadCount() {
+        this.readCount += 1;
     }
 
     // 아티클 타이틀 수정
     public String updateTitle(String titleOg) { return this.titleOg = titleOg; }
+
+    // 아티클 폴더 이동
+    public void updateArticleFolder(ArticleFolder articleFolder) { this.articleFolder = articleFolder;}
 
     // 연관관계 편의 메소드
     public void setArticleFolder(ArticleFolder articleFolder) {

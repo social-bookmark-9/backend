@@ -9,11 +9,12 @@ public interface ArticleService {
     ArticleGetResponseDto getArticleForMember(Long id, Member member);
     ArticleGetResponseDto getArticleForGuest(Long id);
     void deleteArticle(Long id, Member member);
-    ArticleTitleResponseDto updateTitle(ArticleTitleRequestDto requestDto, Long id, Member member);
-    void updateHashtag(HashtagUpdateRequestDto requestDto, Long id, Member member);
+    ArticleTitleResponseDto updateArticleTitle(ArticleTitleRequestDto requestDto, Long id, Member member);
+    void updateArticleHashtag(HashtagUpdateRequestDto requestDto, Long id, Member member);
     ArticleReviewResponseDto updateArticleReview(ArticleReviewRequestDto requestDto, Long id, Member member);
     ArticleReviewHideResponseDto updateArticleReviewHide(Long id, Member member);
-    ArticleReviewResponseDtos getReviews(Member member);
-    void addReadCount(Long id, Member member);
-    void moveMyArticleToAnotherFolder(ArticleUpdateRequestDto requestDto, Long id, Member member);
+    ArticleReviewResponseDtos getArticleReviews(Member member);
+    void addArticleReadCount(Long id, Member member);
+    void updateArticleFolderChange(ArticleFolderChangeUpdateRequestDto requestDto, Long id, Member member);
+    void saveAllArticlesByOtherUser(ArticleFolderChangeUpdateRequestDto requestDto, Long id, Member member);
 }
