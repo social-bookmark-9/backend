@@ -46,7 +46,6 @@ class MyPageServiceImplTest {
     @Autowired
     MyPageService myPageService;
 
-
     @PersistenceContext
     private EntityManager em;
 
