@@ -304,6 +304,12 @@ public class ArticleServiceImpl implements ArticleService {
             // 저장할 내 폴더에 가져오려는 폴더의 아티클들 추가
             // 다른 사용자의 아티클들을 순회하며 각각의 값을 가져와 저장할 아티클을 생성
             for (Article otherUserArticle : otherUserArticlesInArticleFolder) {
+                Hashtag hashtag = Hashtag.builder().
+                        hashtag1(otherUserArticle.getHashtag().getHashtag1())
+                        .hashtag2(otherUserArticle.getHashtag().getHashtag2())
+                        .hashtag3(otherUserArticle.getHashtag().getHashtag3())
+                        .build();
+
                 Article toSaveArticle = Article.builder()
                         .url(otherUserArticle.getUrl())
                         .titleOg(otherUserArticle.getTitleOg())
@@ -311,10 +317,11 @@ public class ArticleServiceImpl implements ArticleService {
                         .contentOg(otherUserArticle.getContentOg())
                         .reviewHide(false)
                         .readCount(0)
-                        .hashtag(otherUserArticle.getHashtag())
+                        .hashtag(hashtag)
                         .articleFolder(myArticleFolder)
                         .member(myMember)
                         .build();
+                hashtag.setArticle(toSaveArticle);
                 toSaveArticles.add(toSaveArticle);
                 myArticlesInArticleFolder.add(toSaveArticle);
             }

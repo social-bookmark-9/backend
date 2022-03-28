@@ -39,7 +39,7 @@ public class MyPageServiceImpl implements MyPageService {
      * @return MemberInfoDto
      */
     @Override
-    public MemberInfoResponseDto getOtherMemberInfo(long memberId) {
+    public MemberInfoResponseDto getOtherMemberInfo(Long memberId) {
         Optional<Member> member = memberRepository.findById(memberId);
             member.orElseThrow(() -> new EntityNotFoundException("해당 유저 없음"));
 
@@ -65,7 +65,7 @@ public class MyPageServiceImpl implements MyPageService {
      * @return List<ArticleFolderListDto>
      */
     @Override
-    public List<ArticleFolderListResponseDto> getOtherArticleFolderList(long memberId) {
+    public List<ArticleFolderListResponseDto> getOtherArticleFolderList(Long memberId) {
         Optional<Member> member = memberRepository.findById(memberId);
             member.orElseThrow(() -> new EntityNotFoundException("해당 유저 없음"));
 
