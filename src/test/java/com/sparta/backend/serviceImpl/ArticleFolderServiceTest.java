@@ -10,8 +10,6 @@ import com.sparta.backend.repository.HashtagRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
-import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
-import com.sparta.backend.responseDto.ArticlesInfoInFolderResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.*;
@@ -44,9 +42,6 @@ class ArticleFolderServiceTest {
     ArticleFolderService articleFolderService;
     @Autowired
     HashtagRepository hashtagRepository;
-
-
-    private final HashtagRepository hashtagRepository;
 
     @PersistenceContext
     private EntityManager em;
@@ -557,13 +552,6 @@ class ArticleFolderServiceTest {
 
     }
 
-    @AfterEach
-    public void deleteAll() {
-        articleFolderRepository.deleteAll();
-        articleRepository.deleteAll();
-        memberRepository.deleteAll();
-        hashtagRepository.deleteAll();
-    }
 }
 
 

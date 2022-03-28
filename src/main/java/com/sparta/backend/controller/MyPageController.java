@@ -35,7 +35,7 @@ public class MyPageController {
     @GetMapping("/mypage/{memberId}")
     public ResponseEntity<RestResponseMessage<MyPageResponseDto>> myPage(
             @AuthenticationPrincipal Member member,
-            @PathVariable long memberId) {
+            @PathVariable Long memberId) {
 
         boolean loginStatus = member != null;
 

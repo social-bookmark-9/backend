@@ -79,7 +79,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return void
      */
     @Override
-    public void deleteArticleFolder(Member member, long folderId) {
+    public void deleteArticleFolder(Member member, Long folderId) {
         ArticleFolder findFolder = getFolder(folderId);
         if (findFolder.getMember().getId() == member.getId()) {
             articleFolderRepository.delete(findFolder);
@@ -93,7 +93,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return void
      */
     @Override
-    public void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, long folderId) {
+    public void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, Long folderId) {
         String articleFolderName = articleFolderNameUpdateRequestDto.getArticleFolderName();
 
         ArticleFolder folder = getFolder(folderId);
@@ -106,7 +106,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return List<ArticlesInFolderResponseDto>
      */
     @Override
-    public ArticlesInFolderResponseDto findArticlesInFolderLoginTrue(Member member, long folderId) {
+    public ArticlesInFolderResponseDto findArticlesInFolderLoginTrue(Member member, Long folderId) {
         // 타켓 아티클 폴더 찾기
         Optional<ArticleFolder> findArticleFolder = Optional.of(getFolder(folderId));
         // 타켓 아티클 폴더 안 모든 아티클 articles에 저장
@@ -150,7 +150,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return List<ArticlesInFolderResponseDto>
      */
     @Override
-    public ArticlesInFolderResponseDto findArticlesInFolderLoginFalse(long folderId) {
+    public ArticlesInFolderResponseDto findArticlesInFolderLoginFalse(Long folderId) {
         Optional<ArticleFolder> findArticleFolder = Optional.of(getFolder(folderId));
 
         List<Article> articles = new ArrayList<>();
@@ -178,7 +178,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @param articleId
      */
     @Override
-    public void deleteArticleInArticleFolder(long folderId, long articleId) {
+    public void deleteArticleInArticleFolder(Long folderId, Long articleId) {
         ArticleFolder articleFolder = getFolder(folderId);
         if (!articleFolder.getArticles().isEmpty()) {
             articleFolder.getArticles()
@@ -196,7 +196,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return LikeAddOrRemoveResponseDto
      */
     @Override
-    public LikeAddOrRemoveResponseDto likeAddOrRemove(Member member, long folderId) {
+    public LikeAddOrRemoveResponseDto likeAddOrRemove(Member member, Long folderId) {
         Member findMember = getMember(member.getId());
         ArticleFolder articleFolder = getFolder(folderId);
 
@@ -238,7 +238,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * Member 조회
      * @param id
      */
-    private Member getMember(long id) {
+    private Member getMember(Long id) {
         Optional<Member> member = memberRepository.findById(id);
         if (member.isPresent()) {
             return member.get();
@@ -250,7 +250,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @param id
      * @return Optional<ArticleFolder>
      */
-    private ArticleFolder getFolder(long id) {
+    private ArticleFolder getFolder(Long id) {
         Optional<ArticleFolder> folder = articleFolderRepository.findById(id);
         if (folder.isPresent()) {
             return folder.get();
