@@ -129,7 +129,8 @@ public class OauthController {
     @GetMapping("/api/users/logout")
     public ResponseEntity<RestResponseMessage> kakaoLogout(@RequestParam String state) {
         oauthService.deleteRefreshToken(state);
-        return new ResponseEntity<>(new RestResponseMessage<>(true,"로그아웃 성공", ""), HttpStatus.OK);
+        String redirectUrl = "http://localhost:3000/";
+        return new ResponseEntity<>(new RestResponseMessage<>(true,"로그아웃 성공", redirectUrl), HttpStatus.OK);
     }
 
     // 토큰 테스트 (403)
