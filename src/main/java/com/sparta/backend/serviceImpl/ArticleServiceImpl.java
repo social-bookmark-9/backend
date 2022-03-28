@@ -45,6 +45,10 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleGetResponseDto randomArticleGenerator(Long id ,Article currentArticle, Member currentWriterMember) {
         RandomGenerator randomGenerator = new RandomGenerator();
         String mainHashtag = currentArticle.getHashtag().getHashtag1();
+        Integer reminderButtonDate;
+        if (currentArticle.getReminder() != null) { reminderButtonDate = currentArticle.getReminder().getButtonDate();}
+        else { reminderButtonDate = null; }
+
         List<Article> togetherArticles = articleRepository.findArticlesByIdNotAndHashtag_Hashtag1AndArticleFolder_FolderHide(id ,mainHashtag, false);
         List<Article> randomArticles;
         if (togetherArticles.size() > 8) { randomArticles = randomGenerator.getRandomArticles(togetherArticles, 9); }
@@ -77,7 +81,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .hashtag3(currentArticle.getHashtag().getHashtag3())
                 .review(currentArticle.getReview())
                 .reviewHide(currentArticle.getReviewHide())
-                .reminderDate(currentArticle.getReminder().getButtonDate())
+                .reminderDate(reminderButtonDate)
                 .articleFolderName(currentArticle.getArticleFolder().getArticleFolderName())
                 .recommendArticles(randomResponseDtos)
                 .build();
@@ -237,6 +241,7 @@ public class ArticleServiceImpl implements ArticleService {
         List<ArticleReviewResponseDto> responseDtos = new ArrayList<>();
         for (Article article : allArticlesByMember) {
             ArticleReviewResponseDto responseDto = ArticleReviewResponseDto.builder()
+                    .titleOg(article.getTitleOg())
                     .review(article.getReview())
                     .reviewHide(article.getReviewHide())
                     .build();
