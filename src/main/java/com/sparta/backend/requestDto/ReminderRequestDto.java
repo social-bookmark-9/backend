@@ -20,7 +20,7 @@ public class ReminderRequestDto {
     @NotNull(message = "buttonDate가 없습니다.")
     private Integer buttonDate;
 
-    @NotBlank(message = "아티클의 주소가 필요합니다.")
+    @NotBlank(message = "아티클 이미지 주소가 필요합니다.")
     private String imgOg;
 
     @NotNull(message = "아티클의 ID가 필요합니다")
