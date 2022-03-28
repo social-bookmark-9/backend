@@ -38,8 +38,8 @@ public class nplus1test {
     private ArticleFolderRepository articleFolderRepository;
     @Autowired
     private ArticleRepository articleRepository;
-
-    private final HashtagRepository hashtagRepository;
+    @Autowired
+    private HashtagRepository hashtagRepository;
 
     @Test
     public void test1() {
