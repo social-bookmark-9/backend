@@ -46,13 +46,5 @@ jobs:
         secret-key: ${{ secrets.JWT_SECRET_KEY }}
         client-id: ${{ secrets.KAKAO_CLIENT_ID }}
         
-    - name: Setup MySQL 
-      uses: samin/mysql-action@v1 
-      with: 
-        character set server: 'utf8' 
-        mysql database: ${{ secrets.SPRING_DATABASE_URL }}
-        mysql user: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
-        mysql password: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-        
     - name: Build with Gradle
       run: ./gradlew clean build
