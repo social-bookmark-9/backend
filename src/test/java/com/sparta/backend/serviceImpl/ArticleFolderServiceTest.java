@@ -26,7 +26,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.config.location=" + "classpath:/application.yml" )
 @Transactional
 @Rollback(value = true)
 class ArticleFolderServiceTest {
