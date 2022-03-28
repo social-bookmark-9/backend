@@ -543,7 +543,6 @@ class ArticleFolderServiceTest {
         System.out.println("==============================================================================================");
         List<ArticleFolder> findFolders = articleFolderRepository.findAll();
         List<Member> findMember = memberRepository.findAll();
-
     }
 }
 
