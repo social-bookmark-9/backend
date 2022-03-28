@@ -240,6 +240,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<ArticleReviewResponseDto> responseDtos = new ArrayList<>();
         for (Article article : allArticlesByMember) {
+            if (article.getReview() == null) { continue; }
             ArticleReviewResponseDto responseDto = ArticleReviewResponseDto.builder()
                     .titleOg(article.getTitleOg())
                     .review(article.getReview())
