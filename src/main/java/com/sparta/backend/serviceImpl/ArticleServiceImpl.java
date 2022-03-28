@@ -183,6 +183,7 @@ public class ArticleServiceImpl implements ArticleService {
     // 아티클 제목 수정 ✅
     @Override
     public ArticleTitleResponseDto updateArticleTitle(ArticleTitleRequestDto requestDto, Long id, Member member) {
+        //
         Article currentArticle = articleRepository.findById(id).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
         if (isIdentityVerified(currentArticle, member)) {
