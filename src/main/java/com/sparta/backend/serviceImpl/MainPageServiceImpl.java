@@ -151,7 +151,6 @@ public class MainPageServiceImpl implements MainPageService {
 
         // 비로그인 일 경우
         if(getMember == null) {
-            System.out.println("비로그인 메인페이지 아티클폴더 추천");
             List<ArticleFolder> articleFolders = articleFolderRepository.findTop50ByOrderByLikeCountDesc();
 
             for (ArticleFolder articleFolder : articleFolders) {
@@ -169,7 +168,6 @@ public class MainPageServiceImpl implements MainPageService {
         }
         // 로그인일 경우
         else {
-            System.out.println("로그인 메인페이지 아티클폴더 추천");
             String recommendHashtag = getMember.getHashtag().getHashtag1();
 
             // 전체 아티클 가져오기
