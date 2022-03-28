@@ -6,6 +6,7 @@ import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
+import com.sparta.backend.repository.HashtagRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
@@ -39,12 +40,23 @@ class MyPageServiceImplTest {
     @Autowired
     ArticleFolderRepository articleFolderRepository;
     @Autowired
+    HashtagRepository hashtagRepository;
+    @Autowired
     ArticleFolderService articleFolderService;
     @Autowired
     MyPageService myPageService;
 
+
     @PersistenceContext
     private EntityManager em;
+
+    @AfterEach
+    public void deleteAll() {
+        articleFolderRepository.deleteAll();
+        articleRepository.deleteAll();
+        memberRepository.deleteAll();
+        hashtagRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("필요 정보 저장")

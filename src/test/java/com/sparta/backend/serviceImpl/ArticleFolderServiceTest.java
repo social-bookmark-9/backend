@@ -6,6 +6,7 @@ import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
+import com.sparta.backend.repository.HashtagRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.ArticleFolderCreateRequestDto;
 import com.sparta.backend.requestDto.ArticleFolderNameUpdateRequestDto;
@@ -39,14 +40,20 @@ class ArticleFolderServiceTest {
     ArticleFolderRepository articleFolderRepository;
     @Autowired
     ArticleFolderService articleFolderService;
+    @Autowired
+    HashtagRepository hashtagRepository;
+
 
     @PersistenceContext
     private EntityManager em;
 
-//    @AfterEach
-//    public void clear() {
-//        memberRepository.deleteAll();
-//    }
+    @AfterEach
+    public void deleteAll() {
+        articleFolderRepository.deleteAll();
+        articleRepository.deleteAll();
+        memberRepository.deleteAll();
+        hashtagRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("아티클 폴더 생성")

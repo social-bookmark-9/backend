@@ -154,7 +154,7 @@ public class ArticleServiceImpl implements ArticleService {
         Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
         Member currentArticleMember = currentArticle.getMember();
-        boolean currentArticleFolderHide = currentArticle.getArticleFolder().isFolderHide();
+        boolean currentArticleFolderHide = currentArticle.getArticleFolder().getFolderHide();
 
         if (currentArticleMember == currentMember) { return randomArticleGenerator(id, currentArticle, currentArticleMember); }
         else {
@@ -168,7 +168,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleGetResponseDto getArticleForGuest(Long id) {
         Article currentArticle = articleRepository.findById(id).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
-        boolean currentArticleFolderHide = currentArticle.getArticleFolder().isFolderHide();
+        boolean currentArticleFolderHide = currentArticle.getArticleFolder().getFolderHide();
         Member currentArticleMember = currentArticle.getMember();
 
         if (currentArticleFolderHide) { throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED); }
@@ -291,7 +291,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .findArticleFolderByArticleFolderNameAndMember(requestDto.getArticleFolderName(), myMember);
         Member otherUserArticleFolderMember = otherUserArticleFolder.getMember();
 
-        if (otherUserArticleFolder.isFolderHide()) { throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED); }
+        if (otherUserArticleFolder.getFolderHide()) { throw new ArticleAccessDeniedException(ErrorCode.HANDLE_ACCESS_DENIED); }
         if (myMember == otherUserArticleFolderMember) { throw new BusinessException(ErrorCode.NOT_ANOTHER_USER); }
         else {
             // 가져오려는 폴더에 있는 아티클들

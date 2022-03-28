@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class ArticleFolderListResponseDto {
 
-    private long folderId;
+    private Long folderId;
     private String folderName;
-    private int likeCount;
-    private boolean isHide;
-    private boolean isdDeleteable;
-    private int completeRate;
+    private Integer likeCount;
+    private Boolean isHide;
+    private Boolean isdDeleteable;
+    private Integer completeRate;
     private String hashTag1;
     private String hashTag2;
     private String hashTag3;
@@ -29,8 +29,8 @@ public class ArticleFolderListResponseDto {
         this.folderId = articleFolder.getId();
         this.folderName = articleFolder.getArticleFolderName();
         this.likeCount = articleFolder.getLikeCount();
-        this.isHide = articleFolder.isFolderHide();
-        this.isdDeleteable = articleFolder.isDeleteable();
+        this.isHide = articleFolder.getFolderHide();
+        this.isdDeleteable = articleFolder.getDeleteable();
         this.completeRate = 0;
         this.hashTag1 = null;
         this.hashTag2 = null;
@@ -42,8 +42,8 @@ public class ArticleFolderListResponseDto {
         this.folderId = articleFolder.getId();
         this.folderName = articleFolder.getArticleFolderName();
         this.likeCount = articleFolder.getLikeCount();
-        this.isHide = articleFolder.isFolderHide();
-        this.isdDeleteable = articleFolder.isDeleteable();
+        this.isHide = articleFolder.getFolderHide();
+        this.isdDeleteable = articleFolder.getDeleteable();
         this.completeRate = decideFolderInfo.getCompleteRate();
         this.hashTag1 = decideFolderInfo.getHashTag1();
         this.hashTag2 = decideFolderInfo.getHashTag2();

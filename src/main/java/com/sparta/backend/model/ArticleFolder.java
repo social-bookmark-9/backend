@@ -23,10 +23,10 @@ public class ArticleFolder extends Timestamped {
     private String articleFolderName;
 
     @Column(name = "deleteable", nullable = false)
-    private boolean deleteable;
+    private Boolean deleteable;
 
     @Column(name = "folder_hide", nullable = false)
-    private boolean folderHide;
+    private Boolean folderHide;
 
     @Column(name = "like_count", nullable = false)
     private int likeCount;
