@@ -62,7 +62,7 @@ public class ArticleFolderController {
     @DeleteMapping("/articleFolder/{id}")
     public ResponseEntity<RestResponseMessage<?>> deleteArticleFolder(
             @AuthenticationPrincipal Member member,
-            @PathVariable long id) {
+            @PathVariable Long id) {
 
         checkAuth(member);
 
@@ -98,7 +98,7 @@ public class ArticleFolderController {
     @PatchMapping("/articleFolder/{id}")
     public ResponseEntity<RestResponseMessage<?>> updateArticleFolderName(
             @AuthenticationPrincipal Member member,
-            @PathVariable long id,
+            @PathVariable Long id,
             @RequestBody ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto) {
 
         checkAuth(member);
@@ -117,7 +117,7 @@ public class ArticleFolderController {
     @GetMapping("/articleFolders/{id}")
     public ResponseEntity<RestResponseMessage<ArticlesInFolderResponseDto>> findArticlesInFolder(
             @AuthenticationPrincipal Member member,
-            @PathVariable long id) {
+            @PathVariable Long id) {
 
         boolean loginStatus = member != null;
 
@@ -140,7 +140,7 @@ public class ArticleFolderController {
     public ResponseEntity<RestResponseMessage<?>> deleteArticleInArticleFolder(
             @AuthenticationPrincipal Member member,
             @PathVariable Long folderId,
-            @PathVariable long articleId) {
+            @PathVariable Long articleId) {
 
         checkAuth(member);
 
@@ -158,7 +158,7 @@ public class ArticleFolderController {
     @PatchMapping("/articleFolders/{folderId}/likes")
     public ResponseEntity<RestResponseMessage<LikeAddOrRemoveResponseDto>> likeAddOrRemove(
             @AuthenticationPrincipal Member member,
-            @PathVariable long folderId) {
+            @PathVariable Long folderId) {
 
         checkAuth(member);
 

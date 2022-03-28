@@ -50,7 +50,8 @@ class MyPageServiceImplTest {
     @PersistenceContext
     private EntityManager em;
 
-    @AfterEach
+    @Test
+    @Order(6)
     public void deleteAll() {
         articleFolderRepository.deleteAll();
         articleRepository.deleteAll();
