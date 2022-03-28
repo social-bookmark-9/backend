@@ -13,7 +13,7 @@ public class Hashtag extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hashtag_id")
-    private long id;
+    private Long id;
 
     @Column(name = "hashtag_1", nullable = false)
     private String hashtag1;

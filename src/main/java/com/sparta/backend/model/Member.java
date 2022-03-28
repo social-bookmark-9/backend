@@ -26,7 +26,7 @@ public class Member extends Timestamped implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    private long id;
+    private Long id;
 
     @Column(name = "kakao_id", unique = true)
     private String kakaoId;
