@@ -62,35 +62,39 @@ public class ArticleFolderListResponseDto {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    private static class ArticleListDto {
+    @NoArgsConstructor
+    public static class ArticleListDto {
         private String title;
         private String content;
 
-        private ArticleListDto(String title, String content) {
+        public ArticleListDto(String title, String content) {
             this.title = title;
             this.content = content;
         }
 
         public static List<ArticleListDto> of(List<Article> articles) {
+
+            System.out.println("ArticleFolderListResponseDto = " + articles);
+
             return articles.stream()
                     .map(article -> new ArticleListDto(
                             article.getTitleOg(),
                             article.getContentOg())
                     )
+
                     .collect(Collectors.toList());
         }
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    private static class DecideFolderInfo {
+    @NoArgsConstructor
+    public static class DecideFolderInfo {
         private int completeRate;
         private String hashTag1;
         private String hashTag2;
         private String hashTag3;
 
-        private DecideFolderInfo(int completeRate, String hashTag1, String hashTag2, String hashTag3) {
+        public DecideFolderInfo(int completeRate, String hashTag1, String hashTag2, String hashTag3) {
             this.completeRate = completeRate;
             this.hashTag1 = hashTag1;
             this.hashTag2 = hashTag2;
