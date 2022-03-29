@@ -69,12 +69,11 @@ jobs:
         aws-secret-access-key: ${{ secrets.CLOUD_AWS_S3_CREDENTIALS_SECRET_KEY }}
         aws-region: ${{ secrets.CLOUD_AWS_REGION_STATIC }}
 
+    - name: Copy appspec.yml
+      run: cp appspec.yml ./deploy
+
     - name: Upload to S3
       run: aws s3 cp --region ap-northeast-2 --acl private ./bubbled.zip s3://bubbled-deploy/
       
-    - name: Copy appspec.yml
-      run: cp appspec.yml ./deploy
-      
     - name: CodeDeploy
-      run: aws deploy create-deployment --application-name Bubbled-codedeploy --deployment-group-name bubbled-deploy-group --s3-location bucket=bubbled-deploy,key=bubbled.zip,bundleType=zip  
-  
+      run: aws deploy create-deployment --application-name Bubbled-codedeploy --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name bubbled-deploy-group --s3-location bucket=bubbled-deploy,bundleType=zip,key=bubbled.zip
