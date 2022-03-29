@@ -42,8 +42,8 @@ class ArticleFolderServiceTest {
     ArticleFolderRepository articleFolderRepository;
     @Autowired
     ArticleFolderService articleFolderService;
-
-    private final HashtagRepository hashtagRepository;
+    @Autowired
+    HashtagRepository hashtagRepository;
 
     @PersistenceContext
     private EntityManager em;
