@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-@SpringBootTest(properties = "spring.config.location=" + "classpath:/application.yml" )
+@SpringBootTest
 @Transactional
 @Rollback(value = false)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
