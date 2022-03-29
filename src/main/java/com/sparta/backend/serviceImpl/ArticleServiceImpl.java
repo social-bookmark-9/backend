@@ -131,6 +131,9 @@ public class ArticleServiceImpl implements ArticleService {
             reminderService.createReminder(requestDto1, member);
         }
 
+        // 아티클 폴더 해쉬태크 설정
+
+
         return ArticleCreateResponseDto.builder()
                 .articleId(article.getId())
                 .createdAt(article.getCreatedAt())
