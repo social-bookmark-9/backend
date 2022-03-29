@@ -23,7 +23,7 @@ import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.Optional;
 
-@SpringBootTest(properties = "spring.config.location=" + "classpath:/application.yml" )
+@SpringBootTest
 @Transactional
 @RequiredArgsConstructor
 public class nplus1test {
@@ -127,15 +127,15 @@ public class nplus1test {
 
         em.flush();
         em.clear();
-        System.out.println("############### 시작 #################");
+        System.out.println("############### 아티클 쿼리 시작 #################");
         articleRepository.findAll();
         System.out.println("############### 종료 #################");
 
-        System.out.println("############### 시작 #################");
+        System.out.println("############### 아티클 폴더 쿼리 시작 #################");
         articleFolderRepository.findAll();
         System.out.println("############### 종료 #################");
 
-        System.out.println("############### 시작 #################");
+        System.out.println("############### 멤버 쿼리 시작 #################");
         memberRepository.findAll();
         System.out.println("############### 종료 #################");
 

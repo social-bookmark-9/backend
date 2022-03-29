@@ -39,9 +39,8 @@ public class TestMailController {
 
             javaMailSender.send(mimeMessage);
 
-            log.info("Mail send Success!!");
         } catch (MessagingException e) {
-            log.info("Mail send fail!!");
+
             throw new RuntimeException(e);
         }
         return "good";
