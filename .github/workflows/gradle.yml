@@ -61,6 +61,9 @@ jobs:
     - name: Make zip file
       run: zip -r ./bubbled.zip ./deploy
 
+    - name: Copy appspec.yml
+      run: cp appspec.yml ./deploy
+
     # Deploy
     - name: Deploy
       uses: aws-actions/configure-aws-credentials@v1
@@ -68,9 +71,6 @@ jobs:
         aws-access-key-id: ${{ secrets.CLOUD_AWS_S3_CREDENTIALS_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.CLOUD_AWS_S3_CREDENTIALS_SECRET_KEY }}
         aws-region: ${{ secrets.CLOUD_AWS_REGION_STATIC }}
-
-    - name: Copy appspec.yml
-      run: cp appspec.yml ./deploy
 
     - name: Upload to S3
       run: aws s3 cp --region ap-northeast-2 --acl private ./bubbled.zip s3://bubbled-deploy/
