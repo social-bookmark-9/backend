@@ -31,6 +31,15 @@ public class ArticleFolder extends Timestamped {
     @Column(name = "like_count", nullable = false)
     private int likeCount;
 
+    @Column(name = "folder_hashtag1")
+    private String folderHashtag1;
+
+    @Column(name = "folder_hashtag2")
+    private String folderHashtag2;
+
+    @Column(name = "folder_hashtag3")
+    private String folderHashtag3;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
@@ -56,6 +65,27 @@ public class ArticleFolder extends Timestamped {
     public void decreaseLikeCount(int currentLikeCount) {
         this.likeCount = --currentLikeCount;
     }
+
+    public void setFolderHashtag(List<String> sortedHashtag) {
+        if (sortedHashtag.size() == 1) {
+            this.folderHashtag1 = sortedHashtag.get(0);
+        } else if (sortedHashtag.size() == 2) {
+            this.folderHashtag1 = sortedHashtag.get(0);
+            this.folderHashtag2 = sortedHashtag.get(1);
+        } else {
+            this.folderHashtag1 = sortedHashtag.get(0);
+            this.folderHashtag2 = sortedHashtag.get(1);
+            this.folderHashtag3 = sortedHashtag.get(2);
+        }
+    }
+
+
+
+
+
+
+
+
 
     // 아티클 폴더에서 해당 아티클 삭제 (아티클 폴더를 수정하기 위함)
     public void deleteArticleFromArticleFolder(Article currentArticle) {

@@ -54,8 +54,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
     @Override
     public void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member) {
         // TODO: 한 유저가 1개 이상의 동일한 아티클 폴더 이름을 생성할 수 없음 (현우)
-        Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
-                () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
+        Member currentMember = getMember(member.getId());
 
         ArticleFolder savedArticleFolder = articleFolderRepository
                 .findArticleFolderByArticleFolderNameAndMember(articleFolderRequestDto.getArticleFolderName(), currentMember);
@@ -70,7 +69,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
                     .build();
 
             articleFolderRepository.save(articleFolder);
-        } else { throw new InvalidValueException(ErrorCode.DUPLICATED_VALUE); }
+        } else throw new InvalidValueException(ErrorCode.DUPLICATED_VALUE);
     }
 
     /**
@@ -242,7 +241,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         Optional<Member> member = memberRepository.findById(id);
         if (member.isPresent()) {
             return member.get();
-        } else throw new EntityNotFoundException("존재하지 않는 회원");
+        } else throw new EntityNotFoundException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage());
     }
 
     /**

@@ -21,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -98,8 +98,8 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleFolder articleFolder = articleFolderRepository
                 .findArticleFolderByArticleFolderNameAndMember(requestDto.getArticleFolderName(), currentMember);
 
-        Hashtag hashtag = Hashtag.builder().
-                hashtag1(requestDto.getHashtag1())
+        Hashtag hashtag = Hashtag.builder()
+                .hashtag1(requestDto.getHashtag1())
                 .hashtag2(requestDto.getHashtag2())
                 .hashtag3(requestDto.getHashtag3())
                 .build();
@@ -121,11 +121,8 @@ public class ArticleServiceImpl implements ArticleService {
         hashtag.setArticle(article);
         Article savedArticle = articleRepository.save(article);
 
-        // 아티클 폴더 해쉬태크 설정
-        List<Article> articlesInFolder = savedArticle.getArticleFolder().getArticles();
-        if (articlesInFolder.isEmpty()) {
+        List<String> sortedHashtag = sortingHashtag(savedArticle.getArticleFolder());
 
-        }
 
         if (requestDto.getReminderDate() != 0) {
             ReminderRequestDto requestDto1 = ReminderRequestDto.builder()
@@ -150,6 +147,31 @@ public class ArticleServiceImpl implements ArticleService {
                 .isRead(false)
                 .isSaved(true)
                 .build();
+    }
+
+    private List<String> sortingHashtag(ArticleFolder findFolder) {
+        Map<String, Integer> map = new HashMap<>();
+
+        List<String> articleHashtag1List = findFolder.getArticles()
+                .stream()
+                .map(eachArticle -> eachArticle.getHashtag().getHashtag1())
+                .collect(Collectors.toList());
+
+        for (String articleHasTag1 : articleHashtag1List) {
+            if (map.containsKey(articleHasTag1)) {
+                int cnt = map.get(articleHasTag1);
+                cnt++;
+                map.put(articleHasTag1, cnt);
+            } else {
+                map.put(articleHasTag1, 1);
+            }
+        }
+
+        return map.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     // 특정 아티클 조회 (로그인) ✅
