@@ -45,8 +45,8 @@ class MyPageServiceImplTest {
     ArticleFolderService articleFolderService;
     @Autowired
     MyPageService myPageService;
-
-    private final HashtagRepository hashtagRepository;
+    @Autowired
+    HashtagRepository hashtagRepository;
 
     @PersistenceContext
     private EntityManager em;
@@ -265,8 +265,9 @@ class MyPageServiceImplTest {
             System.out.println(articleFolderListResponseDto.getFolderId());
         }
     }
-
-    @AfterEach
+    @Test
+    @DisplayName("모든 데이터 지우기")
+    @Order(6)
     public void deleteAll() {
         articleFolderRepository.deleteAll();
         articleRepository.deleteAll();

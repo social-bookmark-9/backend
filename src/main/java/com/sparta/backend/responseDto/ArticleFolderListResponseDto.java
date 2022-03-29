@@ -81,7 +81,6 @@ public class ArticleFolderListResponseDto {
                             article.getTitleOg(),
                             article.getContentOg())
                     )
-
                     .collect(Collectors.toList());
         }
     }
