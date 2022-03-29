@@ -62,7 +62,7 @@ jobs:
       run: zip -r ./bubbled.zip ./deploy
 
     - name: Copy appspec.yml
-      run: cp appspec.yml ./deploy
+      run: cp appspec.yaml ./deploy
 
     # Deploy
     - name: Deploy
