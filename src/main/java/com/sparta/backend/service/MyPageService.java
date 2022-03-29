@@ -9,10 +9,10 @@ import java.util.List;
 public interface MyPageService {
 
     MemberInfoResponseDto getMyMemberInfo(Member member);
-
-    MemberInfoResponseDto getOtherMemberInfo(long memberId);
+  
+    MemberInfoResponseDto getOtherMemberInfo(Long memberId);
 
     List<ArticleFolderListResponseDto> getMyArticleFolderList(Member member);
 
-    List<ArticleFolderListResponseDto> getOtherArticleFolderList(long memberId);
+    List<ArticleFolderListResponseDto> getOtherArticleFolderList(Long memberId);
 }
