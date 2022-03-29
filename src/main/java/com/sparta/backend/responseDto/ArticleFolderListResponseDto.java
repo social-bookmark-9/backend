@@ -62,12 +62,12 @@ public class ArticleFolderListResponseDto {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor
     private static class ArticleListDto {
         private String title;
         private String content;
 
-        private ArticleListDto(String title, String content) {
+        public ArticleListDto(String title, String content) {
             this.title = title;
             this.content = content;
         }
@@ -83,14 +83,14 @@ public class ArticleFolderListResponseDto {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor
     private static class DecideFolderInfo {
         private int completeRate;
         private String hashTag1;
         private String hashTag2;
         private String hashTag3;
 
-        private DecideFolderInfo(int completeRate, String hashTag1, String hashTag2, String hashTag3) {
+        public DecideFolderInfo(int completeRate, String hashTag1, String hashTag2, String hashTag3) {
             this.completeRate = completeRate;
             this.hashTag1 = hashTag1;
             this.hashTag2 = hashTag2;

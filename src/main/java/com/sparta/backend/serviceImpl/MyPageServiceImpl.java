@@ -40,10 +40,9 @@ public class MyPageServiceImpl implements MyPageService {
      */
     @Override
     public MemberInfoResponseDto getOtherMemberInfo(Long memberId) {
-        Optional<Member> member = memberRepository.findById(memberId);
-            member.orElseThrow(() -> new EntityNotFoundException("해당 유저 없음"));
+        Member findMember = getMember(memberId);
 
-        return MemberInfoResponseDto.of(member.get());
+        return MemberInfoResponseDto.of(findMember);
     }
 
     /**
@@ -53,8 +52,8 @@ public class MyPageServiceImpl implements MyPageService {
      */
     @Override
     public List<ArticleFolderListResponseDto> getMyArticleFolderList(Member member) {
-        Optional<Member> findMember = memberRepository.findById(member.getId());
-        List<ArticleFolder> myArticleFolders = findMember.get().getArticleFolders();
+        Member findMember = getMember(member.getId());
+        List<ArticleFolder> myArticleFolders = findMember.getArticleFolders();
 
         return getArticleFolderListDtoList(myArticleFolders);
     }
@@ -66,10 +65,8 @@ public class MyPageServiceImpl implements MyPageService {
      */
     @Override
     public List<ArticleFolderListResponseDto> getOtherArticleFolderList(Long memberId) {
-        Optional<Member> member = memberRepository.findById(memberId);
-            member.orElseThrow(() -> new EntityNotFoundException("해당 유저 없음"));
-
-        List<ArticleFolder> otherArticleFolders = member.get().getArticleFolders();
+        Member findMember = getMember(memberId);
+        List<ArticleFolder> otherArticleFolders = findMember.getArticleFolders();
 
         return getArticleFolderListDtoList(otherArticleFolders);
     }
@@ -88,5 +85,16 @@ public class MyPageServiceImpl implements MyPageService {
         }
 
         return articleFolderListDtoListResponse;
+    }
+
+    /**
+     * Member 조회
+     * @param id
+     */
+    private Member getMember(Long id) {
+        Optional<Member> member = memberRepository.findById(id);
+        if (member.isPresent()) {
+            return member.get();
+        } else throw new EntityNotFoundException("존재하지 않는 회원");
     }
 }
