@@ -56,13 +56,13 @@ jobs:
     # Jar 파일 복사
     - name: Copy Jar
       run: cp ./build/libs/*.jar ./deploy
+      
+    - name: Copy appspec.yaml
+      run: cp appspec.yaml ./deploy
 
     # 파일 압축
     - name: Make zip file
       run: zip -r ./bubbled.zip ./deploy
-
-    - name: Copy appspec.yml
-      run: cp appspec.yaml ./deploy
 
     # Deploy
     - name: Deploy
