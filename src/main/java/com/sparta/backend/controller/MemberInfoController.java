@@ -9,6 +9,7 @@ import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.HashtagRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.MemberInfoEditRequestDto;
+import com.sparta.backend.requestDto.MemberNameDuplicateDto;
 import com.sparta.backend.responseDto.MemberLoginResponseDto;
 import com.sparta.backend.service.MemberInfoService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -131,5 +133,15 @@ public class MemberInfoController {
         memberInfoService.editEmail(memberInfoEditRequestDto, editMember);
 
         return new ResponseEntity<>(new RestResponseMessage<>(true, "리마인더 이메일이 업데이트 되었습니다.", ""), HttpStatus.OK);
+    }
+
+    // 유저 멤버네임 중복 확인
+    @GetMapping("/api/users/checkmembername")
+    public ResponseEntity<RestResponseMessage> checkDuplicateMemberName(@Valid @RequestBody MemberNameDuplicateDto memberNameDuplicateDto){
+        if(memberInfoService.checkDuplicateMemberName(memberNameDuplicateDto.getMemberName())) {
+            return new ResponseEntity<>(new RestResponseMessage<>(true, "중복된 유저명이 존재합니다.", ""), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new RestResponseMessage<>(true, "사용가능한 유저명 입니다.", ""), HttpStatus.OK);
+        }
     }
 }

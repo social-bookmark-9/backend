@@ -59,4 +59,5 @@ logging:
             BasicBinder: TRACE
 
 secret-key: ${{ secrets.JWT_SECRET_KEY}}
+
 client-id: ${{ secrets.KAKAO_CLIENT_ID}}

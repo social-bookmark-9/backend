@@ -2,6 +2,7 @@ package com.sparta.backend.serviceImpl;
 
 import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
+import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.requestDto.MemberInfoEditRequestDto;
 import com.sparta.backend.service.MemberInfoService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import java.util.Objects;
 @Transactional
 @RequiredArgsConstructor
 public class MemberInfoServiceImpl implements MemberInfoService {
+
+    private final MemberRepository memberRepository;
 
     // 프로필 닉네임 수정하기
     @Override
@@ -88,5 +91,11 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     @Override
     public void editEmail(MemberInfoEditRequestDto memberInfoEditRequestDto, Member member) {
         member.editEmail(memberInfoEditRequestDto.getEmail());
+    }
+
+    // 회원가입시 멤버네임 중복 확인
+    @Override
+    public boolean checkDuplicateMemberName(String memberName) {
+        return memberRepository.existsMemberByMemberName(memberName);
     }
 }
