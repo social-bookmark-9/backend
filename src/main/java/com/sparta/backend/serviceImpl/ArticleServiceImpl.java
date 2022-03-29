@@ -119,7 +119,13 @@ public class ArticleServiceImpl implements ArticleService {
         article.setArticleFolder(articleFolder);
         article.setHashtag(hashtag);
         hashtag.setArticle(article);
-        articleRepository.save(article);
+        Article savedArticle = articleRepository.save(article);
+
+        // 아티클 폴더 해쉬태크 설정
+        List<Article> articlesInFolder = savedArticle.getArticleFolder().getArticles();
+        if (articlesInFolder.isEmpty()) {
+
+        }
 
         if (requestDto.getReminderDate() != 0) {
             ReminderRequestDto requestDto1 = ReminderRequestDto.builder()
@@ -130,9 +136,6 @@ public class ArticleServiceImpl implements ArticleService {
                     .build();
             reminderService.createReminder(requestDto1, member);
         }
-
-        // 아티클 폴더 해쉬태크 설정
-
 
         return ArticleCreateResponseDto.builder()
                 .articleId(article.getId())
