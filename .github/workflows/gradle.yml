@@ -57,8 +57,8 @@ jobs:
     - name: Copy Jar
       run: cp ./build/libs/*.jar ./deploy
       
-    - name: Copy appspec.yaml
-      run: cp appspec.yaml ./deploy
+    - name: Copy appspec.yml
+      run: cp appspec.yml ./deploy
 
     # 파일 압축
     - name: Make zip file
