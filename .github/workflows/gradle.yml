@@ -79,5 +79,5 @@ jobs:
     - name: Upload to S3
       run: aws s3 cp --region ap-northeast-2 --acl private ./bubbled.zip s3://bubbled-deploy/
       
-    - name: CodeDeploy
-      run: aws deploy create-deployment --application-name Bubbled-codedeploy --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name bubbled-deploy-group --s3-location bucket=bubbled-deploy,bundleType=zip,key=bubbled.zip
+    # - name: CodeDeploy
+    #  run: aws deploy create-deployment --application-name Bubbled-codedeploy --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name bubbled-deploy-group --s3-location bucket=bubbled-deploy,bundleType=zip,key=bubbled.zip
