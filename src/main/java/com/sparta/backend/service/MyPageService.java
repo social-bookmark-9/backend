@@ -9,7 +9,7 @@ import java.util.List;
 public interface MyPageService {
 
     MemberInfoResponseDto getMyMemberInfo(Member member);
-  
+
     MemberInfoResponseDto getOtherMemberInfo(Long memberId);
 
     List<ArticleFolderListResponseDto> getMyArticleFolderList(Member member);

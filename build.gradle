@@ -54,10 +54,6 @@ dependencies {
 
     // 이메일 html 생성 타임리프
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
-    // Mockito
-    testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
-
 }
 
 tasks.named('test') {
