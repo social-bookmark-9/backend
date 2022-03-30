@@ -23,7 +23,7 @@ import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.Optional;
 
-@SpringBootTest(properties = "spring.config.location=" + "classpath:/application.yml" )
+@SpringBootTest
 @Transactional
 @RequiredArgsConstructor
 public class nplus1test {
