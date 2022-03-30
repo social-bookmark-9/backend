@@ -27,7 +27,6 @@
 
     <!-- prod 환경에서는 로그 파일을 생성해 저장한다. -->
     <springProfile name="prod">
-
         <!-- 콘솔 로그 처리 -->
         <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
