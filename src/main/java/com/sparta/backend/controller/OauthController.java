@@ -125,12 +125,11 @@ public class OauthController {
         return new ResponseEntity<>(new RestResponseMessage<>(true,"토큰 재발급", token), HttpStatus.OK);
     }
 
-    // 로그아웃 ( 카카오계정 세션 만료시키기 )
+    // 로그아웃 ( DB에 저장된 리프레시 토큰 삭제 )
     @GetMapping("/api/users/logout")
-    public ResponseEntity<RestResponseMessage> kakaoLogout(@RequestParam String state) {
-        oauthService.deleteRefreshToken(state);
-        String redirectUrl = "http://localhost:3000/";
-        return new ResponseEntity<>(new RestResponseMessage<>(true,"로그아웃 성공", redirectUrl), HttpStatus.OK);
+    public ResponseEntity<RestResponseMessage> kakaoLogout(@RequestBody TokenRequestDto tokenRequestDto) {
+        oauthService.deleteRefreshToken(tokenRequestDto.getRefreshToken());
+        return new ResponseEntity<>(new RestResponseMessage<>(true,"로그아웃 성공", ""), HttpStatus.OK);
     }
 
     // 토큰 테스트 (403)

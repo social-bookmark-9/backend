@@ -139,9 +139,9 @@ public class MemberInfoController {
     @GetMapping("/api/users/checkmembername")
     public ResponseEntity<RestResponseMessage> checkDuplicateMemberName(@Valid @RequestBody MemberNameDuplicateDto memberNameDuplicateDto){
         if(memberInfoService.checkDuplicateMemberName(memberNameDuplicateDto.getMemberName())) {
-            return new ResponseEntity<>(new RestResponseMessage<>(true, "중복된 유저명이 존재합니다.", ""), HttpStatus.OK);
+            return new ResponseEntity<>(new RestResponseMessage<>(true, "사용 불가능한 닉네임 입니다", ""), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new RestResponseMessage<>(true, "사용가능한 유저명 입니다.", ""), HttpStatus.OK);
+            return new ResponseEntity<>(new RestResponseMessage<>(true, "사용 가능한 닉네임 입니다", ""), HttpStatus.OK);
         }
     }
 }
