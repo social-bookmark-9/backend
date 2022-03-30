@@ -11,6 +11,7 @@ import com.sparta.backend.repository.RefreshTokenRepository;
 import com.sparta.backend.responseDto.MemberLoginResponseDto;
 import com.sparta.backend.service.OauthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class OauthController {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -39,15 +41,17 @@ public class OauthController {
             Member member = memberRepository.findMemberByKakaoId(kakaoMemberInfoRequestDto.getKakaoId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다."));
 
-            TokenDto token = jwtTokenProvider.createAccessRefreshToken(((Member) member).getUsername(), member.getMemberRoles());
+            TokenDto token = jwtTokenProvider.createAccessRefreshToken((member).getUsername(), member.getMemberRoles());
 
             // Refresh Token이 이미 존재할 경우 업데이트, 없으면 생성.
             if (refreshTokenRepository.findByKey(member.getKakaoId()).isPresent()) {
+                log.info("리프레시 토큰이 존재합니다.");
                 RefreshToken refreshToken = refreshTokenRepository.findByKey(member.getKakaoId())
                         .orElseThrow(() -> new IllegalArgumentException("해당 토큰은 존재하지 않습니다"));
                 RefreshToken updateRefreshToken = refreshToken.updateToken(token.getRefreshToken());
                 refreshTokenRepository.save(updateRefreshToken);
             } else {
+                log.info("리프레시 토큰이 존재하지 않습니다.");
                 RefreshToken refreshToken = RefreshToken.builder()
                         .key(member.getKakaoId())
                         .token(token.getRefreshToken())
