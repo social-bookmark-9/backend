@@ -20,7 +20,6 @@ public interface ArticleFolderRepository extends JpaRepository<ArticleFolder, Lo
     void updateArticleFolderName(@Param("articleFolderName") String articleFolderName, @Param("id") long id);
 
     // 비로그인시 메인페이지
-//    List<ArticleFolder> findTop50ByOrderByLikeCountDesc(boolean folderHide);
     List<ArticleFolder> findTop50ByOrderByLikeCountDesc();
 
     // 로그인시 메인페이지
