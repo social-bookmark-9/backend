@@ -136,7 +136,7 @@ public class MemberInfoController {
     }
 
     // 유저 멤버네임 중복 확인
-    @GetMapping("/api/users/checkmembername")
+    @PostMapping("/api/users/checkmembername")
     public ResponseEntity<RestResponseMessage> checkDuplicateMemberName(@Valid @RequestBody MemberNameDuplicateDto memberNameDuplicateDto){
         if(memberInfoService.checkDuplicateMemberName(memberNameDuplicateDto.getMemberName())) {
             return new ResponseEntity<>(new RestResponseMessage<>(true, "사용 불가능한 닉네임 입니다", ""), HttpStatus.OK);
