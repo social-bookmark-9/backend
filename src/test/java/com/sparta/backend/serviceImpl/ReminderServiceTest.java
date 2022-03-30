@@ -1,15 +1,20 @@
 package com.sparta.backend.serviceImpl;
 
 import com.sparta.backend.model.*;
+import com.sparta.backend.repository.ArticleFolderRepository;
+import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.ReminderRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
@@ -17,6 +22,8 @@ class ReminderServiceTest {
 
     @Mock
     ReminderRepository reminderRepository;
+    @Mock
+    ArticleRepository articleRepository;
     
     // hashtag
     static String hashtag1 = "IT";
@@ -31,12 +38,12 @@ class ReminderServiceTest {
     static String kakaoId = "testKakaoId";
     static String profileImage = "testProfileImage";
     
-    static Member member;
+    static Member setupMember;
 
     // articleFolder
     static String articleFolderName = "미분류 컬랙션";
 
-    static ArticleFolder articleFolder;
+    static ArticleFolder setupArticleFolder;
 
     // article
     static String url = "testUrl";
@@ -44,7 +51,11 @@ class ReminderServiceTest {
     static String imgOg = "testImgOg";
     static String contentOg = "testContentOg";
 
-    static Article article;
+    static Article setupArticle;
+
+    // reminder
+
+    static Reminder setupReminder;
 
     @BeforeAll
     static void setup() {
@@ -59,7 +70,7 @@ class ReminderServiceTest {
                 .build();
         
         // 멤버 생성
-        member = Member.builder()
+        setupMember = Member.builder()
                 .email(email)
                 .password(password)
                 .memberName(memberName)
@@ -69,18 +80,18 @@ class ReminderServiceTest {
                 .profileImage(profileImage)
                 .build();
 
-        memberHashtag.setMember(member);
+        memberHashtag.setMember(setupMember);
 
         // 아티클폴더 생성
-        articleFolder = ArticleFolder.builder()
+        setupArticleFolder = ArticleFolder.builder()
                 .articleFolderName(articleFolderName)
                 .deleteable(false)
                 .folderHide(true)
-                .member(member)
+                .member(setupMember)
                 .build();
 
         // 아티클 생성
-        article = Article.builder()
+        setupArticle = Article.builder()
                 .url(url)
                 .titleOg(titleOg)
                 .imgOg(imgOg)
@@ -88,12 +99,24 @@ class ReminderServiceTest {
                 .reviewHide(false)
                 .readCount(0)
                 .hashtag(articleHashtag)
-                .articleFolder(articleFolder)
+                .articleFolder(setupArticleFolder)
                 .build();
 
-        article.setArticleFolder(articleFolder);
-        article.setHashtag(articleHashtag);
-        articleHashtag.setArticle(article);
+        setupArticle.setArticleFolder(setupArticleFolder);
+        setupArticle.setHashtag(articleHashtag);
+        articleHashtag.setArticle(setupArticle);
+
+        // 리마인더 생성
+        setupReminder = Reminder.builder()
+                .sendDate(LocalDate.now().plusDays(3))
+                .email(setupMember.getEmail())
+                .titleOg(setupArticle.getTitleOg())
+                .memberName(setupMember.getMemberName())
+                .imgOg(setupArticle.getImgOg())
+                .buttonDate(3)
+                .article(setupArticle)
+                .url(setupArticle.getUrl())
+                .build();
     }
 
     @Test
@@ -101,25 +124,57 @@ class ReminderServiceTest {
     @DisplayName("리마인더 생성 테스트")
     void createReminder() {
         // given
-        System.out.println(article);
-        System.out.println();
+        Reminder saveReminder = Reminder.builder()
+                .sendDate(LocalDate.now().plusDays(3))
+                .email(setupMember.getEmail())
+                .titleOg(setupArticle.getTitleOg())
+                .memberName(setupMember.getMemberName())
+                .imgOg(setupArticle.getImgOg())
+                .buttonDate(3)
+                .article(setupArticle)
+                .url(setupArticle.getUrl())
+                .build();
+
+        when(reminderRepository.findOne(any())).thenReturn(Optional.ofNullable(saveReminder));
+
+        // when
+        Optional<Reminder> reminder = reminderRepository.findOne(any());
+
+        // then
+        Assertions.assertEquals(saveReminder, reminder.get());
+
     }
 
     @Test
     @Order(2)
     @DisplayName("리마인더 수정 테스트")
     void editReminder() {
+        // given
+        when(articleRepository.findById(1L)).thenReturn(Optional.ofNullable(setupArticle));
+        Optional<Article> article = articleRepository.findById(1L);
+
+        when(reminderRepository.findReminderByMemberNameAndArticle(setupMember.getMemberName(), article.get()))
+                .thenReturn(setupReminder);
+        Reminder reminder = reminderRepository.findReminderByMemberNameAndArticle(setupMember.getMemberName(), article.get());
+
+        // when
+        reminder.editDate(7);
+
+        // then
+        Assertions.assertEquals(reminder.getSendDate(), LocalDate.now().plusDays(7));
     }
 
     @Test
     @Order(3)
     @DisplayName("리마인더 확인 테스트")
     void getReminders() {
+        // get 방식은 통합테스트에서 진행
     }
 
     @Test
     @Order(4)
     @DisplayName("리마인더 삭제 테스트")
     void deleteReminder() {
+        // delete 방식은 통합테스트 진행
     }
 }
