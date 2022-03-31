@@ -92,10 +92,4 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     public void editEmail(MemberInfoEditRequestDto memberInfoEditRequestDto, Member member) {
         member.editEmail(memberInfoEditRequestDto.getEmail());
     }
-
-    // 회원가입시 멤버네임 중복 확인
-    @Override
-    public boolean checkDuplicateMemberName(String memberName) {
-        return memberRepository.existsMemberByMemberName(memberName);
-    }
 }
