@@ -1,7 +1,6 @@
 package com.sparta.backend.serviceImpl;
 
 import com.sparta.backend.model.*;
-import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.ReminderRepository;
 import org.junit.jupiter.api.*;
@@ -166,15 +165,15 @@ class ReminderServiceTest {
 
     @Test
     @Order(3)
-    @DisplayName("리마인더 확인 테스트")
+    @DisplayName("리마인더 리스트 가져오기 테스트")
     void getReminders() {
-        // get 방식은 통합테스트에서 진행
+        // ReminderRepository 에서 테스트 예정
     }
 
     @Test
     @Order(4)
     @DisplayName("리마인더 삭제 테스트")
     void deleteReminder() {
-        // delete 방식은 통합테스트 진행
+        // ReminderRepository 에서 테스트 예정
     }
 }

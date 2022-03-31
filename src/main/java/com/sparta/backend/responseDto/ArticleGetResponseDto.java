@@ -1,7 +1,5 @@
 package com.sparta.backend.responseDto;
 
-import com.sparta.backend.model.Article;
-import com.sparta.backend.model.Member;
 import lombok.Builder;
 import lombok.Getter;
 

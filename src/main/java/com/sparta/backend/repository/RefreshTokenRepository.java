@@ -9,4 +9,8 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Stri
     Optional<RefreshToken> findByKey(String key);
 
     void deleteRefreshTokenByToken(String token);
+
+    void deleteRefreshTokenByKey(String key);
+
+    boolean existsRefreshTokenByKey(String kakaoId);
 }

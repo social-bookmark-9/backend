@@ -19,6 +19,7 @@ import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.repository.RefreshTokenRepository;
 import com.sparta.backend.service.OauthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +36,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -63,10 +65,10 @@ public class OauthServiceImpl implements OauthService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
 
-        body.add("redirect_uri", "http://localhost:3000/api/users/login"); // 프론트 로컬 연결 테스트용
+//        body.add("redirect_uri", "http://localhost:3000/api/users/login"); // 프론트 로컬 연결 테스트용
 //        body.add("redirect_uri", "http://finalproject9.s3-website.ap-northeast-2.amazonaws.com/api/users/login"); // 프론트 서버 연결 테스트용
 //        body.add("redirect_uri", "http://3.34.99.169/api/users/login"); // 서버 연결 테스트용
-//        body.add("redirect_uri", "http://localhost:8080/api/users/login"); // 서버 연결 테스트용
+        body.add("redirect_uri", "http://localhost:8080/api/users/login"); // 서버 연결 테스트용
         body.add("code", code);
 
         // HTTP 요청 보내기
@@ -109,17 +111,6 @@ public class OauthServiceImpl implements OauthService {
                 .get("profile").get("profile_image_url").asText();
 
         return new KakaoMemberInfoRequestDto(id, email, profileImage);
-    }
-
-    // 회원가입 유무 체크
-    @Override
-    public boolean checkIfMemberExists(KakaoMemberInfoRequestDto kakaoUserInfo) {
-        String kakaoId = kakaoUserInfo.getKakaoId();
-        Member checkMember = memberRepository.findMemberByKakaoId(kakaoId).orElse(null);
-        if (checkMember == null) {
-            return false;
-        }
-        return true;
     }
 
     // 회원가입
@@ -166,6 +157,8 @@ public class OauthServiceImpl implements OauthService {
     public TokenDto reissue(TokenRequestDto tokenRequestDto) {
         // 리프레시 토큰도 만료되었을 경우 에러
         if (!jwtTokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
+            // 기존 db에 있던 리프레시 토큰 삭제.
+            refreshTokenRepository.deleteRefreshTokenByToken(tokenRequestDto.getRefreshToken());
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
 
@@ -183,18 +176,54 @@ public class OauthServiceImpl implements OauthService {
         if (!refreshToken.getToken().equals(tokenRequestDto.getRefreshToken()))
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOTMATCH);
 
+        refreshTokenRepository.deleteRefreshTokenByToken(refreshToken.getToken());
         // AccessToken ,Refresh Token 재발급 및 리프레시 토큰 저장
         TokenDto newToken = jwtTokenProvider.createAccessRefreshToken(member.getUsername(), member.getMemberRoles());
         RefreshToken updateRefreshToken = refreshToken.updateToken(newToken.getRefreshToken());
+//        RefreshToken newRefreshToken = RefreshToken.builder()
+//                .key(member.getKakaoId())
+//                .token(newToken.getRefreshToken())
+//                .build();
         refreshTokenRepository.save(updateRefreshToken);
 
         return newToken;
     }
 
-    // 로그아웃 ( 리프레시 토큰 삭제 )
     @Override
-    public void deleteRefreshToken(String refreshToken){
-        // Refresh Token 삭제
+    public void LoginCheckRefreshToken(Member member, TokenDto token){
+        // Refresh Token이 이미 존재할 경우 업데이트, 없으면 생성.
+        if (refreshTokenRepository.existsRefreshTokenByKey(member.getKakaoId())) {
+            log.info("리프레시 토큰이 존재합니다.");
+            RefreshToken refreshToken = refreshTokenRepository.findByKey(member.getKakaoId())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+            RefreshToken updateRefreshToken = refreshToken.updateToken(token.getRefreshToken());
+//            refreshTokenRepository.deleteRefreshTokenByKey(member.getKakaoId());
+//            RefreshToken refreshToken = RefreshToken.builder()
+//                    .key(member.getKakaoId())
+//                    .token(token.getRefreshToken())
+//                    .build();
+            refreshTokenRepository.save(updateRefreshToken);
+        } else {
+            log.info("리프레시 토큰이 존재하지 않습니다.");
+            RefreshToken refreshToken = RefreshToken.builder()
+                    .key(member.getKakaoId())
+                    .token(token.getRefreshToken())
+                    .build();
+            refreshTokenRepository.save(refreshToken);
+        }
+    }
+
+    @Override
+    public void saveRefreshToken(Member member, TokenDto token) {
+        RefreshToken refreshToken = RefreshToken.builder()
+                .key(member.getKakaoId())
+                .token(token.getRefreshToken())
+                .build();
+        refreshTokenRepository.save(refreshToken);
+    }
+
+    @Override
+    public void deleteRefreshToken(String refreshToken) {
         refreshTokenRepository.deleteRefreshTokenByToken(refreshToken);
     }
 }

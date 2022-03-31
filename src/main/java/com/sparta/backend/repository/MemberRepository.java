@@ -16,6 +16,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // 중복 멤버네임 검사
     boolean existsMemberByMemberName(String memberName);
+
+    // 회원가입시 카카오id로 중복유저 검사
+    boolean existsMemberByKakaoId(String kakaoId);
     
     // 테스트용
     List<Member> findAll();
