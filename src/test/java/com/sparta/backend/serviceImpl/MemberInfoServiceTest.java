@@ -9,12 +9,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
 class MemberInfoServiceTest {
+
+    @Mock
+    MemberRepository memberRepository;
 
     // hashtag
     static String hashtag1 = "IT";
@@ -119,17 +124,75 @@ class MemberInfoServiceTest {
     @DisplayName("프로필 sns 수정하기")
     void editProfileSnsUrl() {
 
+        // given
+        String instagramUrl = "instagram";
+        String githubUrl = "github";
+        String brunchUrl = "brunch";
+        String blogUrl = "blog";
+        String websiteUrl = "website";
+
+        // when
+        // 인스타그램
+        if(instagramUrl != null) {
+            if(Objects.equals(instagramUrl, "")) {
+                setupMember.setInstagramUrl(null);
+            } else {
+                setupMember.setInstagramUrl(instagramUrl);
+            }
+        }
+        // 깃헙
+        if(githubUrl != null) {
+            if (Objects.equals(githubUrl, "")) {
+                setupMember.setGithubUrl(null);
+            } else {
+                setupMember.setGithubUrl(githubUrl);
+            }
+        }
+        // 브런치
+        if(brunchUrl != null) {
+            if (Objects.equals(brunchUrl, "")) {
+                setupMember.setBrunchUrl(null);
+            } else {
+                setupMember.setBrunchUrl(brunchUrl);
+            }
+        }
+        // 개인 블로그
+        if(blogUrl != null) {
+            if (Objects.equals(blogUrl, "")) {
+                setupMember.setBlogUrl(null);
+            } else {
+                setupMember.setBlogUrl(blogUrl);
+            }
+        }
+        // 웹사이트
+        if(websiteUrl != null) {
+            if (Objects.equals(websiteUrl, "")) {
+                setupMember.setWebsiteUrl(null);
+            } else {
+                setupMember.setWebsiteUrl(websiteUrl);
+            }
+        }
+
+        // then
+        Assertions.assertEquals(setupMember.getInstagramUrl(), instagramUrl);
+        Assertions.assertEquals(setupMember.getGithubUrl(), githubUrl);
+        Assertions.assertEquals(setupMember.getBrunchUrl(), brunchUrl);
+        Assertions.assertEquals(setupMember.getBlogUrl(), blogUrl);
+        Assertions.assertEquals(setupMember.getWebsiteUrl(), websiteUrl);
     }
 
     @Test
     @Order(6)
     @DisplayName("프로필 이메일 수정하기")
     void editEmail() {
-    }
 
-    @Test
-    @Order(7)
-    @DisplayName("회원가입시 닉네임 중복 확인하기")
-    void checkDuplicateMemberName() {
+        // given
+        String newEmail = "newEmail";
+
+        // when
+        setupMember.editEmail(newEmail);
+
+        // then
+        Assertions.assertEquals(newEmail, setupMember.getEmail());
     }
 }

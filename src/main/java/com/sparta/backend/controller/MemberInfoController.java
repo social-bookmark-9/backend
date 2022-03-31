@@ -36,22 +36,11 @@ public class MemberInfoController {
 
     @Value("${cloud.aws.s3.bucket}")
     public String bucket;
-    
+
     // 유저 정보 전달하기
     @GetMapping("/api/users/check")
     public ResponseEntity<RestResponseMessage> getMyInfo(@AuthenticationPrincipal Member member) {
-        MemberLoginResponseDto myInfo = MemberLoginResponseDto.builder()
-                .memberId(member.getId())
-                .nickName(member.getMemberName())
-                .email(member.getEmail())
-                .profileImageUrl(member.getProfileImage())
-                .userDesc(member.getMemberComment())
-                .instagramUrl(member.getInstagramUrl())
-                .githubUrl(member.getGithubUrl())
-                .brunchUrl(member.getBrunchUrl())
-                .blogUrl(member.getBlogUrl())
-                .websiteUrl(member.getWebsiteUrl())
-                .build();
+        MemberLoginResponseDto myInfo = new MemberLoginResponseDto(member);
         Map<String, Object> map = new HashMap<>();
         map.put("myInfo", myInfo);
         return new ResponseEntity<>(new RestResponseMessage<>(true,"유저 정보", map), HttpStatus.OK);
@@ -138,7 +127,7 @@ public class MemberInfoController {
     // 유저 멤버네임 중복 확인
     @PostMapping("/api/users/checkmembername")
     public ResponseEntity<RestResponseMessage> checkDuplicateMemberName(@Valid @RequestBody MemberNameDuplicateDto memberNameDuplicateDto){
-        if(memberInfoService.checkDuplicateMemberName(memberNameDuplicateDto.getMemberName())) {
+        if(memberRepository.existsMemberByMemberName(memberNameDuplicateDto.getMemberName())) {
             return new ResponseEntity<>(new RestResponseMessage<>(true, "사용 불가능한 닉네임 입니다", ""), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new RestResponseMessage<>(true, "사용 가능한 닉네임 입니다", ""), HttpStatus.OK);
