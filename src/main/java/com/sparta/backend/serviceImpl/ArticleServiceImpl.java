@@ -90,13 +90,18 @@ public class ArticleServiceImpl implements ArticleService {
     // 아티클 생성 ✅
     @Override
     public ArticleCreateResponseDto createArticle(ArticleCreateRequestDto requestDto, Member member) {
-        // String ogTagSeleniumTest = parser.seleniumParser(requestDto.getUrl()); // 셀레니움 테스트
         JsoupParser parser = new JsoupParser();
         OGTagRequestDto ogTagRequestDto = parser.ogTagScraper(requestDto.getUrl());
+
         Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
         ArticleFolder articleFolder = articleFolderRepository
                 .findArticleFolderByArticleFolderNameAndMember(requestDto.getArticleFolderName(), currentMember);
+
+        // contentOg 자르기 (50자 제한)
+        String contentOgSub = ogTagRequestDto.getContentOg() == null ? null
+                : ogTagRequestDto.getContentOg().substring(0, 50);
+
 
         Hashtag hashtag = Hashtag.builder().
                 hashtag1(requestDto.getHashtag1())
@@ -108,7 +113,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .url(requestDto.getUrl())
                 .titleOg(ogTagRequestDto.getTitleOg())
                 .imgOg(ogTagRequestDto.getImgOg())
-                .contentOg(ogTagRequestDto.getContentOg())
+                .contentOg(contentOgSub)
                 .reviewHide(false)
                 .readCount(requestDto.getReadCount())
                 .hashtag(hashtag)

@@ -33,7 +33,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    // 스웨거 적용
+    // 스웨거 적용 (삭제예정)
     implementation "io.springfox:springfox-boot-starter:3.0.0"
     implementation "io.springfox:springfox-swagger-ui:3.0.0"
 
@@ -48,9 +48,6 @@ dependencies {
 
     // Jsoup
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
-
-    // Selenium (보류중)
-    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
 
     // 이메일 html 생성 타임리프
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
