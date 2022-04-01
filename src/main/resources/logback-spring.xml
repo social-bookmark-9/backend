@@ -75,7 +75,7 @@
                 <pattern>${LOG_PATTERN}</pattern>
             </encoder>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>./log-backup/warn/warn.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <fileNamePattern>/home/ubuntu/app/log-backup/warn/warn.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                 <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                     <maxFileSize>100MB</maxFileSize>
                 </timeBasedFileNamingAndTriggeringPolicy>
@@ -96,7 +96,7 @@
                 <pattern>${LOG_PATTERN}</pattern>
             </encoder>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>./log-backup/error/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <fileNamePattern>/home/ubuntu/app/log-backup/error/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                 <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                     <maxFileSize>100MB</maxFileSize>
                 </timeBasedFileNamingAndTriggeringPolicy>
