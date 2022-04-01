@@ -10,9 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Transactional
@@ -22,29 +20,32 @@ public class SearchPageServiceTestImpl implements SearchPageServiceTest {
     private final ArticleRepository articleRepository;
 
     // 검색페이지 아티클 검색 기능
-   @Override
-    public List<ArticleRandomResponseDto> getSearchArticles(String hashtag, String titleOg, Pageable pageable) {
+    @Override
+    public Map<String, Object> getSearchArticles(String hashtag, String titleOg, Pageable pageable) {
 
+        // 검색어에 따라서 조건
         Page<Article> articles;
         if (Objects.equals(titleOg, "") && Objects.equals(hashtag, "")) {
             articles = articleRepository
                     .findArticlesByArticleFolder_FolderHide(false, pageable);
-        }
-        else if (Objects.equals(titleOg, "")) {
+        } else if (Objects.equals(titleOg, "")) {
             articles = articleRepository
                     .findArticlesByHashtag_Hashtag1AndArticleFolder_FolderHide(hashtag, false, pageable);
-        }
-        else if (Objects.equals(hashtag, "")) {
+        } else if (Objects.equals(hashtag, "")) {
             articles = articleRepository
                     .findArticlesByArticleFolder_FolderHideAndTitleOgContains(false, titleOg, pageable);
-        }
-        else {
+        } else {
             articles = articleRepository
                     .findArticlesByHashtag_Hashtag1AndArticleFolder_FolderHideAndTitleOgContains(hashtag, false, titleOg, pageable);
         }
 
+        // 첫페이지 마지막페이지 확인
+        boolean isFirst = articles.isFirst();
+        boolean isLast = articles.isLast();
+
+        // DTO 변환
         List<ArticleRandomResponseDto> articleList = new ArrayList<>();
-        for(Article article : articles) {
+        for (Article article : articles) {
             ArticleRandomResponseDto responseDto = ArticleRandomResponseDto.builder()
                     .articleId(article.getId())
                     .titleOg(article.getTitleOg())
@@ -56,7 +57,13 @@ public class SearchPageServiceTestImpl implements SearchPageServiceTest {
                     .build();
             articleList.add(responseDto);
         }
-        return articleList;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("isFirst", isFirst);
+        map.put("isLast", isLast);
+        map.put("articleList", articleList);
+
+        return map;
     }
 
 }

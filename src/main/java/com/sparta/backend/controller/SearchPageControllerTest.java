@@ -1,7 +1,6 @@
 package com.sparta.backend.controller;
 
 import com.sparta.backend.message.RestResponseMessage;
-import com.sparta.backend.responseDto.ArticleRandomResponseDto;
 import com.sparta.backend.service.SearchPageServiceTest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,9 +23,9 @@ public class SearchPageControllerTest {
     @GetMapping("/api/searchpage/hashtags")
     public ResponseEntity<RestResponseMessage> getArticles(@RequestParam String hashtag, @RequestParam String titleOg, @RequestParam int page) {
 
-        PageRequest pageRequest = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "createdAt"));
-        
-        List<ArticleRandomResponseDto> articleList = searchPageServiceTest.getSearchArticles(hashtag, titleOg, pageRequest);
+        PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Map<String, Object> articleList = searchPageServiceTest.getSearchArticles(hashtag, titleOg, pageRequest);
 
         return new ResponseEntity<>(new RestResponseMessage<>(true,"태그 검색 결과", articleList), HttpStatus.OK);
     }
