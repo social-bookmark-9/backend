@@ -18,7 +18,7 @@ public class RefreshToken extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "refresh_token_key", nullable = false)
+    @Column(name = "refresh_token_key", nullable = false, unique = true)
     private String key;
 
     @Column(name = "token", nullable = false)

@@ -24,9 +24,8 @@ public interface ArticleFolderRepository extends JpaRepository<ArticleFolder, Lo
     void updateArticleFolderHashtag(@Param("hashtag1") String hashtag1, @Param("hashtag2") String hashtag2, @Param("hashtag3") String hashtag3, @Param("id") Long id);
 
     // 비로그인시 메인페이지
-//    List<ArticleFolder> findTop50ByOrderByLikeCountDesc(boolean folderHide);
-    List<ArticleFolder>findTop50ByOrderByLikeCountDesc();
+    List<ArticleFolder> findTop50ByOrderByLikeCountDesc();
 
     // 로그인시 메인페이지
-    List<ArticleFolder>findArticleFoldersByFolderHide(boolean folderHide);
+    List<ArticleFolder> findArticleFoldersByFolderHide(boolean folderHide);
 }

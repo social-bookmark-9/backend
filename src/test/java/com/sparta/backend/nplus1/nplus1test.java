@@ -135,6 +135,7 @@ public class nplus1test {
 
         em.flush();
         em.clear();
+
         System.out.println("############### 아티클 쿼리 시작 #################");
         articleRepository.findAll();
         System.out.println("############### 종료 #################");
@@ -146,7 +147,6 @@ public class nplus1test {
         System.out.println("############### 멤버 쿼리 시작 #################");
         memberRepository.findAll();
         System.out.println("############### 종료 #################");
-
 
     }
 }

@@ -353,7 +353,7 @@ public class ArticleServiceImpl implements ArticleService {
                         .hashtag2(otherUserArticle.getHashtag().getHashtag2())
                         .hashtag3(otherUserArticle.getHashtag().getHashtag3())
                         .build();
-              
+
                 Article toSaveArticle = Article.builder()
                         .url(otherUserArticle.getUrl())
                         .titleOg(otherUserArticle.getTitleOg())

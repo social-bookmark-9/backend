@@ -11,11 +11,13 @@ public interface OauthService {
 
     KakaoMemberInfoRequestDto getKakaoInfo(String code) throws JsonProcessingException;
 
-    boolean checkIfMemberExists(KakaoMemberInfoRequestDto kakaoUserInfo);
-
     Member createKakaoMember(KakaoMemberRegisterRequestDto kakaoMemberRegisterRequestDto);
 
     TokenDto reissue(TokenRequestDto tokenRequestDto);
+
+    void LoginCheckRefreshToken(Member member, TokenDto token);
+
+    void saveRefreshToken(Member member, TokenDto tokenDto);
 
     void deleteRefreshToken(String refreshToken);
 }
