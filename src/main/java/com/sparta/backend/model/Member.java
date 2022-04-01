@@ -72,7 +72,6 @@ public class Member extends Timestamped implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> memberRoles = new ArrayList<>();
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.memberRoles.stream()

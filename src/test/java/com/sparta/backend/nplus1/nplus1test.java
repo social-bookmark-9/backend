@@ -40,7 +40,15 @@ public class nplus1test {
     @Autowired
     private ArticleRepository articleRepository;
     @Autowired
-    private HashtagRepository hashtagRepository;
+    HashtagRepository hashtagRepository;
+
+    @AfterEach
+    public void deleteAll() {
+        articleFolderRepository.deleteAll();
+        articleRepository.deleteAll();
+        memberRepository.deleteAll();
+        hashtagRepository.deleteAll();
+    }
 
     @Test
     public void test1() {
@@ -156,12 +164,5 @@ public class nplus1test {
 
         System.out.println("############### 종료 #################");
 
-    }
-    @AfterEach
-    public void deleteAll() {
-        articleFolderRepository.deleteAll();
-        articleRepository.deleteAll();
-        memberRepository.deleteAll();
-        hashtagRepository.deleteAll();
     }
 }

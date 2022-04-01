@@ -126,7 +126,6 @@ public class DummyData {
                             .build();
 
                     article.setArticleFolder(articleFolder);
-                    article.setHashtag(articleHashtag);
                     articleHashtag.setArticle(article);
                     articleRepository.save(article);
                 }

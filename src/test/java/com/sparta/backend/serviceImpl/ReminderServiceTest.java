@@ -102,7 +102,6 @@ class ReminderServiceTest {
                 .build();
 
         setupArticle.setArticleFolder(setupArticleFolder);
-        setupArticle.setHashtag(articleHashtag);
         articleHashtag.setArticle(setupArticle);
 
         // 리마인더 생성

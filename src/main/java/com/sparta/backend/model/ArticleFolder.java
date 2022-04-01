@@ -23,29 +23,37 @@ public class ArticleFolder extends Timestamped {
     private String articleFolderName;
 
     @Column(name = "deleteable", nullable = false)
-    private boolean deleteable;
+    private Boolean deleteable;
 
     @Column(name = "folder_hide", nullable = false)
-    private boolean folderHide;
+    private Boolean folderHide;
 
     @Column(name = "like_count", nullable = false)
     private int likeCount;
+
+    @Column(name = "folder_hashtag1")
+    private String folderHashtag1;
+
+    @Column(name = "folder_hashtag2")
+    private String folderHashtag2;
+
+    @Column(name = "folder_hashtag3")
+    private String folderHashtag3;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @OneToMany(mappedBy = "articleFolder", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Article> articles = new ArrayList<>();
+    private List<Article> articles = new ArrayList<>();
 
     @Builder
-    public ArticleFolder(boolean folderHide, boolean deleteable, String articleFolderName, int likeCount, Member member, Article article) {
+    public ArticleFolder(boolean folderHide, boolean deleteable, String articleFolderName, int likeCount, Member member) {
         this.folderHide = folderHide;
         this.deleteable = deleteable;
         this.articleFolderName = articleFolderName;
         this.likeCount = likeCount;
         this.member = member;
-        this.articles.add(article);
         member.getArticleFolders().add(this);
     }
 

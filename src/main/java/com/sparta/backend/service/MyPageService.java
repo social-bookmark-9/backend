@@ -14,5 +14,5 @@ public interface MyPageService {
 
     List<ArticleFolderListResponseDto> getMyArticleFolderList(Member member);
 
-    List<ArticleFolderListResponseDto> getOtherArticleFolderList(Long memberId);
+    List<ArticleFolderListResponseDto> getOtherArticleFolderList(Member member, Long memberId);
 }
