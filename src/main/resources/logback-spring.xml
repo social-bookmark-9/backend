@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan = "true">
+<configuration>
     <!-- 이 곳에 추가할 기능을 넣는다. -->
 
     <!-- 화면에 띄울 패턴을 지정한다. -->
@@ -63,7 +63,7 @@
         </appender>
 
         <!-- WARN 로그 처리 -->
-        <appender name="WARN_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+<!--         <appender name="WARN_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
             <file>/home/ubuntu/app/logs/warn.log</file>
             <filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -81,10 +81,10 @@
                 </timeBasedFileNamingAndTriggeringPolicy>
                 <maxHistory>30</maxHistory>
             </rollingPolicy>
-        </appender>
+        </appender> -->
 
         <!-- ERROR 로그 처리 -->
-        <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+<!--         <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
             <file>/home/ubuntu/app/logs/error.log</file>
             <filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -103,12 +103,12 @@
                 <maxHistory>30</maxHistory>
             </rollingPolicy>
         </appender>
-
+ -->
         <root level="INFO">
             <appender-ref ref="STDOUT"/>
             <appender-ref ref="INFO_LOG"/>
-            <appender-ref ref="WARN_LOG"/>
-            <appender-ref ref="ERROR_LOG"/>
+<!--             <appender-ref ref="WARN_LOG"/>
+            <appender-ref ref="ERROR_LOG"/> -->
         </root>
 
     </springProfile>
