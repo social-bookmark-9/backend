@@ -1,11 +1,10 @@
 package com.sparta.backend.service;
 
-import com.sparta.backend.responseDto.ArticleRandomResponseDto;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.Map;
 
 public interface SearchPageServiceTest {
 
-    List<ArticleRandomResponseDto> getSearchArticles(String hashtag, String titleOg, Pageable pageable);
+    Map<String, Object> getSearchArticles(String hashtag, String titleOg, Pageable pageable);
 }
