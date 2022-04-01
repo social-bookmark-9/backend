@@ -8,7 +8,7 @@ files:
 permissions:
   - object: /
     pattern : "**"
-    mode : 777
+#     mode : 777
     owner : ubuntu
     group : ubuntu
 
