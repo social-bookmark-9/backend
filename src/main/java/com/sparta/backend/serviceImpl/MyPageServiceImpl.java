@@ -3,6 +3,7 @@ package com.sparta.backend.serviceImpl;
 import com.sparta.backend.exception.EntityNotFoundException;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Member;
+import com.sparta.backend.repository.FavoriteRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
 import com.sparta.backend.responseDto.MemberInfoResponseDto;
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class MyPageServiceImpl implements MyPageService {
 
     private final MemberRepository memberRepository;
+    private final FavoriteRepository favoriteRepository;
 
     /**
      * 내 마이페이지용 사용자 정보 조회
@@ -35,12 +37,12 @@ public class MyPageServiceImpl implements MyPageService {
 
     /**
      * 다른 사람의 마이페이지용 사용자 정보 조회
-     * @param memberId
+     * @param otherMemberId
      * @return MemberInfoDto
      */
     @Override
-    public MemberInfoResponseDto getOtherMemberInfo(Long memberId) {
-        Member findMember = getMember(memberId);
+    public MemberInfoResponseDto getOtherMemberInfo(Long otherMemberId) {
+        Member findMember = getMember(otherMemberId);
 
         return MemberInfoResponseDto.of(findMember);
     }
@@ -55,31 +57,49 @@ public class MyPageServiceImpl implements MyPageService {
         Member findMember = getMember(member.getId());
         List<ArticleFolder> myArticleFolders = findMember.getArticleFolders();
 
-        return getArticleFolderListDtoList(myArticleFolders);
+        return getMyArticleFolderListDtoList(myArticleFolders);
     }
 
     /**
      * 다른 사람의 마이페이지용 아티클 폴더 조회
-     * @param memberId
+     * @param loginMember, otherMemberId
      * @return List<ArticleFolderListDto>
      */
     @Override
-    public List<ArticleFolderListResponseDto> getOtherArticleFolderList(Long memberId) {
-        Member findMember = getMember(memberId);
-        List<ArticleFolder> otherArticleFolders = findMember.getArticleFolders();
+    public List<ArticleFolderListResponseDto> getOtherArticleFolderList(Member loginMember, Long otherMemberId) {
+        Member otherMember = getMember(otherMemberId);
+        List<ArticleFolder> otherArticleFolders = otherMember.getArticleFolders();
 
-        return getArticleFolderListDtoList(otherArticleFolders);
+        return getOtherArticleFolderListDtoList(loginMember, otherArticleFolders);
     }
 
-    private List<ArticleFolderListResponseDto> getArticleFolderListDtoList(List<ArticleFolder> articleFolders) {
+    private List<ArticleFolderListResponseDto> getMyArticleFolderListDtoList(List<ArticleFolder> otherArticleFolders) {
         List<ArticleFolderListResponseDto> articleFolderListDtoListResponse = new ArrayList<>();
 
-        for (ArticleFolder articleFolder : articleFolders) {
-            if (articleFolder.getArticles().isEmpty()) {
-                ArticleFolderListResponseDto noArticlesInFolder = ArticleFolderListResponseDto.of(articleFolder);
+        for (ArticleFolder otherArticleFolder : otherArticleFolders) {
+            if (otherArticleFolder.getArticles().isEmpty()) {
+                ArticleFolderListResponseDto noArticlesInFolder = ArticleFolderListResponseDto.of(otherArticleFolder);
                 articleFolderListDtoListResponse.add(noArticlesInFolder);
             } else {
-                ArticleFolderListResponseDto articlesInFolder = ArticleFolderListResponseDto.of(articleFolder, articleFolder.getArticles());
+                ArticleFolderListResponseDto articlesInFolder = ArticleFolderListResponseDto.of(otherArticleFolder, otherArticleFolder.getArticles());
+                articleFolderListDtoListResponse.add(articlesInFolder);
+            }
+        }
+
+        return articleFolderListDtoListResponse;
+    }
+
+    private List<ArticleFolderListResponseDto> getOtherArticleFolderListDtoList(Member loginMember, List<ArticleFolder> otherArticleFolders) {
+        List<ArticleFolderListResponseDto> articleFolderListDtoListResponse = new ArrayList<>();
+        List<Long> allFolderId = favoriteRepository.findAllFolderId(loginMember.getId());
+
+        for (ArticleFolder otherArticleFolder : otherArticleFolders) {
+            Boolean likeStatus = allFolderId.contains(otherArticleFolder.getId());
+            if (otherArticleFolder.getArticles().isEmpty()) {
+                ArticleFolderListResponseDto noArticlesInFolder = ArticleFolderListResponseDto.of(otherArticleFolder, likeStatus);
+                articleFolderListDtoListResponse.add(noArticlesInFolder);
+            } else {
+                ArticleFolderListResponseDto articlesInFolder = ArticleFolderListResponseDto.of(otherArticleFolder, otherArticleFolder.getArticles(), likeStatus);
                 articleFolderListDtoListResponse.add(articlesInFolder);
             }
         }

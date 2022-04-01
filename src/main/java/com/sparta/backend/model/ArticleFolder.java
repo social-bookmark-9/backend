@@ -48,13 +48,12 @@ public class ArticleFolder extends Timestamped {
     private final List<Article> articles = new ArrayList<>();
 
     @Builder
-    public ArticleFolder(boolean folderHide, boolean deleteable, String articleFolderName, int likeCount, Member member, Article article) {
+    public ArticleFolder(boolean folderHide, boolean deleteable, String articleFolderName, int likeCount, Member member) {
         this.folderHide = folderHide;
         this.deleteable = deleteable;
         this.articleFolderName = articleFolderName;
         this.likeCount = likeCount;
         this.member = member;
-        this.articles.add(article);
         member.getArticleFolders().add(this);
     }
 
@@ -65,27 +64,6 @@ public class ArticleFolder extends Timestamped {
     public void decreaseLikeCount(int currentLikeCount) {
         this.likeCount = --currentLikeCount;
     }
-
-    public void setFolderHashtag(List<String> sortedHashtag) {
-        if (sortedHashtag.size() == 1) {
-            this.folderHashtag1 = sortedHashtag.get(0);
-        } else if (sortedHashtag.size() == 2) {
-            this.folderHashtag1 = sortedHashtag.get(0);
-            this.folderHashtag2 = sortedHashtag.get(1);
-        } else {
-            this.folderHashtag1 = sortedHashtag.get(0);
-            this.folderHashtag2 = sortedHashtag.get(1);
-            this.folderHashtag3 = sortedHashtag.get(2);
-        }
-    }
-
-
-
-
-
-
-
-
 
     // 아티클 폴더에서 해당 아티클 삭제 (아티클 폴더를 수정하기 위함)
     public void deleteArticleFromArticleFolder(Article currentArticle) {

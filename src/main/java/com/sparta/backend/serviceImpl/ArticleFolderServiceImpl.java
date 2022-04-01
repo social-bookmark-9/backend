@@ -18,33 +18,29 @@ import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
 import com.sparta.backend.responseDto.ArticlesInfoInFolderResponseDto;
 import com.sparta.backend.responseDto.LikeAddOrRemoveResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ArticleFolderServiceImpl implements ArticleFolderService {
 
     private final MemberRepository memberRepository;
     private final ArticleFolderRepository articleFolderRepository;
     private final ArticleRepository articleRepository;
     private final FavoriteRepository favoriteRepository;
-
-    @Autowired
-    public ArticleFolderServiceImpl(MemberRepository memberRepository ,ArticleFolderRepository articleFolderRepository,
-                                    ArticleRepository articleRepository, FavoriteRepository favoriteRepository) {
-        this.memberRepository = memberRepository;
-        this.articleFolderRepository = articleFolderRepository;
-        this.articleRepository = articleRepository;
-        this.favoriteRepository = favoriteRepository;
-    }
 
     /**
      * 아티클 폴더 생성
@@ -67,7 +63,6 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
                     .likeCount(0)
                     .member(currentMember)
                     .build();
-
             articleFolderRepository.save(articleFolder);
         } else throw new InvalidValueException(ErrorCode.DUPLICATED_VALUE);
     }
@@ -80,7 +75,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
     @Override
     public void deleteArticleFolder(Member member, Long folderId) {
         ArticleFolder findFolder = getFolder(folderId);
-        if (findFolder.getMember().getId() == member.getId()) {
+        if (Objects.equals(findFolder.getMember().getId(), member.getId())) {
             articleFolderRepository.delete(findFolder);
         } else throw new AccessDeniedException("접근 권한 없음");
     }
@@ -129,7 +124,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
 
         List<ArticlesInfoInFolderResponseDto> articlesInfoInFolderResponseDtoList = new ArrayList<>();
 
-        if (!articles.isEmpty()) {
+        if (!CollectionUtils.isEmpty(articles)) {
             for (Article article : articles) {
                 boolean isRead = article.getReadCount() > 0;
                 boolean isSaved = myArticlesUrl.contains(article.getUrl());
@@ -159,7 +154,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
 
         List<ArticlesInfoInFolderResponseDto> articlesInfoInFolderResponseDtoList = new ArrayList<>();
 
-        if (!articles.isEmpty()) {
+        if (!CollectionUtils.isEmpty(articles)) {
             for (Article article : articles) {
                 ArticlesInfoInFolderResponseDto articlesInfoInFolderResponseDto = ArticlesInfoInFolderResponseDto.of(article);
                 articlesInfoInFolderResponseDtoList.add(articlesInfoInFolderResponseDto);
@@ -222,7 +217,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         List<ArticleFolderNameAndIdResponseDto> articleFolderNameAndIdResponseDtoList = new ArrayList<>();
 
         List<ArticleFolder> findArticleFolders = getMember(member.getId()).getArticleFolders();
-        if (!findArticleFolders.isEmpty()) {
+        if (!CollectionUtils.isEmpty(findArticleFolders)) {
             for (ArticleFolder articleFolder : findArticleFolders) {
                 articleFolderNameAndIdResponseDtoList.add(ArticleFolderNameAndIdResponseDto.of(articleFolder));
             }

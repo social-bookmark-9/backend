@@ -2,7 +2,6 @@ package com.sparta.backend.responseDto;
 
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.ArticleFolder;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +18,7 @@ public class ArticleFolderListResponseDto {
     private Integer likeCount;
     private Boolean isHide;
     private Boolean isdDeleteable;
+    private Boolean likeStatus;
     private Integer completeRate;
     private String hashTag1;
     private String hashTag2;
@@ -31,6 +31,7 @@ public class ArticleFolderListResponseDto {
         this.likeCount = articleFolder.getLikeCount();
         this.isHide = articleFolder.getFolderHide();
         this.isdDeleteable = articleFolder.getDeleteable();
+        this.likeStatus = null;
         this.completeRate = 0;
         this.hashTag1 = null;
         this.hashTag2 = null;
@@ -44,21 +45,60 @@ public class ArticleFolderListResponseDto {
         this.likeCount = articleFolder.getLikeCount();
         this.isHide = articleFolder.getFolderHide();
         this.isdDeleteable = articleFolder.getDeleteable();
+        this.likeStatus = null;
         this.completeRate = decideFolderInfo.getCompleteRate();
-        this.hashTag1 = decideFolderInfo.getHashTag1();
-        this.hashTag2 = decideFolderInfo.getHashTag2();
-        this.hashTag3 = decideFolderInfo.getHashTag3();
+        this.hashTag1 = articleFolder.getFolderHashtag1();
+        this.hashTag2 = articleFolder.getFolderHashtag2();
+        this.hashTag3 = articleFolder.getFolderHashtag3();
         this.articleListDtoList.addAll(articleListDtoList);
     }
 
-    // 폴더에 아티클이 없을때
+    public ArticleFolderListResponseDto(ArticleFolder articleFolder, Boolean likeStatus) {
+        this.folderId = articleFolder.getId();
+        this.folderName = articleFolder.getArticleFolderName();
+        this.likeCount = articleFolder.getLikeCount();
+        this.isHide = articleFolder.getFolderHide();
+        this.isdDeleteable = articleFolder.getDeleteable();
+        this.likeStatus = likeStatus;
+        this.completeRate = 0;
+        this.hashTag1 = null;
+        this.hashTag2 = null;
+        this.hashTag3 = null;
+        this.articleListDtoList = new ArrayList<>();
+    }
+
+    public ArticleFolderListResponseDto(ArticleFolder articleFolder, List<ArticleListDto> articleListDtoList, DecideFolderInfo decideFolderInfo, Boolean likeStatus) {
+        this.folderId = articleFolder.getId();
+        this.folderName = articleFolder.getArticleFolderName();
+        this.likeCount = articleFolder.getLikeCount();
+        this.isHide = articleFolder.getFolderHide();
+        this.isdDeleteable = articleFolder.getDeleteable();
+        this.likeStatus = likeStatus;
+        this.completeRate = decideFolderInfo.getCompleteRate();
+        this.hashTag1 = articleFolder.getFolderHashtag1();
+        this.hashTag2 = articleFolder.getFolderHashtag2();
+        this.hashTag3 = articleFolder.getFolderHashtag3();
+        this.articleListDtoList.addAll(articleListDtoList);
+    }
+
+    // 폴더에 아티클이 없을때(내꺼)
     public static ArticleFolderListResponseDto of(ArticleFolder articleFolder) {
         return new ArticleFolderListResponseDto(articleFolder);
     }
 
-    // 폴더에 아티클이 있을때
+    // 폴더에 아티클이 있을때(내꺼)
     public static ArticleFolderListResponseDto of(ArticleFolder articleFolder, List<Article> articles) {
         return new ArticleFolderListResponseDto(articleFolder, ArticleListDto.of(articles), DecideFolderInfo.of(articles));
+    }
+
+    // 폴더에 아티클이 없을때(남의것)
+    public static ArticleFolderListResponseDto of(ArticleFolder articleFolder, Boolean likeStatus) {
+        return new ArticleFolderListResponseDto(articleFolder, likeStatus);
+    }
+
+    // 폴더에 아티클이 있을때(남의것)
+    public static ArticleFolderListResponseDto of(ArticleFolder articleFolder, List<Article> articles, Boolean likeStatus) {
+        return new ArticleFolderListResponseDto(articleFolder, ArticleListDto.of(articles), DecideFolderInfo.of(articles), likeStatus);
     }
 
     @Getter
@@ -86,69 +126,22 @@ public class ArticleFolderListResponseDto {
     @NoArgsConstructor
     private static class DecideFolderInfo {
         private int completeRate;
-        private String hashTag1;
-        private String hashTag2;
-        private String hashTag3;
 
-        public DecideFolderInfo(int completeRate, String hashTag1, String hashTag2, String hashTag3) {
+        public DecideFolderInfo(int completeRate) {
             this.completeRate = completeRate;
-            this.hashTag1 = hashTag1;
-            this.hashTag2 = hashTag2;
-            this.hashTag3 = hashTag3;
         }
 
         public static DecideFolderInfo of(List<Article> articles) {
             int completeRate;
-            String hashTag1;
-            String hashTag2 = null;
-            String hashTag3 = null;
-
-            // 폴더 안 아티클 hastag1 리스트
-            List<String> articleHasTag1List = articles
-                    .stream()
-                    .map(article -> article.getHashtag().getHashtag1())
-                    .collect(Collectors.toList());
-
-            // hastag1 정렬
-            Map<String, Integer> map = new HashMap<>();
-
-            for (String articleHasTag1 : articleHasTag1List) {
-                if (map.containsKey(articleHasTag1)) {
-                    int cnt = map.get(articleHasTag1);
-                    cnt++;
-                    map.put(articleHasTag1, cnt);
-                } else {
-                    map.put(articleHasTag1, 1);
-                }
-            }
-
-            final List<String> sortedHasTag = map.entrySet().stream()
-                    .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
-
-            if (sortedHasTag.size() == 1) {
-                hashTag1 = sortedHasTag.get(0);
-            } else if (sortedHasTag.size() == 2) {
-                hashTag1 = sortedHasTag.get(0);
-                hashTag2 = sortedHasTag.get(1);
-            } else {
-                hashTag1 = sortedHasTag.get(0);
-                hashTag2 = sortedHasTag.get(1);
-                hashTag3 = sortedHasTag.get(2);
-            }
-
-            // 완독률
             int articlesSize = articles.size();
-
-            List<Article> alreadyReadArticle = articles.stream().filter(article -> article.getReadCount() > 0)
-                    .collect(Collectors.toList());
-
-            int alreadyReadArticleSize = alreadyReadArticle.size();
+            int alreadyReadArticleSize = (int) articles
+                    .stream()
+                    .filter(article -> article.getReadCount() > 0)
+                    .count();
 
             completeRate = alreadyReadArticleSize / articlesSize;
 
-            return new DecideFolderInfo(completeRate, hashTag1, hashTag2, hashTag3);
+            return new DecideFolderInfo(completeRate);
         }
     }
 

@@ -262,15 +262,15 @@ class MyPageServiceImplTest {
         }
     }
 
-    @Test
-    @DisplayName("다른 사람의 마이페이지용 아티클 폴더 조회")
-    @Order(5)
-    void getOtherArticleFolderList() {
-        Optional<Member> findMember = memberRepository.findAll().stream().findAny();
-        List<ArticleFolderListResponseDto> otherArticleFolderList = myPageService.getOtherArticleFolderList(findMember.get().getId());
-        for (ArticleFolderListResponseDto articleFolderListResponseDto : otherArticleFolderList) {
-            System.out.println(articleFolderListResponseDto.getFolderId());
-        }
-    }
+//    @Test
+//    @DisplayName("다른 사람의 마이페이지용 아티클 폴더 조회")
+//    @Order(5)
+//    void getOtherArticleFolderList() {
+//        Optional<Member> findMember = memberRepository.findAll().stream().findAny();
+//        List<ArticleFolderListResponseDto> otherArticleFolderList = myPageService.getOtherArticleFolderList(findMember.get().getId());
+//        for (ArticleFolderListResponseDto articleFolderListResponseDto : otherArticleFolderList) {
+//            System.out.println(articleFolderListResponseDto.getFolderId());
+//        }
+//    }
 
 }

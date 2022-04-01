@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api")
@@ -40,10 +41,10 @@ public class MyPageController {
         boolean loginStatus = member != null;
 
         MemberInfoResponseDto memberInfoResponseDto =
-                loginStatus && member.getId() == memberId ? myPageService.getMyMemberInfo(member) : myPageService.getOtherMemberInfo(memberId);
+                loginStatus && Objects.equals(member.getId(), memberId) ? myPageService.getMyMemberInfo(member) : myPageService.getOtherMemberInfo(memberId);
 
         List<ArticleFolderListResponseDto> articleFolderListResponseDto =
-                loginStatus && member.getId() == memberId ? myPageService.getMyArticleFolderList(member) : myPageService.getOtherArticleFolderList(memberId);
+                loginStatus && Objects.equals(member.getId(), memberId) ? myPageService.getMyArticleFolderList(member) : myPageService.getOtherArticleFolderList(member, memberId);
 
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.of(memberInfoResponseDto, articleFolderListResponseDto);
 

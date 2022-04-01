@@ -18,12 +18,14 @@ import com.sparta.backend.service.ReminderService;
 import com.sparta.backend.utils.JsoupParser;
 import com.sparta.backend.utils.RandomGenerator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -93,8 +95,10 @@ public class ArticleServiceImpl implements ArticleService {
         // String ogTagSeleniumTest = parser.seleniumParser(requestDto.getUrl()); // 셀레니움 테스트
         JsoupParser parser = new JsoupParser();
         OGTagRequestDto ogTagRequestDto = parser.ogTagScraper(requestDto.getUrl());
+
         Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
+
         ArticleFolder articleFolder = articleFolderRepository
                 .findArticleFolderByArticleFolderNameAndMember(requestDto.getArticleFolderName(), currentMember);
 
@@ -116,13 +120,9 @@ public class ArticleServiceImpl implements ArticleService {
                 .member(currentMember)
                 .build();
 
-        article.setArticleFolder(articleFolder);
-        article.setHashtag(hashtag);
+//        article.setArticleFolder(articleFolder);
         hashtag.setArticle(article);
-        Article savedArticle = articleRepository.save(article);
-
-        List<String> sortedHashtag = sortingHashtag(savedArticle.getArticleFolder());
-
+        articleRepository.save(article);
 
         if (requestDto.getReminderDate() != 0) {
             ReminderRequestDto requestDto1 = ReminderRequestDto.builder()
@@ -132,6 +132,15 @@ public class ArticleServiceImpl implements ArticleService {
                     .articleId(article.getId())
                     .build();
             reminderService.createReminder(requestDto1, member);
+        }
+
+        // 폴더 해시태그 결정
+        if (!articleFolder.getArticleFolderName().equals("미분류 컬렉션")) {
+            List<String> sortedHashtag = sortingHashtag(articleFolder);
+            log.info("sortedHashtag {}", sortedHashtag);
+            if (sortedHashtag.size() == 1) articleFolderRepository.updateArticleFolderHashtag(sortedHashtag.get(0), null, null, articleFolder.getId());
+            if (sortedHashtag.size() == 2) articleFolderRepository.updateArticleFolderHashtag(sortedHashtag.get(0), sortedHashtag.get(1), null, articleFolder.getId());
+            if (sortedHashtag.size() == 3) articleFolderRepository.updateArticleFolderHashtag(sortedHashtag.get(0), sortedHashtag.get(1), sortedHashtag.get(2), articleFolder.getId());
         }
 
         return ArticleCreateResponseDto.builder()
@@ -149,14 +158,21 @@ public class ArticleServiceImpl implements ArticleService {
                 .build();
     }
 
-    private List<String> sortingHashtag(ArticleFolder findFolder) {
+    // 대표 해시태그 정렬
+    private List<String> sortingHashtag(ArticleFolder articleFolder) {
         Map<String, Integer> map = new HashMap<>();
 
-        List<String> articleHashtag1List = findFolder.getArticles()
+        System.out.println(articleFolder.getArticles().size());
+
+        for (Article article : articleFolder.getArticles()) {
+            System.out.println(article.getId());
+        }
+
+        List<String> articleHashtag1List = articleFolder.getArticles()
                 .stream()
                 .map(eachArticle -> eachArticle.getHashtag().getHashtag1())
                 .collect(Collectors.toList());
-
+        log.info("articleHashtag1List {}", articleHashtag1List);
         for (String articleHasTag1 : articleHashtag1List) {
             if (map.containsKey(articleHasTag1)) {
                 int cnt = map.get(articleHasTag1);
