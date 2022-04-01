@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration scan = "true">
     <!-- 이 곳에 추가할 기능을 넣는다. -->
 
     <!-- 화면에 띄울 패턴을 지정한다. -->
