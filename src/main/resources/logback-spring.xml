@@ -4,7 +4,7 @@
 
     <!-- 화면에 띄울 패턴을 지정한다. -->
     <property name="LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %red([%thread]) %highlight(%-5level) %boldWhite([%C.%M:%yellow(%L)]) - %msg%n"/>
-
+    <property name="LOG_PATH" value="/home/ubuntu/app"/>
     <!-- 로깅 전략 -->
     <!-- dev - 로그 파일을 저장하지 않고 콘솔만 찍는다. -->
     <!-- prod - 로그 파일을 INFO, WARN, ERROR 3가지를 나눠 저장한다. -->
@@ -38,7 +38,7 @@
         <!-- INFO 로그 처리 -->
         <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-            <file>/home/ubuntu/app/logs/info.log</file> <!-- 파일을 저장할 경로를 정한다 -->
+            <file>${LOG_PATH}/logs/info.log</file> <!-- 파일을 저장할 경로를 정한다 -->
             <filter class="ch.qos.logback.classic.filter.LevelFilter">
                 <level>INFO</level>
                 <onMatch>ACCEPT</onMatch> <!-- 해당 레벨만 기록한다. -->
@@ -52,7 +52,7 @@
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                 <!-- 정한 기간동안의 에러를 남김. 년, 월, 일, 분, ex> yyyy-MM-dd-mm -->
                 <!-- %i: 롤링 순번을 자동적으로 지정함 (ex) 0, 1, 2 , 3 ...) -->
-                <fileNamePattern>./log-backup/info/info.%d{yyyy-MM-dd}.%i.log
+                <fileNamePattern>${LOG_PATH}/log-backup/info/info.%d{yyyy-MM-dd}.%i.log
                 </fileNamePattern> <!-- 해당 패턴 네이밍으로 이전 파일이 기록됨 / zip는 압축 저장-->
                 <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                     <maxFileSize>100MB</maxFileSize> <!-- 한 파일의 최대 용량 -->
