@@ -45,7 +45,7 @@ public class ArticleFolder extends Timestamped {
     private Member member;
 
     @OneToMany(mappedBy = "articleFolder", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Article> articles = new ArrayList<>();
+    private List<Article> articles = new ArrayList<>();
 
     @Builder
     public ArticleFolder(boolean folderHide, boolean deleteable, String articleFolderName, int likeCount, Member member) {
