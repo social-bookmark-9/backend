@@ -19,6 +19,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findMemberByKakaoId(String kakaoId);
     
     // 메인 페이지 검색용
+    @EntityGraph(attributePaths = {"hashtag", "memberRoles"})
     List<Member> findMembersByHashtag_Hashtag1(String hashtag);
 
     // 중복 멤버네임 검사
@@ -28,5 +29,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsMemberByKakaoId(String kakaoId);
 
     // 테스트용
+    @EntityGraph(attributePaths = {"hashtag", "memberRoles"})
     List<Member> findAll();
 }
