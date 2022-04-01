@@ -38,7 +38,7 @@
         <!-- INFO 로그 처리 -->
         <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-            <file>.logs/info.log</file> <!-- 파일을 저장할 경로를 정한다 -->
+            <file>logs/info.log</file> <!-- 파일을 저장할 경로를 정한다 -->
             <filter class="ch.qos.logback.classic.filter.LevelFilter">
                 <level>INFO</level>
                 <onMatch>ACCEPT</onMatch> <!-- 해당 레벨만 기록한다. -->
@@ -52,7 +52,7 @@
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                 <!-- 정한 기간동안의 에러를 남김. 년, 월, 일, 분, ex> yyyy-MM-dd-mm -->
                 <!-- %i: 롤링 순번을 자동적으로 지정함 (ex) 0, 1, 2 , 3 ...) -->
-                <fileNamePattern>.log-backup/info/info.%d{yyyy-MM-dd}.%i.log
+                <fileNamePattern>log-backup/info/info.%d{yyyy-MM-dd}.%i.log
                 </fileNamePattern> <!-- 해당 패턴 네이밍으로 이전 파일이 기록됨 / zip는 압축 저장-->
                 <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                     <maxFileSize>100MB</maxFileSize> <!-- 한 파일의 최대 용량 -->
@@ -65,7 +65,7 @@
         <!-- WARN 로그 처리 -->
         <appender name="WARN_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-            <file>.logs/warn.log</file>
+            <file>logs/warn.log</file>
             <filter class="ch.qos.logback.classic.filter.LevelFilter">
                 <level>WARN</level>
                 <onMatch>ACCEPT</onMatch>
@@ -75,7 +75,7 @@
                 <pattern>${LOG_PATTERN}</pattern>
             </encoder>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>.log-backup/warn/warn.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <fileNamePattern>log-backup/warn/warn.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                 <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                     <maxFileSize>100MB</maxFileSize>
                 </timeBasedFileNamingAndTriggeringPolicy>
@@ -86,7 +86,7 @@
         <!-- ERROR 로그 처리 -->
         <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-            <file>.logs/error.log</file>
+            <file>logs/error.log</file>
             <filter class="ch.qos.logback.classic.filter.LevelFilter">
                 <level>ERROR</level>
                 <onMatch>ACCEPT</onMatch>
@@ -96,7 +96,7 @@
                 <pattern>${LOG_PATTERN}</pattern>
             </encoder>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>.log-backup/error/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <fileNamePattern>log-backup/error/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                 <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                     <maxFileSize>100MB</maxFileSize>
                 </timeBasedFileNamingAndTriggeringPolicy>
