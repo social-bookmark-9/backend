@@ -77,19 +77,13 @@ public class ReminderServiceImpl implements ReminderService {
     // 리마인더 수정하기
     @Override
     public void editReminder(ReminderRequestDto reminderRequestDto, Member member) {
-        Article article = articleRepository.findById(reminderRequestDto.getArticleId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
-
-        Reminder reminder = reminderRepository.findReminderByMemberNameAndArticle(member.getMemberName(), article);
+        Reminder reminder = reminderRepository.findReminderByMemberNameAndArticle_Id(member.getMemberName(), reminderRequestDto.getArticleId());
         reminder.editDate(reminderRequestDto.getButtonDate());
     }
 
     // 리마인더 삭제하기
     @Override
     public void deleteReminder(ReminderRequestDto reminderRequestDto, Member member) {
-        Article article = articleRepository.findById(reminderRequestDto.getArticleId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
-
-        reminderRepository.deleteReminderByMemberNameAndArticle(member.getMemberName(), article);
+        reminderRepository.deleteReminderByMemberNameAndArticle_Id(member.getMemberName(), reminderRequestDto.getArticleId());
     }
 }

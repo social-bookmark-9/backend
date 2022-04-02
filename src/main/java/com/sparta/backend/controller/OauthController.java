@@ -1,14 +1,13 @@
 package com.sparta.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.backend.exception.BusinessException;
-import com.sparta.backend.exception.ErrorCode;
 import com.sparta.backend.jwt.JwtTokenProvider;
 import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
-import com.sparta.backend.oauthDto.*;
-import com.sparta.backend.repository.MemberRepository;
-import com.sparta.backend.repository.RefreshTokenRepository;
+import com.sparta.backend.oauthDto.KakaoMemberInfoRequestDto;
+import com.sparta.backend.oauthDto.KakaoMemberRegisterRequestDto;
+import com.sparta.backend.oauthDto.TokenDto;
+import com.sparta.backend.oauthDto.TokenRequestDto;
 import com.sparta.backend.responseDto.MemberLoginResponseDto;
 import com.sparta.backend.service.OauthService;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +27,6 @@ public class OauthController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final OauthService oauthService;
-    private final MemberRepository memberRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     // 카카오 로그인
     @GetMapping("/api/users/login")
@@ -37,30 +34,7 @@ public class OauthController {
         // 인가 코드 발행, 토큰 발행 및 API 호출
         KakaoMemberInfoRequestDto kakaoMemberInfoRequestDto = oauthService.getKakaoInfo(code);
         // 호출한 정보로 회원가입 여부 판별
-        if (memberRepository.existsMemberByKakaoId(kakaoMemberInfoRequestDto.getKakaoId())) {
-            Member member = memberRepository.findMemberByKakaoId(kakaoMemberInfoRequestDto.getKakaoId())
-                    .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
-
-            TokenDto token = jwtTokenProvider.createAccessRefreshToken((member).getUsername(), member.getMemberRoles());
-            // 리프레시 토큰 확인
-            oauthService.LoginCheckRefreshToken(member, token);
-
-            // 로그인 한 유저정보 내려주기
-            MemberLoginResponseDto myInfo = new MemberLoginResponseDto(member);
-
-            Map<String, Object> map = new HashMap<>();
-            map.put("login", true);
-            map.put("token", token);
-            map.put("myInfo", myInfo);
-
-            return new ResponseEntity<>(new RestResponseMessage<>(true,"로그인 성공", map), HttpStatus.OK);
-
-        } else {
-            Map<String, Object> map = new HashMap<>();
-            map.put("login", false);
-            map.put("kakaoMemberInfo", kakaoMemberInfoRequestDto);
-            return new ResponseEntity<>(new RestResponseMessage<>(true,"아직 회원가입을 하지 않았습니다.", map), HttpStatus.OK);
-        }
+        return oauthService.checkRegister(kakaoMemberInfoRequestDto);
     }
 
     // 카카오 회원가입 실행
