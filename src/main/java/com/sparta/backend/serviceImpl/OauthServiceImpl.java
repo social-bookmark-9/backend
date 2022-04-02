@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.backend.exception.BusinessException;
 import com.sparta.backend.exception.ErrorCode;
 import com.sparta.backend.jwt.JwtTokenProvider;
+import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
@@ -17,14 +18,12 @@ import com.sparta.backend.oauthDto.TokenRequestDto;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.repository.RefreshTokenRepository;
+import com.sparta.backend.responseDto.MemberLoginResponseDto;
 import com.sparta.backend.service.OauthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -198,11 +199,7 @@ public class OauthServiceImpl implements OauthService {
             refreshTokenRepository.save(updateRefreshToken);
         } else {
             log.info("리프레시 토큰이 존재하지 않습니다.");
-            RefreshToken refreshToken = RefreshToken.builder()
-                    .key(member.getKakaoId())
-                    .token(token.getRefreshToken())
-                    .build();
-            refreshTokenRepository.save(refreshToken);
+            saveRefreshToken(member, token);
         }
     }
 
@@ -220,5 +217,37 @@ public class OauthServiceImpl implements OauthService {
     @Override
     public void deleteRefreshToken(String refreshToken) {
         refreshTokenRepository.deleteRefreshTokenByToken(refreshToken);
+    }
+
+    // 회원가입 확인
+    @Override
+    public ResponseEntity<RestResponseMessage> checkRegister(KakaoMemberInfoRequestDto kakaoMemberInfoRequestDto) {
+        log.info("kakaoId : ", kakaoMemberInfoRequestDto.getKakaoId());
+        boolean login = memberRepository.existsMemberByKakaoId(kakaoMemberInfoRequestDto.getKakaoId());
+        log.info("memberExist : ", login);
+        if (login) {
+            Member member = memberRepository.findMemberByKakaoId(kakaoMemberInfoRequestDto.getKakaoId())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+            TokenDto token = jwtTokenProvider.createAccessRefreshToken((member).getUsername(), member.getMemberRoles());
+            // 리프레시 토큰 확인
+            LoginCheckRefreshToken(member, token);
+
+            // 로그인 한 유저정보 내려주기
+            MemberLoginResponseDto myInfo = new MemberLoginResponseDto(member);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("login", true);
+            map.put("token", token);
+            map.put("myInfo", myInfo);
+
+            return new ResponseEntity<>(new RestResponseMessage<>(true,"로그인 성공", map), HttpStatus.OK);
+
+        } else {
+            Map<String, Object> map = new HashMap<>();
+            map.put("login", false);
+            map.put("kakaoMemberInfo", kakaoMemberInfoRequestDto);
+            return new ResponseEntity<>(new RestResponseMessage<>(true,"아직 회원가입을 하지 않았습니다.", map), HttpStatus.OK);
+        }
     }
 }

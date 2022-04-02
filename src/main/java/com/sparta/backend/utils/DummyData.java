@@ -7,6 +7,7 @@ import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
+import com.sparta.backend.responseDto.ArticleCreateResponseDto;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,10 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +39,7 @@ public class DummyData {
     // 유저 1 아티클폴더 100 아티클 100 = 1분 40초 ( 아티클 총 10,000개 )
     // 유저 1 아티클폴더 1,000 아티클 100 = 16분 ( 아티클 총 100,000개 )
 
-    // 유저 10 아티클폴더 10 아티클 10 = 12초 ( 아티클 총 1,000개 )
+    // 유저 10 아티클폴더 10 아티클 10 = 14초 ( 아티클 총 1,000개 )
     // 유저 100 아티클폴더 10 아티클 10 = 2분 ( 아티클 총 10,000개 )
     // 유저 1000 아티클폴더 10 아티클 10 = 22분 ( 아티클 총 100,000 개 )
 
@@ -128,9 +127,42 @@ public class DummyData {
                     article.setArticleFolder(articleFolder);
                     articleHashtag.setArticle(article);
                     articleRepository.save(article);
+
+                    if (!articleFolder.getArticleFolderName().equals("미분류 컬렉션")) {
+                        List<String> sortedHashtag = sortingHashtag(articleFolder);
+
+                        if (sortedHashtag.size() == 1) articleFolderRepository.updateArticleFolderHashtag(sortedHashtag.get(0), null, null, articleFolder.getId());
+                        if (sortedHashtag.size() == 2) articleFolderRepository.updateArticleFolderHashtag(sortedHashtag.get(0), sortedHashtag.get(1), null, articleFolder.getId());
+                        if (sortedHashtag.size() == 3) articleFolderRepository.updateArticleFolderHashtag(sortedHashtag.get(0), sortedHashtag.get(1), sortedHashtag.get(2), articleFolder.getId());
+                    }
                 }
             }
         }
         return "더미 데이터 생성 완료!";
+    }
+
+    private List<String> sortingHashtag(ArticleFolder articleFolder) {
+        Map<String, Integer> map = new HashMap<>();
+
+        List<String> articleHashtag1List = articleFolder.getArticles()
+                .stream()
+                .map(eachArticle -> eachArticle.getHashtag().getHashtag1())
+                .collect(Collectors.toList());
+
+        for (String articleHasTag1 : articleHashtag1List) {
+            if (map.containsKey(articleHasTag1)) {
+                int cnt = map.get(articleHasTag1);
+                cnt++;
+                map.put(articleHasTag1, cnt);
+            } else {
+                map.put(articleHasTag1, 1);
+            }
+        }
+
+        return map.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 }

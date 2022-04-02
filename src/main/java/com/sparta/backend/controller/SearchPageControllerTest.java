@@ -20,16 +20,25 @@ public class SearchPageControllerTest {
     private final SearchPageServiceTest searchPageServiceTest;
 
     // 아티클 해시태그 검색 최신순으로 가져오기
-    @GetMapping("/api/searchpage/hashtags")
-    public ResponseEntity<RestResponseMessage> getArticles(@RequestParam String hashtag, @RequestParam String titleOg, @RequestParam int page) {
+    @GetMapping("/api/searchpage/articles")
+    public ResponseEntity<RestResponseMessage> getArticles(@RequestParam String hashtag, @RequestParam String titleOg, @RequestParam int page, @RequestParam String sort) {
 
-        PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "createdAt"));
+        PageRequest pageRequest = PageRequest.of(page, 1000, Sort.by(Sort.Direction.DESC, sort));
 
         Map<String, Object> articleList = searchPageServiceTest.getSearchArticles(hashtag, titleOg, pageRequest);
 
-        return new ResponseEntity<>(new RestResponseMessage<>(true,"태그 검색 결과", articleList), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true,"아티클 검색 결과", articleList), HttpStatus.OK);
     }
     
     // 아티클 폴더 해시태그 검색 최신순, 좋아요 순
+    @GetMapping("/api/searchpage/articlefolders")
+    public ResponseEntity<RestResponseMessage> getArticleFolders(@RequestParam String hashtag, @RequestParam String titleOg, @RequestParam int page, @RequestParam String sort) {
+
+        PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, sort));
+
+        Map<String, Object> articleFolderList = searchPageServiceTest.getSearchArticleFolders(hashtag, titleOg, pageRequest);
+
+        return new ResponseEntity<>(new RestResponseMessage<>(true,"아티클 폴더 검색 결과", articleFolderList), HttpStatus.OK);
+    }
 
 }

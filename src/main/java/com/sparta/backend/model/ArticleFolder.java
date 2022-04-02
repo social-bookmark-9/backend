@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.*;
@@ -44,6 +45,7 @@ public class ArticleFolder extends Timestamped {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "articleFolder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Article> articles = new ArrayList<>();
 
