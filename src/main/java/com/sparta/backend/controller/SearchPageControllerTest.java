@@ -23,7 +23,7 @@ public class SearchPageControllerTest {
     @GetMapping("/api/searchpage/articles")
     public ResponseEntity<RestResponseMessage> getArticles(@RequestParam String hashtag, @RequestParam String titleOg, @RequestParam int page, @RequestParam String sort) {
 
-        PageRequest pageRequest = PageRequest.of(page, 1000, Sort.by(Sort.Direction.DESC, sort));
+        PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, sort));
 
         Map<String, Object> articleList = searchPageServiceTest.getSearchArticles(hashtag, titleOg, pageRequest);
 
