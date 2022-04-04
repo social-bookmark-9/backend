@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -39,7 +40,15 @@ public class nplus1test {
     @Autowired
     private ArticleRepository articleRepository;
     @Autowired
-    private HashtagRepository hashtagRepository;
+    HashtagRepository hashtagRepository;
+
+    @AfterEach
+    public void deleteAll() {
+        articleFolderRepository.deleteAll();
+        articleRepository.deleteAll();
+        memberRepository.deleteAll();
+        hashtagRepository.deleteAll();
+    }
 
     @Test
     public void test1() {
@@ -129,23 +138,31 @@ public class nplus1test {
         em.clear();
 
         System.out.println("############### 아티클 쿼리 시작 #################");
-        articleRepository.findAll();
+        List<Article> articles = articleRepository.findAll();
+
+        for(Article article : articles) {
+            // one to one 양방향은 lazy를 해도 대상 테이블에 외래키가 있으면 (hashtag) 프록시 문제로 인해 항상 eager 로 변경된다. ( 가짜 프록시 객체로 가져오지 않는다.)
+            // @EntityGraph를 활용해 한방쿼리로 가져오는지 확인해보자. -> 정상적으로 한번에 가져온다!
+            System.out.println("article.hashtah = " + article.getHashtag());
+            System.out.println("article.reminder = " + article.getReminder());
+        }
+
         System.out.println("############### 종료 #################");
 
-        System.out.println("############### 아티클 폴더 쿼리 시작 #################");
-        articleFolderRepository.findAll();
-        System.out.println("############### 종료 #################");
+//        System.out.println("############### 아티클 폴더 쿼리 시작 #################");
+//        articleFolderRepository.findAll();
+//        System.out.println("############### 종료 #################");
 
         System.out.println("############### 멤버 쿼리 시작 #################");
-        memberRepository.findAll();
+        List<Member> members = memberRepository.findAll();
+
+        for(Member member : members) {
+            // one to one 양방향은 lazy를 해도 대상 테이블에 외래키가 있으면 (hashtag) 프록시 문제로 인해 항상 eager 로 변경된다. ( 가짜 프록시 객체로 가져오지 않는다.)
+            // @EntityGraph를 활용해 한방쿼리로 가져오는지 확인해보자. -> 정상적으로 한번에 가져온다!
+            System.out.println("member.hashtag = " + member.getHashtag());
+        }
+
         System.out.println("############### 종료 #################");
 
-    }
-    @AfterEach
-    public void deleteAll() {
-        articleFolderRepository.deleteAll();
-        articleRepository.deleteAll();
-        memberRepository.deleteAll();
-        hashtagRepository.deleteAll();
     }
 }

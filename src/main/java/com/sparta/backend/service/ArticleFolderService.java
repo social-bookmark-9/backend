@@ -16,17 +16,17 @@ public interface ArticleFolderService {
 
     void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member);
 
-    void deleteArticleFolder(Member member, long id);
+    void deleteArticleFolder(Member member, Long id);
 
-    void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, long id);
+    void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, Long id);
 
-    ArticlesInFolderResponseDto findArticlesInFolderLoginTrue(Member member, long id);
+    ArticlesInFolderResponseDto findArticlesInFolderLoginTrue(Member member, Long id);
 
-    ArticlesInFolderResponseDto findArticlesInFolderLoginFalse(long id);
+    ArticlesInFolderResponseDto findArticlesInFolderLoginFalse(Long id);
 
-    void deleteArticleInArticleFolder(long folderId, long articleId);
+    void deleteArticleInArticleFolder(Long folderId, Long articleId);
 
-    LikeAddOrRemoveResponseDto likeAddOrRemove(Member member, long folderId);
+    LikeAddOrRemoveResponseDto likeAddOrRemove(Member member, Long folderId);
 
     List<ArticleFolderNameAndIdResponseDto> getArticleFoldersName(Member member);
 }

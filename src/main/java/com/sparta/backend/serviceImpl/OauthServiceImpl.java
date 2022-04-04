@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.backend.exception.BusinessException;
 import com.sparta.backend.exception.ErrorCode;
 import com.sparta.backend.jwt.JwtTokenProvider;
+import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Hashtag;
 import com.sparta.backend.model.Member;
@@ -17,14 +18,12 @@ import com.sparta.backend.oauthDto.TokenRequestDto;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.repository.RefreshTokenRepository;
+import com.sparta.backend.responseDto.MemberLoginResponseDto;
 import com.sparta.backend.service.OauthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -65,10 +66,11 @@ public class OauthServiceImpl implements OauthService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
 
-       body.add("redirect_uri", "http://localhost:3000/api/users/login"); // 프론트 로컬 연결 테스트용
+        body.add("redirect_uri", "http://localhost:3000/api/users/login"); // 프론트 로컬 연결 테스트용
 //        body.add("redirect_uri", "http://finalproject9.s3-website.ap-northeast-2.amazonaws.com/api/users/login"); // 프론트 서버 연결 테스트용
 //        body.add("redirect_uri", "http://3.34.99.169/api/users/login"); // 서버 연결 테스트용
-//         body.add("redirect_uri", "http://localhost:8080/api/users/login"); // 서버 연결 테스트용
+//        body.add("redirect_uri", "http://localhost:8080/api/users/login"); // 서버 연결 테스트용
+
         body.add("code", code);
 
         // HTTP 요청 보내기
@@ -173,22 +175,20 @@ public class OauthServiceImpl implements OauthService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         // 리프레시 토큰 불일치시 에러
-        if (!refreshToken.getToken().equals(tokenRequestDto.getRefreshToken()))
+        if (!refreshToken.getToken().equals(tokenRequestDto.getRefreshToken())) {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOTMATCH);
+        }
 
         refreshTokenRepository.deleteRefreshTokenByToken(refreshToken.getToken());
         // AccessToken ,Refresh Token 재발급 및 리프레시 토큰 저장
         TokenDto newToken = jwtTokenProvider.createAccessRefreshToken(member.getUsername(), member.getMemberRoles());
         RefreshToken updateRefreshToken = refreshToken.updateToken(newToken.getRefreshToken());
-//        RefreshToken newRefreshToken = RefreshToken.builder()
-//                .key(member.getKakaoId())
-//                .token(newToken.getRefreshToken())
-//                .build();
         refreshTokenRepository.save(updateRefreshToken);
 
         return newToken;
     }
 
+    // 로그인시 리프레시 토큰 확인
     @Override
     public void LoginCheckRefreshToken(Member member, TokenDto token){
         // Refresh Token이 이미 존재할 경우 업데이트, 없으면 생성.
@@ -197,22 +197,14 @@ public class OauthServiceImpl implements OauthService {
             RefreshToken refreshToken = refreshTokenRepository.findByKey(member.getKakaoId())
                     .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
             RefreshToken updateRefreshToken = refreshToken.updateToken(token.getRefreshToken());
-//            refreshTokenRepository.deleteRefreshTokenByKey(member.getKakaoId());
-//            RefreshToken refreshToken = RefreshToken.builder()
-//                    .key(member.getKakaoId())
-//                    .token(token.getRefreshToken())
-//                    .build();
             refreshTokenRepository.save(updateRefreshToken);
         } else {
             log.info("리프레시 토큰이 존재하지 않습니다.");
-            RefreshToken refreshToken = RefreshToken.builder()
-                    .key(member.getKakaoId())
-                    .token(token.getRefreshToken())
-                    .build();
-            refreshTokenRepository.save(refreshToken);
+            saveRefreshToken(member, token);
         }
     }
 
+    // 리프레시 토큰 저장
     @Override
     public void saveRefreshToken(Member member, TokenDto token) {
         RefreshToken refreshToken = RefreshToken.builder()
@@ -222,8 +214,41 @@ public class OauthServiceImpl implements OauthService {
         refreshTokenRepository.save(refreshToken);
     }
 
+    // 리프레시 토큰 삭제
     @Override
     public void deleteRefreshToken(String refreshToken) {
         refreshTokenRepository.deleteRefreshTokenByToken(refreshToken);
+    }
+
+    // 회원가입 확인
+    @Override
+    public ResponseEntity<RestResponseMessage> checkRegister(KakaoMemberInfoRequestDto kakaoMemberInfoRequestDto) {
+        log.info("kakaoId : ", kakaoMemberInfoRequestDto.getKakaoId());
+        boolean login = memberRepository.existsMemberByKakaoId(kakaoMemberInfoRequestDto.getKakaoId());
+        log.info("memberExist : ", login);
+        if (login) {
+            Member member = memberRepository.findMemberByKakaoId(kakaoMemberInfoRequestDto.getKakaoId())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+            TokenDto token = jwtTokenProvider.createAccessRefreshToken((member).getUsername(), member.getMemberRoles());
+            // 리프레시 토큰 확인
+            LoginCheckRefreshToken(member, token);
+
+            // 로그인 한 유저정보 내려주기
+            MemberLoginResponseDto myInfo = new MemberLoginResponseDto(member);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("login", true);
+            map.put("token", token);
+            map.put("myInfo", myInfo);
+
+            return new ResponseEntity<>(new RestResponseMessage<>(true,"로그인 성공", map), HttpStatus.OK);
+
+        } else {
+            Map<String, Object> map = new HashMap<>();
+            map.put("login", false);
+            map.put("kakaoMemberInfo", kakaoMemberInfoRequestDto);
+            return new ResponseEntity<>(new RestResponseMessage<>(true,"아직 회원가입을 하지 않았습니다.", map), HttpStatus.OK);
+        }
     }
 }

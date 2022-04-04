@@ -77,18 +77,12 @@ public class Article extends Timestamped {
 
     // 연관관계 편의 메소드
     public void setArticleFolder(ArticleFolder articleFolder) {
-        this.articleFolder = articleFolder;
         articleFolder.getArticles().add(this);
     }
 
     // 연관관계 편의 메소드
     public void setReminder(Reminder reminder) {
         this.reminder = reminder;
-    }
-
-    // 연관관계 편의 메소드
-    public void setHashtag(Hashtag hashtag) {
-        this.hashtag = hashtag;
     }
 
     @Builder

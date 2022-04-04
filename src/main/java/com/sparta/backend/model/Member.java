@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -64,12 +65,12 @@ public class Member extends Timestamped implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hashtag hashtag;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ArticleFolder> articleFolders = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> memberRoles = new ArrayList<>();
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

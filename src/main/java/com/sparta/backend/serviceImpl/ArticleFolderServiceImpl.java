@@ -18,33 +18,29 @@ import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
 import com.sparta.backend.responseDto.ArticlesInfoInFolderResponseDto;
 import com.sparta.backend.responseDto.LikeAddOrRemoveResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ArticleFolderServiceImpl implements ArticleFolderService {
 
     private final MemberRepository memberRepository;
     private final ArticleFolderRepository articleFolderRepository;
     private final ArticleRepository articleRepository;
     private final FavoriteRepository favoriteRepository;
-
-    @Autowired
-    public ArticleFolderServiceImpl(MemberRepository memberRepository ,ArticleFolderRepository articleFolderRepository,
-                                    ArticleRepository articleRepository, FavoriteRepository favoriteRepository) {
-        this.memberRepository = memberRepository;
-        this.articleFolderRepository = articleFolderRepository;
-        this.articleRepository = articleRepository;
-        this.favoriteRepository = favoriteRepository;
-    }
 
     /**
      * 아티클 폴더 생성
@@ -54,8 +50,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
     @Override
     public void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member) {
         // TODO: 한 유저가 1개 이상의 동일한 아티클 폴더 이름을 생성할 수 없음 (현우)
-        Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
-                () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
+        Member currentMember = getMember(member.getId());
 
         ArticleFolder savedArticleFolder = articleFolderRepository
                 .findArticleFolderByArticleFolderNameAndMember(articleFolderRequestDto.getArticleFolderName(), currentMember);
@@ -68,9 +63,8 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
                     .likeCount(0)
                     .member(currentMember)
                     .build();
-
             articleFolderRepository.save(articleFolder);
-        } else { throw new InvalidValueException(ErrorCode.DUPLICATED_VALUE); }
+        } else throw new InvalidValueException(ErrorCode.DUPLICATED_VALUE);
     }
 
     /**
@@ -79,9 +73,9 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return void
      */
     @Override
-    public void deleteArticleFolder(Member member, long folderId) {
+    public void deleteArticleFolder(Member member, Long folderId) {
         ArticleFolder findFolder = getFolder(folderId);
-        if (findFolder.getMember().getId() == member.getId()) {
+        if (Objects.equals(findFolder.getMember().getId(), member.getId())) {
             articleFolderRepository.delete(findFolder);
         } else throw new AccessDeniedException("접근 권한 없음");
     }
@@ -93,7 +87,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return void
      */
     @Override
-    public void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, long folderId) {
+    public void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, Long folderId) {
         String articleFolderName = articleFolderNameUpdateRequestDto.getArticleFolderName();
 
         ArticleFolder folder = getFolder(folderId);
@@ -106,7 +100,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return List<ArticlesInFolderResponseDto>
      */
     @Override
-    public ArticlesInFolderResponseDto findArticlesInFolderLoginTrue(Member member, long folderId) {
+    public ArticlesInFolderResponseDto findArticlesInFolderLoginTrue(Member member, Long folderId) {
         // 타켓 아티클 폴더 찾기
         Optional<ArticleFolder> findArticleFolder = Optional.of(getFolder(folderId));
         // 타켓 아티클 폴더 안 모든 아티클 articles에 저장
@@ -130,7 +124,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
 
         List<ArticlesInfoInFolderResponseDto> articlesInfoInFolderResponseDtoList = new ArrayList<>();
 
-        if (!articles.isEmpty()) {
+        if (!CollectionUtils.isEmpty(articles)) {
             for (Article article : articles) {
                 boolean isRead = article.getReadCount() > 0;
                 boolean isSaved = myArticlesUrl.contains(article.getUrl());
@@ -150,7 +144,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return List<ArticlesInFolderResponseDto>
      */
     @Override
-    public ArticlesInFolderResponseDto findArticlesInFolderLoginFalse(long folderId) {
+    public ArticlesInFolderResponseDto findArticlesInFolderLoginFalse(Long folderId) {
         Optional<ArticleFolder> findArticleFolder = Optional.of(getFolder(folderId));
 
         List<Article> articles = new ArrayList<>();
@@ -160,7 +154,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
 
         List<ArticlesInfoInFolderResponseDto> articlesInfoInFolderResponseDtoList = new ArrayList<>();
 
-        if (!articles.isEmpty()) {
+        if (!CollectionUtils.isEmpty(articles)) {
             for (Article article : articles) {
                 ArticlesInfoInFolderResponseDto articlesInfoInFolderResponseDto = ArticlesInfoInFolderResponseDto.of(article);
                 articlesInfoInFolderResponseDtoList.add(articlesInfoInFolderResponseDto);
@@ -178,7 +172,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @param articleId
      */
     @Override
-    public void deleteArticleInArticleFolder(long folderId, long articleId) {
+    public void deleteArticleInArticleFolder(Long folderId, Long articleId) {
         ArticleFolder articleFolder = getFolder(folderId);
         if (!articleFolder.getArticles().isEmpty()) {
             articleFolder.getArticles()
@@ -196,7 +190,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return LikeAddOrRemoveResponseDto
      */
     @Override
-    public LikeAddOrRemoveResponseDto likeAddOrRemove(Member member, long folderId) {
+    public LikeAddOrRemoveResponseDto likeAddOrRemove(Member member, Long folderId) {
         Member findMember = getMember(member.getId());
         ArticleFolder articleFolder = getFolder(folderId);
 
@@ -223,7 +217,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         List<ArticleFolderNameAndIdResponseDto> articleFolderNameAndIdResponseDtoList = new ArrayList<>();
 
         List<ArticleFolder> findArticleFolders = getMember(member.getId()).getArticleFolders();
-        if (!findArticleFolders.isEmpty()) {
+        if (!CollectionUtils.isEmpty(findArticleFolders)) {
             for (ArticleFolder articleFolder : findArticleFolders) {
                 articleFolderNameAndIdResponseDtoList.add(ArticleFolderNameAndIdResponseDto.of(articleFolder));
             }
@@ -238,11 +232,11 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * Member 조회
      * @param id
      */
-    private Member getMember(long id) {
+    private Member getMember(Long id) {
         Optional<Member> member = memberRepository.findById(id);
         if (member.isPresent()) {
             return member.get();
-        } else throw new EntityNotFoundException("존재하지 않는 회원");
+        } else throw new EntityNotFoundException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage());
     }
 
     /**
@@ -250,7 +244,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @param id
      * @return Optional<ArticleFolder>
      */
-    private ArticleFolder getFolder(long id) {
+    private ArticleFolder getFolder(Long id) {
         Optional<ArticleFolder> folder = articleFolderRepository.findById(id);
         if (folder.isPresent()) {
             return folder.get();

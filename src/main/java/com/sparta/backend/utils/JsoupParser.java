@@ -5,40 +5,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.IOException;
 
 public class JsoupParser {
-
-    // TODO: 셀레니움 테스트
-//    public static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
-//    public static final String WEB_DRIVER_PATH = "chromedriver";
-//
-//    public String seleniumParser(String url) {
-//        try {
-//            System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        ChromeOptions options = new ChromeOptions();
-//        WebDriver driver = new ChromeDriver(options);
-//        driver.get(url);
-//        WebElement titleEl = driver.findElement(By.xpath("//meta[@property='og:title']"));
-//        WebElement imgEl = driver.findElement(By.xpath("//meta[@property='og:image']"));
-//        WebElement descriptionEl = driver.findElement(By.xpath("//meta[@property='og:description']"));
-//        String titleContent = titleEl.getAttribute("content");
-//        String imgContent = descriptionEl.getAttribute("content");
-//        String descriptionContent = imgEl.getAttribute("content");
-//        System.out.println("titleContent = " + titleContent);
-//        System.out.println("imgContent = " + imgContent);
-//        System.out.println("descriptionContent = " + descriptionContent);
-//        return titleContent;
-//    }
 
     public OGTagRequestDto ogTagScraper(String url) {
 

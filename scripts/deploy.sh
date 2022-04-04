@@ -45,4 +45,5 @@ else
   ln -s /opt/codedeploy-agent/log-backup /home/ubuntu/app/log-backup
 fi
 
+# 실행
 nohup java -Duser.timezone=KST -jar "$JAR_NAME" > $REPOSITORY/nohup.out 2>&1 &
