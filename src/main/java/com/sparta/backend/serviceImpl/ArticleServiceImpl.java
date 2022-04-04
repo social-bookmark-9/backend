@@ -101,10 +101,16 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleFolder articleFolder = articleFolderRepository
                 .findArticleFolderByArticleFolderNameAndMember(requestDto.getArticleFolderName(), currentMember);
 
+        String contentOgSub;
 
-        // contentOg 자르기 (50자 제한)
-        String contentOgSub = ogTagRequestDto.getContentOg() == null ? null
-                : ogTagRequestDto.getContentOg().substring(0, 50);
+        if (ogTagRequestDto.getContentOg() == null) {  contentOgSub = null; }
+        else {
+            if (ogTagRequestDto.getContentOg().length() > 51) {
+                contentOgSub = ogTagRequestDto.getContentOg().substring(0, 50);
+            } else {
+                contentOgSub = ogTagRequestDto.getContentOg();
+            }
+        }
 
         Hashtag hashtag = Hashtag.builder()
                 .hashtag1(requestDto.getHashtag1())
