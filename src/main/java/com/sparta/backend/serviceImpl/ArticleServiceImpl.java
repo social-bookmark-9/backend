@@ -35,7 +35,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticleFolderRepository articleFolderRepository;
 
-    // TODO: 본인 확인
+    // 본인 확인
     public boolean isIdentityVerified(Article currentArticle, Member member) {
         Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
@@ -43,7 +43,7 @@ public class ArticleServiceImpl implements ArticleService {
         return currentMember == writerMember;
     }
 
-    // TODO: 랜덤 아티클 생성
+    // 랜덤 아티클 생성
     public ArticleGetResponseDto randomArticleGenerator(Long id ,Article currentArticle, Member currentWriterMember) {
         RandomGenerator randomGenerator = new RandomGenerator();
         String mainHashtag = currentArticle.getHashtag().getHashtag1();
@@ -101,10 +101,16 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleFolder articleFolder = articleFolderRepository
                 .findArticleFolderByArticleFolderNameAndMember(requestDto.getArticleFolderName(), currentMember);
 
+        String contentOgSub;
 
-        // contentOg 자르기 (50자 제한)
-        String contentOgSub = ogTagRequestDto.getContentOg() == null ? null
-                : ogTagRequestDto.getContentOg().substring(0, 50);
+        if (ogTagRequestDto.getContentOg() == null) {  contentOgSub = null; }
+        else {
+            if (ogTagRequestDto.getContentOg().length() > 51) {
+                contentOgSub = ogTagRequestDto.getContentOg().substring(0, 50);
+            } else {
+                contentOgSub = ogTagRequestDto.getContentOg();
+            }
+        }
 
         Hashtag hashtag = Hashtag.builder()
                 .hashtag1(requestDto.getHashtag1())
