@@ -163,7 +163,7 @@ public class OauthServiceImpl implements OauthService {
             refreshTokenRepository.deleteRefreshTokenByToken(tokenRequestDto.getRefreshToken());
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
-
+        log.info("refresh token 만료 확인");
         // AccessToken 에서 userPk 가져오기
         String accessToken = tokenRequestDto.getAccessToken();
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
@@ -178,13 +178,12 @@ public class OauthServiceImpl implements OauthService {
         if (!refreshToken.getToken().equals(tokenRequestDto.getRefreshToken())) {
             throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOTMATCH);
         }
-
-        refreshTokenRepository.deleteRefreshTokenByToken(refreshToken.getToken());
+        log.info("refresh token DB 일치 확인");
         // AccessToken ,Refresh Token 재발급 및 리프레시 토큰 저장
         TokenDto newToken = jwtTokenProvider.createAccessRefreshToken(member.getUsername(), member.getMemberRoles());
         RefreshToken updateRefreshToken = refreshToken.updateToken(newToken.getRefreshToken());
         refreshTokenRepository.save(updateRefreshToken);
-
+        log.info("refresh token 발급");
         return newToken;
     }
 
