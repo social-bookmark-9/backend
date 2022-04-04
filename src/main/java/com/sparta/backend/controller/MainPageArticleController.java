@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 @RestController
@@ -19,7 +21,10 @@ public class MainPageArticleController {
     private final MainPageService mainPageService;
 
     @GetMapping("/api/mainpage/hashtags")
-    public ResponseEntity<RestResponseMessage> getArticlesSearchByHashtag(@RequestParam String hashtag) {
+    public ResponseEntity<RestResponseMessage> getArticlesSearchByHashtag(@RequestParam String hashtag) throws UnsupportedEncodingException {
+
+        // hashtag 디코딩
+        hashtag = URLDecoder.decode(hashtag, "UTF-8");
 
         List<ArticleRandomResponseDto> articleList = mainPageService.getMonthArticles(hashtag);
 
