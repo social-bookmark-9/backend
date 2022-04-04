@@ -64,18 +64,4 @@ public class ArticleFolder extends Timestamped {
     public void decreaseLikeCount(int currentLikeCount) {
         this.likeCount = --currentLikeCount;
     }
-
-    // 아티클 폴더에서 해당 아티클 삭제 (아티클 폴더를 수정하기 위함)
-    public void deleteArticleFromArticleFolder(Article currentArticle) {
-        Long currentArticleId = currentArticle.getId();
-        int size = articles.size();
-        for (int i = 0; i < size; i++) {
-            Long articleId = articles.get(i).getId();
-            if (Objects.equals(currentArticleId, articleId)) {
-                articles.remove(i);
-                size--;
-                i--;
-            }
-        }
-    }
 }

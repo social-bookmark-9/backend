@@ -35,7 +35,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticleFolderRepository articleFolderRepository;
 
-    // TODO: 본인 확인
+    // 본인 확인
     public boolean isIdentityVerified(Article currentArticle, Member member) {
         Member currentMember = memberRepository.findById(member.getId()).orElseThrow(
                 () -> new InvalidValueException(ErrorCode.ENTITY_NOT_FOUND.getErrorMessage()));
@@ -43,7 +43,7 @@ public class ArticleServiceImpl implements ArticleService {
         return currentMember == writerMember;
     }
 
-    // TODO: 랜덤 아티클 생성
+    // 랜덤 아티클 생성
     public ArticleGetResponseDto randomArticleGenerator(Long id ,Article currentArticle, Member currentWriterMember) {
         RandomGenerator randomGenerator = new RandomGenerator();
         String mainHashtag = currentArticle.getHashtag().getHashtag1();
