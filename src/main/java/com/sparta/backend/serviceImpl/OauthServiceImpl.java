@@ -70,6 +70,7 @@ public class OauthServiceImpl implements OauthService {
 //        body.add("redirect_uri", "http://finalproject9.s3-website.ap-northeast-2.amazonaws.com/api/users/login"); // 프론트 서버 연결 테스트용
 //        body.add("redirect_uri", "http://3.34.99.169/api/users/login"); // 서버 연결 테스트용
 //        body.add("redirect_uri", "http://localhost:8080/api/users/login"); // 서버 연결 테스트용
+
         body.add("code", code);
 
         // HTTP 요청 보내기
