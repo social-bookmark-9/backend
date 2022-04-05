@@ -2,8 +2,8 @@ package com.sparta.backend.repository;
 
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.Member;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -22,16 +22,16 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     // 검색페이지 아티클 검색용
     @EntityGraph(attributePaths = {"hashtag", "reminder", "articleFolder"})
-    Page<Article> findArticlesByHashtag_Hashtag1AndArticleFolder_FolderHideAndTitleOgContains(String mainHashtag, boolean folderHide, String titleOg, Pageable pageable);
+    Slice<Article> findArticlesByHashtag_Hashtag1AndArticleFolder_FolderHideAndTitleOgContains(String mainHashtag, boolean folderHide, String titleOg, Pageable pageable);
     // 검색페이지 아티클 검색용 ( titleOg == null )
     @EntityGraph(attributePaths = {"hashtag", "reminder", "articleFolder"})
-    Page<Article> findArticlesByHashtag_Hashtag1AndArticleFolder_FolderHide(String mainHashtag, boolean folderHide, Pageable pageable);
+    Slice<Article> findArticlesByHashtag_Hashtag1AndArticleFolder_FolderHide(String mainHashtag, boolean folderHide, Pageable pageable);
     // 검색페이지 아티클 검색용 ( hashtag == null )
     @EntityGraph(attributePaths = {"hashtag", "reminder", "articleFolder"})
-    Page<Article> findArticlesByArticleFolder_FolderHideAndTitleOgContains(boolean folderHide, String titleOg, Pageable pageable);
+    Slice<Article> findArticlesByArticleFolder_FolderHideAndTitleOgContains(boolean folderHide, String titleOg, Pageable pageable);
     // 검색페이지 아티클 검색용 ( titleOg == null && hashtag == null)
     @EntityGraph(attributePaths = {"hashtag", "reminder", "articleFolder"})
-    Page<Article> findArticlesByArticleFolder_FolderHide(boolean folderHide, Pageable pageable);
+    Slice<Article> findArticlesByArticleFolder_FolderHide(boolean folderHide, Pageable pageable);
 
     // n + 1 테스트용
     @EntityGraph(attributePaths = {"hashtag", "reminder", "articleFolder"})

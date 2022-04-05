@@ -66,9 +66,10 @@ public class OauthServiceImpl implements OauthService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
 
+//        body.add("redirect_uri", "https://bubbled.at"); // 우리 서버.
         body.add("redirect_uri", "http://localhost:3000/api/users/login"); // 프론트 로컬 연결 테스트용
 //        body.add("redirect_uri", "http://finalproject9.s3-website.ap-northeast-2.amazonaws.com/api/users/login"); // 프론트 서버 연결 테스트용
-//        body.add("redirect_uri", "http://3.34.99.169/api/users/login"); // 서버 연결 테스트용
+//        body.add("redirect_uri", "http://3.34.99.169/api/users/login"); // EC2 서버 연결 테스트용
 //        body.add("redirect_uri", "http://localhost:8080/api/users/login"); // 서버 연결 테스트용
 
         body.add("code", code);
@@ -157,6 +158,8 @@ public class OauthServiceImpl implements OauthService {
     // 토큰 재발급
     @Override
     public TokenDto reissue(TokenRequestDto tokenRequestDto) {
+        log.info("accessToken : " + tokenRequestDto.getAccessToken());
+        log.info("refreshToken : " + tokenRequestDto.getRefreshToken());
         // 리프레시 토큰도 만료되었을 경우 에러
         if (!jwtTokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
             // 기존 db에 있던 리프레시 토큰 삭제.
