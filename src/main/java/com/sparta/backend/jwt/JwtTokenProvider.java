@@ -28,7 +28,8 @@ public class JwtTokenProvider {
     private String secretKey;
 
     // 테스트용 엑세스 토큰 발급 시간
-//    private long accessTokenValidTime = 1 * 1 * 60 * 1000L;
+//    private long accessTokenValidTime = 1 * 1 * 60 * 1000L; // 1분
+//    private long accessTokenValidTime = 1 * 10 * 60 * 1000L; // 10분
     private long accessTokenValidTime = 24 * 60 * 60 * 1000L; // 하루
 
     // 테스트용 리프레시 토큰 발급 시간
@@ -106,32 +107,26 @@ public class JwtTokenProvider {
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-            System.out.println("토큰 검증 성공");
+            log.info("토큰 검증 성공");
             return !claims.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
-            System.out.println(e.getClass());
             log.info("만료된 JWT 토큰입니다.");
             throw new JwtException("Expired");
         } catch (MalformedJwtException e) {
-            System.out.println(e.getClass());
             log.info("잘못된 JWT 토큰입니다.");
             throw new JwtException("잘못된 JWT 서명입니다.");
         } catch (UnsupportedJwtException e) {
-            System.out.println(e.getClass());
             log.info("지원하지 않는 JWT 토큰입니다.");
             throw new JwtException("지원하지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getClass());
             log.info("잘못된 JWT 토큰입니다.");
             throw new JwtException("JWT 토큰이 잘못되었습니다.");
         } catch (SignatureException e) {
-            System.out.println(e.getClass());
             log.info("JWT 서명이 잘못되었습니다.");
             throw new JwtException("잘못된 JWT 서명입니다.");
         } catch (Exception e) {
             // 토큰이 들어오지 않았을 경우 AccessDeniedHandler를 통해 403 에러를 내보낸다.
-            System.out.println("토큰 검증 실패");
-            System.out.println(e.getClass());
+            log.info("토큰 검증 실패");
         }
         return false;
     }

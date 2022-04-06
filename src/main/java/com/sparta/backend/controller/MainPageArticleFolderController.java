@@ -3,6 +3,7 @@ package com.sparta.backend.controller;
 import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
+import com.sparta.backend.responseDto.MainPageArticleFolderResponseDto;
 import com.sparta.backend.service.MainPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class MainPageArticleFolderController {
     @GetMapping("/api/mainpage/articlefolders")
     public ResponseEntity<RestResponseMessage> getArticleFolders(@AuthenticationPrincipal Member getMember) {
 
-        List<ArticleFolderListResponseDto> articleFolderList = mainPageService.getRecommendedArticleFolders(getMember);
+        List<MainPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFolders(getMember);
 
         return new ResponseEntity<>(new RestResponseMessage<>(true,"추천 큐레이션 검색 결과", articleFolderList), HttpStatus.OK);
     }

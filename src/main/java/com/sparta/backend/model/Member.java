@@ -1,8 +1,5 @@
 package com.sparta.backend.model;
 
-import com.sparta.backend.model.ArticleFolder;
-import com.sparta.backend.model.Hashtag;
-import com.sparta.backend.model.Timestamped;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -59,7 +56,7 @@ public class Member extends Timestamped implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "profile_image")
+    @Column(name = "profile_image", length = 1000)
     private String profileImage;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -11,6 +11,7 @@ import com.sparta.backend.service.MyPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,11 +74,11 @@ public class MyPageServiceImpl implements MyPageService {
         return getOtherArticleFolderListDtoList(loginMember, otherArticleFolders);
     }
 
-    private List<ArticleFolderListResponseDto> getMyArticleFolderListDtoList(List<ArticleFolder> otherArticleFolders) {
+    private List<ArticleFolderListResponseDto> getMyArticleFolderListDtoList(List<ArticleFolder> myArticleFolders) {
         List<ArticleFolderListResponseDto> articleFolderListDtoListResponse = new ArrayList<>();
 
-        for (ArticleFolder otherArticleFolder : otherArticleFolders) {
-            if (otherArticleFolder.getArticles().isEmpty()) {
+        for (ArticleFolder otherArticleFolder : myArticleFolders) {
+            if (CollectionUtils.isEmpty(otherArticleFolder.getArticles())) {
                 ArticleFolderListResponseDto noArticlesInFolder = ArticleFolderListResponseDto.of(otherArticleFolder);
                 articleFolderListDtoListResponse.add(noArticlesInFolder);
             } else {
@@ -95,7 +96,7 @@ public class MyPageServiceImpl implements MyPageService {
 
         for (ArticleFolder otherArticleFolder : otherArticleFolders) {
             Boolean likeStatus = allFolderId.contains(otherArticleFolder.getId());
-            if (otherArticleFolder.getArticles().isEmpty()) {
+            if (CollectionUtils.isEmpty(otherArticleFolder.getArticles())) {
                 ArticleFolderListResponseDto noArticlesInFolder = ArticleFolderListResponseDto.of(otherArticleFolder, likeStatus);
                 articleFolderListDtoListResponse.add(noArticlesInFolder);
             } else {

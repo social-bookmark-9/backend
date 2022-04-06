@@ -4,6 +4,7 @@ import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
 import com.sparta.backend.responseDto.ArticleRandomResponseDto;
+import com.sparta.backend.responseDto.MainPageArticleFolderResponseDto;
 import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
 import com.sparta.backend.service.MainPageService;
 import com.sparta.backend.utils.RandomGenerator;
@@ -34,7 +35,7 @@ public class MainPageController {
         List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembers(getMember, randomHashtag);
 
         // 아티클 폴더
-        List<ArticleFolderListResponseDto> articleFolderList = mainPageService.getRecommendedArticleFolders(getMember);
+        List<MainPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFolders(getMember);
 
         // 아티클
         List<ArticleRandomResponseDto> articleList = mainPageService.getMonthArticles(randomHashtag);

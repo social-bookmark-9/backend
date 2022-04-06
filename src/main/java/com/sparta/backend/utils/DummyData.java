@@ -48,27 +48,13 @@ public class DummyData {
 
         for(int i = 0; i < dummyRequestDto.getUsers(); i++) {
 
-            List<String> hashtags = new ArrayList<>();
-            hashtags.add("커리어");
-            hashtags.add("업무스킬");
-            hashtags.add("IT");
-            hashtags.add("디자인");
-            hashtags.add("마케팅");
-            hashtags.add("투자");
-            hashtags.add("장소");
-            hashtags.add("동기부여");
-            hashtags.add("인간관계");
-            hashtags.add("패션");
-            hashtags.add("예술");
-            hashtags.add("과학");
-
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
 
             Hashtag hashtag = Hashtag.builder()
-                    .hashtag1(hashtags.get((int) (Math.random() * 11)))
-                    .hashtag2(hashtags.get((int) (Math.random() * 11)))
-                    .hashtag3(hashtags.get((int) (Math.random() * 11)))
+                    .hashtag1(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
+                    .hashtag2(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
+                    .hashtag3(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
                     .build();
 
             Member kakaoMember = Member.builder()
@@ -107,9 +93,9 @@ public class DummyData {
 
                 for (int j = 0; j < dummyRequestDto.getArticles(); j++) {
                     Hashtag articleHashtag = Hashtag.builder()
-                            .hashtag1(hashtags.get((int) (Math.random() * 11)))
-                            .hashtag2(hashtags.get((int) (Math.random() * 11)))
-                            .hashtag3(hashtags.get((int) (Math.random() * 11)))
+                            .hashtag1(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
+                            .hashtag2(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
+                            .hashtag3(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
                             .build();
 
                     Article article = Article.builder()

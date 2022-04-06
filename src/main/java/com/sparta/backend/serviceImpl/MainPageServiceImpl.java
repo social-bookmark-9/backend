@@ -9,6 +9,7 @@ import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
 import com.sparta.backend.responseDto.ArticleRandomResponseDto;
+import com.sparta.backend.responseDto.MainPageArticleFolderResponseDto;
 import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
 import com.sparta.backend.service.MainPageService;
 import com.sparta.backend.utils.RandomGenerator;
@@ -147,53 +148,17 @@ public class MainPageServiceImpl implements MainPageService {
 
     // 메인페이지 아티클 폴더 추천
     @Override
-    public List<ArticleFolderListResponseDto> getRecommendedArticleFolders(Member getMember) {
+    public List<MainPageArticleFolderResponseDto> getRecommendedArticleFolders(Member member) {
+        if (member != null) {
+            List<String> hashtagList = new ArrayList<>();
+            String memberHashtag = member.getHashtag().getHashtag1();
+            List<String> folderHashtagList = member.getArticleFolders().stream().map(ArticleFolder::getFolderHashtag1).collect(Collectors.toList());
+            hashtagList.add(memberHashtag);
+            hashtagList.addAll(folderHashtagList);
 
-        List<ArticleFolderListResponseDto> articleFolderList = new ArrayList<>();
-        PageRequest pageRequest = PageRequest.of(0, 50, Sort.by(Sort.Direction.DESC, "likeCount"));
-
-        // 비로그인 일 경우
-        if(getMember == null) {
-            Page<ArticleFolder> articleFolders = articleFolderRepository.findArticleFoldersByFolderHide(false, pageRequest);
-
-            for (ArticleFolder articleFolder : articleFolders) {
-                ArticleFolderListResponseDto articleFolderListResponseDto;
-                if (CollectionUtils.isEmpty(articleFolder.getArticles())) {
-                    articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder);
-                } else {
-                    articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder, articleFolder.getArticles());
-                }
-                articleFolderList.add(articleFolderListResponseDto);
-            }
-
-            // 랜덤으로 9개 가져오기
-            if(articleFolderList.size() > 8) {
-                articleFolderList = randomGenerator.getRecommendedAtricleFolders(articleFolderList, 9);
-            }
+            return articleFolderRepository.mainPageArticleFolderLogin(member.getId(), hashtagList);
+        } else {
+            return articleFolderRepository.mainPageArticleFolderNonLogin();
         }
-
-        // 로그인일 경우
-        else {
-            String recommendHashtag = getMember.getHashtag().getHashtag1();
-
-            Page<ArticleFolder> articleFolders = articleFolderRepository.findArticleFoldersByFolderHideAndFolderHashtag1(false, recommendHashtag, pageRequest);
-
-            for (ArticleFolder articleFolder : articleFolders) {
-                ArticleFolderListResponseDto articleFolderListResponseDto;
-                if (CollectionUtils.isEmpty(articleFolder.getArticles())) {
-                    articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder);
-                } else {
-                    articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder, articleFolder.getArticles());
-                }
-                articleFolderList.add(articleFolderListResponseDto);
-            }
-
-            // 랜덤으로 9개 가져오기
-            if(articleFolderList.size() > 8) {
-                articleFolderList = randomGenerator.getRecommendedAtricleFolders(articleFolderList, 9);
-            }
-        }
-        return articleFolderList;
     }
-
 }
