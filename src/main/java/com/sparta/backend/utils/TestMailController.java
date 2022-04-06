@@ -26,7 +26,7 @@ public class TestMailController {
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
 
-            mimeMessageHelper.setTo("leeyuwk54@gmail.com"); // 메일 수신자
+            mimeMessageHelper.setTo("ilovechicken8989@gmail.com"); // 메일 수신자
             mimeMessageHelper.setSubject("메일 테스트"); // 메일 제목
 
             Context context = new Context(); // 메일 본문 내용 작성
