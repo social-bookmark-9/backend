@@ -54,7 +54,7 @@ public class MemberInfoController {
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
         // 만약 S3에 올려져 있는 파일이라면 삭제 후 수정.
-        if(editMember.getProfileImage().contains("bubbled-profile.s3.ap-northeast-2.amazonaws.com/bubbled-profile-image/")) {
+        if(editMember.getProfileImage().contains("bubbled-profile-image.s3.ap-northeast-2.amazonaws.com/bubbled-profile-image/")) {
             amazonS3Uploader.deleteFile(editMember.getProfileImage());
         }
         // 이미지 업로드 하기.
