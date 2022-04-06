@@ -8,6 +8,7 @@ import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
 import com.sparta.backend.responseDto.ArticleRandomResponseDto;
+import com.sparta.backend.responseDto.MainPageArticleFolderResponseDto;
 import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
 import com.sparta.backend.service.MainPageService;
 import com.sparta.backend.utils.RandomGenerator;
@@ -21,6 +22,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -144,62 +146,17 @@ public class MainPageServiceImpl implements MainPageService {
 
     // 메인페이지 아티클 폴더 추천
     @Override
-    public List<ArticleFolderListResponseDto> getRecommendedArticleFolders(Member getMember) {
+    public List<MainPageArticleFolderResponseDto> getRecommendedArticleFolders(Member member) {
+        if (member != null) {
+            List<String> hashtagList = new ArrayList<>();
+            String memberHashtag = member.getHashtag().getHashtag1();
+            List<String> folderHashtagList = member.getArticleFolders().stream().map(ArticleFolder::getFolderHashtag1).collect(Collectors.toList());
+            hashtagList.add(memberHashtag);
+            hashtagList.addAll(folderHashtagList);
 
-        List<ArticleFolderListResponseDto> articleFolderList = new ArrayList<>();
-        List<ArticleFolderListResponseDto> recommendedArticleFolderList = new ArrayList<>();
-
-        // 비로그인 일 경우
-        if(getMember == null) {
-            List<ArticleFolder> articleFolders = articleFolderRepository.findTop50ByOrderByLikeCountDesc();
-
-            for (ArticleFolder articleFolder : articleFolders) {
-                ArticleFolderListResponseDto articleFolderListResponseDto;
-                if (articleFolder.getArticles().isEmpty()) {
-                    articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder);
-                } else {
-                    articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder, articleFolder.getArticles());
-                }
-                articleFolderList.add(articleFolderListResponseDto);
-            }
-            if(articleFolderList.size() > 8) {
-                articleFolderList = randomGenerator.getRecommendedAtricleFolders(articleFolderList, 9);
-            }
+            return articleFolderRepository.mainPageArticleFolderLogin(member.getId(), hashtagList);
+        } else {
+            return articleFolderRepository.mainPageArticleFolderNonLogin();
         }
-        // 로그인일 경우
-        else {
-            String recommendHashtag = getMember.getHashtag().getHashtag1();
-
-            // 전체 아티클 가져오기
-            List<ArticleFolder> articleFolders = articleFolderRepository.findArticleFoldersByFolderHide(false);
-            for (ArticleFolder articleFolder : articleFolders) {
-                ArticleFolderListResponseDto articleFolderListResponseDto;
-                if (articleFolder.getArticles().isEmpty()) {
-                    articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder);
-                } else {
-                    articleFolderListResponseDto = ArticleFolderListResponseDto.of(articleFolder, articleFolder.getArticles());
-                }
-                recommendedArticleFolderList.add(articleFolderListResponseDto);
-            }
-
-            // 해쉬태그 같은것 분류하기
-            for(ArticleFolderListResponseDto articleFolderListResponseDto : recommendedArticleFolderList) {
-                if (Objects.equals(articleFolderListResponseDto.getHashTag1(), recommendHashtag)) {
-                    articleFolderList.add(articleFolderListResponseDto);
-                }
-            }
-
-            // 좋아요 높은 순으로 정렬 및 50개 추출
-            articleFolderList.sort((o1, o2) -> Integer.compare(o2.getLikeCount(), o1.getLikeCount()));
-            if (articleFolderList.size() >= 51) {
-                articleFolderList = articleFolderList.subList(0, 49);
-            }
-            // 랜덤으로 9개 가져오기
-            if(articleFolderList.size() > 8) {
-                articleFolderList = randomGenerator.getRecommendedAtricleFolders(articleFolderList, 9);
-            }
-        }
-        return articleFolderList;
     }
-
 }

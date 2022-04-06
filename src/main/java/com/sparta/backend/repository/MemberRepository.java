@@ -1,23 +1,23 @@
 package com.sparta.backend.repository;
 
 import com.sparta.backend.model.Member;
+import com.sparta.backend.repositorycustom.MemberRepositoryCustom;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
     @Override
     @EntityGraph(attributePaths = {"hashtag"})
-    Optional<Member> findById(@NotNull Long id);
+    Optional<Member> findById(Long id);
 
     Optional<Member> findMemberByKakaoId(String kakaoId);
-    
+
     // 메인 페이지 검색용
     List<Member> findMembersByHashtag_Hashtag1(String hashtag);
 
@@ -26,7 +26,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // 회원가입시 카카오id로 중복유저 검사
     boolean existsMemberByKakaoId(String kakaoId);
-
-    // 테스트용
-    List<Member> findAll();
 }

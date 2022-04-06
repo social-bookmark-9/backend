@@ -34,7 +34,7 @@ public class RandomGenerator {
     }
 
     // 메인페이지 아티클 폴더 추천용
-    public List<ArticleFolderListResponseDto> getRecommendedAtricleFolders(List<ArticleFolderListResponseDto> articleFolderResponseDtos, int cnt) {
+    public List<ArticleFolderListResponseDto> getRecommendedArticleFolders(List<ArticleFolderListResponseDto> articleFolderResponseDtos, int cnt) {
         HashSet<ArticleFolderListResponseDto> randomArticleFolders = new HashSet<>();
         Random random = new Random();
         int bound = articleFolderResponseDtos.size();

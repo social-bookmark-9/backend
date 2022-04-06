@@ -137,7 +137,6 @@ public class ArticleServiceImpl implements ArticleService {
         // 폴더 해시태그 결정
         if (!articleFolder.getArticleFolderName().equals("미분류 컬렉션")) {
             List<String> sortedHashtag = sortingHashtag(articleFolder);
-
             if (sortedHashtag.size() == 1) articleFolderRepository.updateArticleFolderHashtag(sortedHashtag.get(0), null, null, articleFolder.getId());
             if (sortedHashtag.size() == 2) articleFolderRepository.updateArticleFolderHashtag(sortedHashtag.get(0), sortedHashtag.get(1), null, articleFolder.getId());
             if (sortedHashtag.size() == 3) articleFolderRepository.updateArticleFolderHashtag(sortedHashtag.get(0), sortedHashtag.get(1), sortedHashtag.get(2), articleFolder.getId());
