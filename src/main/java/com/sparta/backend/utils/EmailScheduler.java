@@ -47,7 +47,15 @@ public class EmailScheduler {
                 context.setVariable("month", reminder.getSendDate().getMonth());
                 context.setVariable("title", reminder.getArticle().getTitleOg());
                 context.setVariable("url", reminder.getArticle().getUrl());
-                String message = templateEngine.process("mail", context);
+
+                String message;
+                if(reminder.getArticle().getHashtag().getHashtag2() == null){
+                    message = templateEngine.process("email01", context);
+                } else if (reminder.getArticle().getHashtag().getHashtag3() == null) {
+                    message = templateEngine.process("email02", context);
+                } else {
+                    message = templateEngine.process("email03", context);
+                }
                 mimeMessageHelper.setText(message, true); 
                 
                 javaMailSender.send(mimeMessage);
