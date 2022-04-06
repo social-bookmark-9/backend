@@ -151,9 +151,8 @@ class ReminderServiceTest {
         when(articleRepository.findById(1L)).thenReturn(Optional.ofNullable(setupArticle));
         Optional<Article> article = articleRepository.findById(1L);
 
-        when(reminderRepository.findReminderByMemberNameAndArticle(setupMember.getMemberName(), article.get()))
-                .thenReturn(setupReminder);
-        Reminder reminder = reminderRepository.findReminderByMemberNameAndArticle(setupMember.getMemberName(), article.get());
+        when(reminderRepository.findReminderByMemberNameAndArticle_Id(setupMember.getMemberName(), 1L)).thenReturn(setupReminder);
+        Reminder reminder = reminderRepository.findReminderByMemberNameAndArticle_Id(setupMember.getMemberName(), 1L);
 
         // when
         reminder.editDate(7);

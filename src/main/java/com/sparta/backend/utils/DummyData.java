@@ -7,6 +7,7 @@ import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
+import com.sparta.backend.responseDto.ArticleCreateResponseDto;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +39,7 @@ public class DummyData {
     // 유저 1 아티클폴더 100 아티클 100 = 1분 40초 ( 아티클 총 10,000개 )
     // 유저 1 아티클폴더 1,000 아티클 100 = 16분 ( 아티클 총 100,000개 )
 
-    // 유저 10 아티클폴더 10 아티클 10 = 12초 ( 아티클 총 1,000개 )
+    // 유저 10 아티클폴더 10 아티클 10 = 14초 ( 아티클 총 1,000개 )
     // 유저 100 아티클폴더 10 아티클 10 = 2분 ( 아티클 총 10,000개 )
     // 유저 1000 아티클폴더 10 아티클 10 = 22분 ( 아티클 총 100,000 개 )
 
@@ -47,27 +48,13 @@ public class DummyData {
 
         for(int i = 0; i < dummyRequestDto.getUsers(); i++) {
 
-            List<String> hashtags = new ArrayList<>();
-            hashtags.add("커리어");
-            hashtags.add("업무스킬");
-            hashtags.add("IT");
-            hashtags.add("디자인");
-            hashtags.add("마케팅");
-            hashtags.add("투자");
-            hashtags.add("장소");
-            hashtags.add("동기부여");
-            hashtags.add("인간관계");
-            hashtags.add("패션");
-            hashtags.add("예술");
-            hashtags.add("과학");
-
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
 
             Hashtag hashtag = Hashtag.builder()
-                    .hashtag1(hashtags.get((int) (Math.random() * 11)))
-                    .hashtag2(hashtags.get((int) (Math.random() * 11)))
-                    .hashtag3(hashtags.get((int) (Math.random() * 11)))
+                    .hashtag1(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
+                    .hashtag2(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
+                    .hashtag3(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
                     .build();
 
             Member kakaoMember = Member.builder()
@@ -106,9 +93,9 @@ public class DummyData {
 
                 for (int j = 0; j < dummyRequestDto.getArticles(); j++) {
                     Hashtag articleHashtag = Hashtag.builder()
-                            .hashtag1(hashtags.get((int) (Math.random() * 11)))
-                            .hashtag2(hashtags.get((int) (Math.random() * 11)))
-                            .hashtag3(hashtags.get((int) (Math.random() * 11)))
+                            .hashtag1(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
+                            .hashtag2(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
+                            .hashtag3(String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag()))
                             .build();
 
                     Article article = Article.builder()

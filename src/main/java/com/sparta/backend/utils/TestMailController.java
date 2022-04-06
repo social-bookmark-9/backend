@@ -30,11 +30,15 @@ public class TestMailController {
             mimeMessageHelper.setSubject("메일 테스트"); // 메일 제목
 
             Context context = new Context(); // 메일 본문 내용 작성
+            context.setVariable("hashtag1", "IT");
+            context.setVariable("hashtag2", "IT");
+            context.setVariable("hashtag3", "IT");
+            context.setVariable("content", "테스트 컨텐트");
             context.setVariable("month", "1");
             context.setVariable("days", "1");
             context.setVariable("title", "시연용 제목");
             context.setVariable("url", "https://naver.com");
-            String message = templateEngine.process("email", context);
+            String message = templateEngine.process("email01", context);
             mimeMessageHelper.setText(message, true);
 
             javaMailSender.send(mimeMessage);

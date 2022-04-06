@@ -3,13 +3,14 @@ package com.sparta.backend.repository;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repositorycustom.ArticleFolderRepositoryCustom;
+import com.sparta.backend.repositorycustom.ArticleFolderRepositoryCustom;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface ArticleFolderRepository extends JpaRepository<ArticleFolder, Long>, ArticleFolderRepositoryCustom {
@@ -24,9 +25,12 @@ public interface ArticleFolderRepository extends JpaRepository<ArticleFolder, Lo
     @Query("UPDATE ArticleFolder articleFolder SET articleFolder.folderHashtag1 = :hashtag1, articleFolder.folderHashtag2 = :hashtag2, articleFolder.folderHashtag3 = :hashtag3 WHERE articleFolder.id = :id")
     void updateArticleFolderHashtag(@Param("hashtag1") String hashtag1, @Param("hashtag2") String hashtag2, @Param("hashtag3") String hashtag3, @Param("id") Long id);
 
-    // 비로그인시 메인페이지
-    List<ArticleFolder> findTop50ByOrderByLikeCountDesc();
-
-    // 로그인시 메인페이지
-    List<ArticleFolder> findArticleFoldersByFolderHide(boolean folderHide);
+    // 검색페이지 아티클 폴더 검색용
+    Page<ArticleFolder> findArticleFoldersByFolderHideAndFolderHashtag1AndArticleFolderNameContains(boolean folderHide, String hashtag, String articleFolderName, Pageable pageable);
+    // 검색페이지 아티클 폴더 검색용 ( hashtag == null )
+    Page<ArticleFolder> findArticleFoldersByFolderHideAndArticleFolderNameContains(boolean folderHide, String articleFolderName, Pageable pageable);
+    // 검색페이지 아티클 폴더 검색용 ( articleFolderName == null )
+    Page<ArticleFolder> findArticleFoldersByFolderHideAndFolderHashtag1(boolean folderHide, String hashtag, Pageable pageable);
+    // 검색페이지 아티클 폴더 검색용 ( hashtag == null && articleFolderName == null )
+    Page<ArticleFolder> findArticleFoldersByFolderHide(boolean folderHide, Pageable pageable);
 }

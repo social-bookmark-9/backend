@@ -1,5 +1,6 @@
 package com.sparta.backend.serviceImpl;
 
+import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Member;
@@ -13,6 +14,9 @@ import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
 import com.sparta.backend.service.MainPageService;
 import com.sparta.backend.utils.RandomGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class MainPageServiceImpl implements MainPageService {
 
     // 메인페이지 유저 추천
