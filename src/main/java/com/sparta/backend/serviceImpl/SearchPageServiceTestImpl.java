@@ -6,11 +6,12 @@ import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
-import com.sparta.backend.responseDto.ArticleRandomResponseDto;
+import com.sparta.backend.responseDto.SearchPageArticleResponseDto;
 import com.sparta.backend.service.SearchPageServiceTest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,7 @@ public class SearchPageServiceTestImpl implements SearchPageServiceTest {
     public Map<String, Object> getSearchArticles(String hashtag, String titleOg, Pageable pageable) {
 
         // 검색어에 따라서 조건
-        Page<Article> articles;
+        Slice<Article> articles;
         if (Objects.equals(titleOg, "") && Objects.equals(hashtag, "")) {
             articles = articleRepository
                     .findArticlesByArticleFolder_FolderHide(false, pageable);
@@ -49,19 +50,7 @@ public class SearchPageServiceTestImpl implements SearchPageServiceTest {
         boolean isLast = articles.isLast();
 
         // DTO 변환
-        List<ArticleRandomResponseDto> articleList = new ArrayList<>();
-        for (Article article : articles) {
-            ArticleRandomResponseDto responseDto = ArticleRandomResponseDto.builder()
-                    .articleId(article.getId())
-                    .titleOg(article.getTitleOg())
-                    .imgOg(article.getImgOg())
-                    .contentOg(article.getContentOg())
-                    .hashtag1(article.getHashtag().getHashtag1())
-                    .hashtag2(article.getHashtag().getHashtag2())
-                    .hashtag3(article.getHashtag().getHashtag3())
-                    .build();
-            articleList.add(responseDto);
-        }
+        Slice<SearchPageArticleResponseDto> articleList = articles.map(SearchPageArticleResponseDto::new);
 
         Map<String, Object> map = new HashMap<>();
         map.put("isFirst", isFirst);

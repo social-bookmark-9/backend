@@ -34,6 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://finalproject9.s3-website.ap-northeast-2.amazonaws.com")
                 .allowedOrigins("http://localhost:3000")
                 .allowedOrigins("http://localhost:8080")
+                .allowedOrigins("https://bubbled.at")
 //                .allowedOrigins("*")
                 .allowedMethods("GET","POST","DELETE","PUT","PATCH");
     }
