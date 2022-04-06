@@ -59,7 +59,7 @@ public class Member extends Timestamped implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "profile_image")
+    @Column(name = "profile_image", length = 1000)
     private String profileImage;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
