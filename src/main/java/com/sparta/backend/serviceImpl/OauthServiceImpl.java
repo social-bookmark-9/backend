@@ -160,6 +160,7 @@ public class OauthServiceImpl implements OauthService {
     public TokenDto reissue(TokenRequestDto tokenRequestDto) {
         log.info("accessToken : " + tokenRequestDto.getAccessToken());
         log.info("refreshToken : " + tokenRequestDto.getRefreshToken());
+
         // 리프레시 토큰도 만료되었을 경우 에러
         if (!jwtTokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
             // 기존 db에 있던 리프레시 토큰 삭제.
