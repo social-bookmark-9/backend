@@ -3,6 +3,7 @@ package com.sparta.backend.service;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
 import com.sparta.backend.responseDto.ArticleRandomResponseDto;
+import com.sparta.backend.responseDto.MainPageArticleFolderResponseDto;
 import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
 
 import java.util.List;
@@ -13,5 +14,5 @@ public interface MainPageService {
 
     List<ArticleRandomResponseDto> getMonthArticles(String hashtag);
 
-    List<ArticleFolderListResponseDto> getRecommendedArticleFolders(Member getMember);
+    List<MainPageArticleFolderResponseDto> getRecommendedArticleFolders(Member member);
 }

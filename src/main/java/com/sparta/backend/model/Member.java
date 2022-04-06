@@ -1,8 +1,5 @@
 package com.sparta.backend.model;
 
-import com.sparta.backend.model.ArticleFolder;
-import com.sparta.backend.model.Hashtag;
-import com.sparta.backend.model.Timestamped;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
