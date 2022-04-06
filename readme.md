@@ -20,8 +20,7 @@ BUBBLED는 웹페이지 링크 저장 (북마크) 및 공유 플랫폼 입니다
     - 이경미
 
 ## 🏢 Project Architecture
-
-- 아키텍쳐 사진 추가하기
+![](https://user-images.githubusercontent.com/76833697/161889252-2fa7d4f9-da8f-4b8f-8a94-78f6f2b83545.png)
 
 ## 🔧 Tech Stack
 
@@ -30,7 +29,7 @@ BUBBLED는 웹페이지 링크 저장 (북마크) 및 공유 플랫폼 입니다
 - Amazon AWS
 - Amazon S3
 - Github Actions
-- Mysql
+- Mysql 8.0
 
 ## 📌 Library
 
@@ -54,8 +53,7 @@ BUBBLED는 웹페이지 링크 저장 (북마크) 및 공유 플랫폼 입니다
 - API 한눈에 보는 사진 추가하기
 
 ## 📋 ERD
-
-- ERD 사진 추가하기
+![](https://user-images.githubusercontent.com/76833697/160228811-a41c505e-2ef1-4fd2-8c9a-38f5a94bf701.png)
 
 ## 📈 부하테스트
 
@@ -63,4 +61,3 @@ BUBBLED는 웹페이지 링크 저장 (북마크) 및 공유 플랫폼 입니다
 
 ## 💹 향후 프로젝트 목표
 - 쿼리 개선 및 DB 튜닝을 통해 더 높은 강도의 부하테스트 통과
-- 이메일 서버 분리하기
