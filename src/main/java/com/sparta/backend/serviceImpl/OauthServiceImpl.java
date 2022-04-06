@@ -66,7 +66,7 @@ public class OauthServiceImpl implements OauthService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
 
-        body.add("redirect_uri", "https://bubbled.at"); // 우리 서버.
+        body.add("redirect_uri", "http://bubbled.at"); // 우리 서버.
 //        body.add("redirect_uri", "http://localhost:3000/api/users/login"); // 프론트 로컬 연결 테스트용
 //        body.add("redirect_uri", "http://finalproject9.s3-website.ap-northeast-2.amazonaws.com/api/users/login"); // 프론트 서버 연결 테스트용
 //        body.add("redirect_uri", "http://3.34.99.169/api/users/login"); // EC2 서버 연결 테스트용
