@@ -35,10 +35,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    // 스웨거 적용 (삭제예정)
-    implementation "io.springfox:springfox-boot-starter:3.0.0"
-    implementation "io.springfox:springfox-swagger-ui:3.0.0"
-
     // JWT 토큰을 발행하고 검증하는 모듈
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 

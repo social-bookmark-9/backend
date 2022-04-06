@@ -8,7 +8,6 @@ import com.sparta.backend.responseDto.ArticleFolderNameAndIdResponseDto;
 import com.sparta.backend.responseDto.ArticlesInFolderResponseDto;
 import com.sparta.backend.responseDto.LikeAddOrRemoveResponseDto;
 import com.sparta.backend.service.ArticleFolderService;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,7 +38,6 @@ public class ArticleFolderController {
      * @param articleFolderRequestDto
      * @return message
      */
-    @ApiOperation(value = "아티클 폴더 생성", notes = "폴더 생성 API")
     @PostMapping("/articleFolder")
     public ResponseEntity<RestResponseMessage<?>> createArticleFolder(
             final @Valid @RequestBody ArticleFolderCreateRequestDto articleFolderRequestDto,
@@ -58,7 +56,6 @@ public class ArticleFolderController {
      * @param id
      * @return message
      */
-    @ApiOperation(value = "아티클 폴더 삭제", notes = "아티클 폴더 삭제 API")
     @DeleteMapping("/articleFolder/{id}")
     public ResponseEntity<RestResponseMessage<?>> deleteArticleFolder(
             @AuthenticationPrincipal Member member,
@@ -75,7 +72,6 @@ public class ArticleFolderController {
      * @param member
      * @return List<ArticleFolderNameAndIdResponseDto>
      */
-    @ApiOperation(value = "아티클 폴더 타이틀 목록 조회", notes = "아티클 폴더 타이틀 목록 조회 API")
     @GetMapping("/articleFolders/folderName")
     public ResponseEntity<RestResponseMessage<List<ArticleFolderNameAndIdResponseDto>>> getArticleFoldersName(
             @AuthenticationPrincipal Member member) {
@@ -94,7 +90,6 @@ public class ArticleFolderController {
      * @param articleFolderNameUpdateRequestDto
      * @return
      */
-    @ApiOperation(value = "아티클 폴더 제목 수정", notes = "아티클 폴더 제목 수정 API")
     @PatchMapping("/articleFolder/{id}")
     public ResponseEntity<RestResponseMessage<?>> updateArticleFolderName(
             @AuthenticationPrincipal Member member,
@@ -113,7 +108,6 @@ public class ArticleFolderController {
      * @param id
      * @return List<ArticlesInFolderRespDto>
      */
-    @ApiOperation(value = "아티클 폴더 안 모든 아티클 조회", notes = "아티클 폴더 안 모든 아티클 조회 API")
     @GetMapping("/articleFolders/{id}")
     public ResponseEntity<RestResponseMessage<ArticlesInFolderResponseDto>> findArticlesInFolder(
             @AuthenticationPrincipal Member member,
@@ -135,7 +129,6 @@ public class ArticleFolderController {
      * @param articleId
      * @return message
      */
-    @ApiOperation(value = "폴더 안 아티클 삭제", notes = "폴더 안 아티클 삭제 API")
     @DeleteMapping("/articleFolder/{folderId}/articles{articleId}")
     public ResponseEntity<RestResponseMessage<?>> deleteArticleInArticleFolder(
             @AuthenticationPrincipal Member member,
@@ -154,7 +147,6 @@ public class ArticleFolderController {
      * @param folderId
      * @return LikeAddOrRemoveResponseDto
      */
-    @ApiOperation(value = "좋아요 추가, 삭제", notes = "좋아요 추가, 삭제 API")
     @PatchMapping("/articleFolders/{folderId}/likes")
     public ResponseEntity<RestResponseMessage<LikeAddOrRemoveResponseDto>> likeAddOrRemove(
             @AuthenticationPrincipal Member member,

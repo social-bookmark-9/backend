@@ -6,7 +6,6 @@ import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
 import com.sparta.backend.responseDto.MemberInfoResponseDto;
 import com.sparta.backend.responseDto.MyPageResponseDto;
 import com.sparta.backend.service.MyPageService;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +31,6 @@ public class MyPageController {
      * @param memberId
      * @return MyPageResponseDto
      */
-    @ApiOperation(value = "마이 페이지 데이터", notes = "마이 페이지 데이터 API")
     @GetMapping("/mypage/{memberId}")
     public ResponseEntity<RestResponseMessage<MyPageResponseDto>> myPage(
             @AuthenticationPrincipal Member member,
