@@ -29,7 +29,8 @@ spring:
         smtp:
           auth: true
           timeout: 5000
-          enable: true
+          starttls:
+            enable: true
 
   servlet:
     multipart:
