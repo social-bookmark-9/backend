@@ -48,9 +48,7 @@ BUBBLED는 웹페이지 링크 저장 (북마크) 및 공유 플랫폼 입니다
 
 ## 🔍  API
 
-[노션 API 정리](https://www.notion.so/fd1d1c5c6a3c42bbbfe18d4cf029c284?v=e7f88371b99b4da895856e98dc20432a)
-
-- API 한눈에 보는 사진 추가하기
+##[BUBBLED API 리스트](https://www.notion.so/fd1d1c5c6a3c42bbbfe18d4cf029c284?v=e7f88371b99b4da895856e98dc20432a)
 
 ## 📋 ERD
 ![](https://user-images.githubusercontent.com/76833697/160228811-a41c505e-2ef1-4fd2-8c9a-38f5a94bf701.png)
