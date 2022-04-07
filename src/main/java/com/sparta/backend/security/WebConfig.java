@@ -36,7 +36,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:8080")
                 .allowedOrigins("https://bubbled.at")
 //                .allowedOrigins("*")
-                .allowedMethods("GET","POST","DELETE","PUT","PATCH");
+                .allowedMethods("GET","POST","DELETE","PUT","PATCH")
+                .allowCredentials(true);
     }
 
     @Bean
