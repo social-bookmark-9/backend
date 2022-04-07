@@ -2,7 +2,7 @@
 <br/>
 <p align="center">
   <a href="https://bubbled.at" target="_blank">
-    <img alt="bubbled-logo" width="300" alt="bubbled logo" src="https://user-images.githubusercontent.com/76833697/162108835-5ad4f3bb-324f-40bc-b0f3-2d333a81265f.png"/>
+    <img alt="bubbled-logo" width="600" alt="bubbled logo" src="https://user-images.githubusercontent.com/76833697/162108835-5ad4f3bb-324f-40bc-b0f3-2d333a81265f.png"/>
   </a>
 </p>
 <p align="center">
@@ -62,34 +62,32 @@
 
 ## 소개 영상
 
-<a href="https://www.youtube.com/watch?v=KkexqkTXsio">
-    <img width="500" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162207218-f505453b-3c2e-47d0-b7e3-e5b7dd3c2cfd.png">
+<a href="https://www.youtube.com/watch?v=KkexqkTXsio" target="_blank">
+    <img width="600" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162207218-f505453b-3c2e-47d0-b7e3-e5b7dd3c2cfd.png">
 </a>
 
-
 <br/>
-
 
 ## 주요 기능
 
 - 아티클(북마크) 저장하기  
-<img width="500" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162213729-4278c9ad-5523-48ae-ac6f-d05711b170d1.png">
+<img width="600" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162213729-4278c9ad-5523-48ae-ac6f-d05711b170d1.png">
 
 
 - 아티클 폴더별 정리  
-<img width="500" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162213742-0aa5f53b-7f89-4bf1-bf67-557bb0c6a5d2.png">
+<img width="600" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162213742-0aa5f53b-7f89-4bf1-bf67-557bb0c6a5d2.png">
 
 
 - 다른 사용자의 아티클과 폴더 열람  
-<img width="500" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162216662-814e2423-11b3-4a30-b37d-2fca03e6535b.png">
+<img width="600" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162216662-814e2423-11b3-4a30-b37d-2fca03e6535b.png">
 
 
 - 해당 아티클에 대한 리마인더 메일 수신  
-<img width="500" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162213780-7f412459-d0f9-4971-995f-50354ff76977.png">
+<img width="600" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162213780-7f412459-d0f9-4971-995f-50354ff76977.png">
 
 
 - 크롬 익스텐션을 통해 해당 웹페이지에서 바로 저장  
-<img width="500" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162216666-1fccd15c-d870-418c-b56d-8e002cab0064.png">
+<img width="600" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162216666-1fccd15c-d870-418c-b56d-8e002cab0064.png">
 
 <br/>
 
@@ -131,8 +129,8 @@
 <summary>
     <b>부하테스트 진행</b>
 </summary>
-<img alt="test" width="500" src="https://user-images.githubusercontent.com/87873821/162202178-d3032ea1-0eb8-4880-bafd-2caaee158768.jpg"/>
-<img alt="test" width="500" src="https://user-images.githubusercontent.com/87873821/162202453-bf8eba90-2528-4e03-8f6f-308d6856bcd8.jpg"/>
+<img alt="test" width="600" src="https://user-images.githubusercontent.com/87873821/162202178-d3032ea1-0eb8-4880-bafd-2caaee158768.jpg"/>
+<img alt="test" width="600" src="https://user-images.githubusercontent.com/87873821/162202453-bf8eba90-2528-4e03-8f6f-308d6856bcd8.jpg"/>
 </details>
 
 <details>
@@ -180,7 +178,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     }
 }
 ```
-
 </details>
 
 <br/>
@@ -188,9 +185,9 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 ## 그 외 트러블 슈팅
 
 <details>
-<summary>
-    <b>업로드 후 S3 서버의 이미지를 찾을수 없음</b>
-</summary>
+    <summary>
+        <b>업로드 후 S3 서버의 이미지를 찾을수 없음</b>
+    </summary>
 
 S3 서버에 프로필 이미지 업로드 테스트를 하던 도중 이미지 업로드는 가능하지만 불러오지 못하는 에러가 있었다.  
 새롭게 저장하는 파일의 이름을 log를 찍어가며 살펴보니  
@@ -201,6 +198,17 @@ S3 서버에 프로필 이미지 업로드 테스트를 하던 도중 이미지 
 ~~~
 .replace(" ","")
 ~~~
+</details>
+
+<details>
+    <summary>
+        <b> AWS CloudWatch 도입배경 </b>
+    </summary>
+<ul>
+    <li>EC2 프리티어에서 개발 중 갑작스런 메모리 부족으로 인해 서버가 다운되는 현상 발생</li>
+    <li>원인은 늘어가는 코드 로직과 AWS의 CodeDeploy가 실행되면서 메모리가 부족해졌음</li>
+    <li>EC2를 업그레이드하고 이런 일을 사전에 방지하기 위해 AWS CloudWatch를 도입하여 메모리 모니터링 실시 </li>
+</ul>
 </details>
 
 <br/>
