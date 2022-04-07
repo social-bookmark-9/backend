@@ -2,7 +2,7 @@
 <br/>
 <p align="center">
   <a href="https://bubbled.at" target="_blank">
-    <img alt="bubbled-logo" height="300" alt="bubbled logo" src="https://user-images.githubusercontent.com/76833697/162108835-5ad4f3bb-324f-40bc-b0f3-2d333a81265f.png"/>
+    <img alt="bubbled-logo" width="300" alt="bubbled logo" src="https://user-images.githubusercontent.com/76833697/162108835-5ad4f3bb-324f-40bc-b0f3-2d333a81265f.png"/>
   </a>
 </p>
 <p align="center">
@@ -50,32 +50,25 @@
 
 ## 서비스 소개
 
-<p align="center">
-bubbled는 웹페이지 링크 저장 (북마크) 및 공유 플랫폼 입니다.
-</p>
+<b>bubbled는 웹페이지 링크 저장 (북마크) 및 공유 플랫폼 입니다.</b>
 
-<p align="center">
 개발자, 디자이너, 취준생, 프로덕트 매니저, 대학생 등 다양한 사람들이 평소에 
 관심있는 분야의 글을 태그를 설정하여 모아놓을 수 있습니다.
-</p>
 
-<p align="center">
 또한 다른 사용자들의 모아놓은 양질의 북마크들을 확인할 수 있으며 
 이메일을 통해 리마인드 기능을 활용하여 읽어야 할 글들을 확인할 수 있습니다.
-</p>
-
 
 <br/>
 
 ## 소개 영상
 
-<br/>
-
 <a href="https://www.youtube.com/watch?v=KkexqkTXsio">
     <img width="500" alt="bubbled" src="https://user-images.githubusercontent.com/76833697/162207218-f505453b-3c2e-47d0-b7e3-e5b7dd3c2cfd.png">
 </a>
 
+
 <br/>
+
 
 ## 주요 기능
 
@@ -122,26 +115,30 @@ bubbled는 웹페이지 링크 저장 (북마크) 및 공유 플랫폼 입니다
 
 ## 서비스 아키텍처
 
-<img alt="project-architecture" height="500" src="https://user-images.githubusercontent.com/76833697/161889252-2fa7d4f9-da8f-4b8f-8a94-78f6f2b83545.png"/>
+<img alt="project-architecture" width="600" src="https://user-images.githubusercontent.com/76833697/161889252-2fa7d4f9-da8f-4b8f-8a94-78f6f2b83545.png"/>
 
 <br/>
 
 ## DB 모델링
 
-<img alt="ERD" height="600" src="https://user-images.githubusercontent.com/76833697/162219023-780d86da-2ea9-40c3-86a1-8aacc17bbe80.png"/>
+<img alt="ERD" width="600" src="https://user-images.githubusercontent.com/76833697/162219023-780d86da-2ea9-40c3-86a1-8aacc17bbe80.png"/>
 
 <br/>
 
 ## 핵심 트러블 슈팅
 
 <details>
-<summary>부하테스트 진행</summary>
-<img alt="test" height="500" src="https://user-images.githubusercontent.com/87873821/162202178-d3032ea1-0eb8-4880-bafd-2caaee158768.jpg"/>
-<img alt="test" height="500" src="https://user-images.githubusercontent.com/87873821/162202453-bf8eba90-2528-4e03-8f6f-308d6856bcd8.jpg"/>
+<summary>
+    <b>부하테스트 진행</b>
+</summary>
+<img alt="test" width="500" src="https://user-images.githubusercontent.com/87873821/162202178-d3032ea1-0eb8-4880-bafd-2caaee158768.jpg"/>
+<img alt="test" width="500" src="https://user-images.githubusercontent.com/87873821/162202453-bf8eba90-2528-4e03-8f6f-308d6856bcd8.jpg"/>
 </details>
 
 <details>
-<summary>스프링 시큐리티 / JWT 토큰 에러 핸들러</summary>
+<summary>
+    <b> 스프링 시큐리티 / JWT 토큰 에러 핸들러</b>
+</summary>
 
 Jwt Authentication Filter에서 토큰 만료시 특정 에러 메세지를 클라이언트에 내려주려고 했지만,  
 모든 에러가 @RestControllerAdvice의 HandelAccessDenied 항목에 걸리면서 할 수 없었다.
@@ -154,6 +151,7 @@ Jwt Authentication Filter에서 토큰 만료시 특정 에러 메세지를 클�
 
 그래서 요청이 들어온다면 Jwt Authentication Filter를 바로 가지 않고 Jwt Exception Filter를  
 하나 더 만들어 예외가 던져진다면 해당 Filter에서 Catch해 커스텀한 에러 메세지를 내려줄 수 있게 했다.
+
 
 ```java
 public class JwtExceptionFilter extends OncePerRequestFilter {
@@ -190,7 +188,9 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 ## 그 외 트러블 슈팅
 
 <details>
-<summary>업로드 후 S3 서버의 이미지를 찾을수 없음</summary>
+<summary>
+    <b>업로드 후 S3 서버의 이미지를 찾을수 없음</b>
+</summary>
 
 S3 서버에 프로필 이미지 업로드 테스트를 하던 도중 이미지 업로드는 가능하지만 불러오지 못하는 에러가 있었다.  
 새롭게 저장하는 파일의 이름을 log를 찍어가며 살펴보니  
