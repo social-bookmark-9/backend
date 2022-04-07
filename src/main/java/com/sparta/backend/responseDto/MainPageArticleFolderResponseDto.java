@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MainPageArticleFolderResponseDto {
 
+    private Long memberId;
     private Long folderId;
     private String folderName;
     private Integer likeCount;
@@ -20,9 +21,11 @@ public class MainPageArticleFolderResponseDto {
     private List<ArticleTitleContentDto> articleTitleContentDto = new ArrayList<>();
 
     @QueryProjection
-    public MainPageArticleFolderResponseDto(Long folderId, String folderName, Integer likeCount,
+    public MainPageArticleFolderResponseDto(Long memberId, Long folderId, String folderName, Integer likeCount,
                                             String hashTag1, String hashTag2, String hashTag3,
                                             List<ArticleTitleContentDto> articleTitleContentDto) {
+
+        this.memberId = memberId;
         this.folderId = folderId;
         this.folderName = folderName;
         this.likeCount = likeCount;

@@ -42,9 +42,15 @@ class ArticleFolderRepositoryTest {
     @Test
     void mainPageArticleFolderLogin() {
         List<String> hashTagList = Arrays.asList("IT");
-        List<MainPageArticleFolderResponseDto> mainPageAfDtoList = articleFolderRepository.mainPageArticleFolderLogin(1L, hashTagList);
-        for (MainPageArticleFolderResponseDto mainPageArticleFolderResponseDto : mainPageAfDtoList) {
-            System.out.println(mainPageArticleFolderResponseDto.getFolderId());
+        List<MainPageArticleFolderResponseDto> mainPageArticleFolderDtoList = articleFolderRepository.mainPageArticleFolderLogin(1L, hashTagList);
+        for (MainPageArticleFolderResponseDto mainPageArticleFolderResponseDto : mainPageArticleFolderDtoList) {
+            System.out.println("memberId = " + mainPageArticleFolderResponseDto.getMemberId());
+            System.out.println("folderId = " + mainPageArticleFolderResponseDto.getFolderId());
+            List<MainPageArticleFolderResponseDto.ArticleTitleContentDto> articleTitleContentDto = mainPageArticleFolderResponseDto.getArticleTitleContentDto();
+            for (MainPageArticleFolderResponseDto.ArticleTitleContentDto titleContentDto : articleTitleContentDto) {
+                System.out.println("title = " + titleContentDto.getTitleOg());
+                System.out.println("content = " + titleContentDto.getContentOg());
+            }
         }
     }
 
@@ -52,7 +58,13 @@ class ArticleFolderRepositoryTest {
     void mainPageArticleFolderNonLogin() {
         List<MainPageArticleFolderResponseDto> dtoList = articleFolderRepository.mainPageArticleFolderNonLogin();
         for (MainPageArticleFolderResponseDto mainPageArticleFolderResponseDto : dtoList) {
-            System.out.println(mainPageArticleFolderResponseDto.getFolderId());
+            System.out.println("memberId = " + mainPageArticleFolderResponseDto.getMemberId());
+            System.out.println("folderId = " + mainPageArticleFolderResponseDto.getFolderId());
+            List<MainPageArticleFolderResponseDto.ArticleTitleContentDto> articleTitleContentDto = mainPageArticleFolderResponseDto.getArticleTitleContentDto();
+            for (MainPageArticleFolderResponseDto.ArticleTitleContentDto titleContentDto : articleTitleContentDto) {
+                System.out.println("title = " + titleContentDto.getTitleOg());
+                System.out.println("content = " + titleContentDto.getContentOg());
+            }
         }
     }
 
