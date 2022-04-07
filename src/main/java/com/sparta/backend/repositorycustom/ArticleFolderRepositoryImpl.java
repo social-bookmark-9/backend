@@ -10,8 +10,6 @@ import com.sparta.backend.responseDto.MainPageArticleFolderResponseDto;
 import com.sparta.backend.responseDto.QMainPageArticleFolderResponseDto;
 import com.sparta.backend.responseDto.QMainPageArticleFolderResponseDto_ArticleTitleContentDto;
 
-
-
 import javax.persistence.EntityManager;
 
 import java.util.List;
@@ -56,6 +54,7 @@ public class ArticleFolderRepositoryImpl implements ArticleFolderRepositoryCusto
                         .transform(
                                 groupBy(articleFolder.id)
                                         .list(new QMainPageArticleFolderResponseDto(
+                                                articleFolder.member.id.as("memerId"),
                                                 articleFolder.id.as("folderId"),
                                                 articleFolder.articleFolderName.as("folderName"),
                                                 articleFolder.likeCount,
@@ -85,6 +84,7 @@ public class ArticleFolderRepositoryImpl implements ArticleFolderRepositoryCusto
                         .transform(
                                 groupBy(articleFolder.id)
                                         .list(new QMainPageArticleFolderResponseDto(
+                                                articleFolder.member.id.as("memerId"),
                                                 articleFolder.id.as("folderId"),
                                                 articleFolder.articleFolderName.as("folderName"),
                                                 articleFolder.likeCount,
