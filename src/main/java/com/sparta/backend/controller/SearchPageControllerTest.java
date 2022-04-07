@@ -55,4 +55,5 @@ public class SearchPageControllerTest {
         return new ResponseEntity<>(new RestResponseMessage<>(true,"아티클 폴더 검색 결과", articleFolderList), HttpStatus.OK);
     }
 
+
 }
