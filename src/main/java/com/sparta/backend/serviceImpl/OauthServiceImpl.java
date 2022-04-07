@@ -32,6 +32,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +72,7 @@ public class OauthServiceImpl implements OauthService {
 //        body.add("redirect_uri", "http://localhost:3000/api/users/login"); // 프론트 로컬 연결 테스트용
 //        body.add("redirect_uri", "http://finalproject9.s3-website.ap-northeast-2.amazonaws.com/api/users/login"); // 프론트 서버 연결 테스트용
 //        body.add("redirect_uri", "http://3.34.99.169/api/users/login"); // EC2 서버 연결 테스트용
-//        body.add("redirect_uri", "http://localhost:8080/api/users/login"); // 서버 연결 테스트용
+//        body.add("redirect_uri", "http://localhost:8080/api/users/login"); // 벡 로컬 서버 연결 테스트용
 
         body.add("code", code);
 
@@ -225,7 +227,7 @@ public class OauthServiceImpl implements OauthService {
 
     // 회원가입 확인
     @Override
-    public ResponseEntity<RestResponseMessage> checkRegister(KakaoMemberInfoRequestDto kakaoMemberInfoRequestDto) {
+    public ResponseEntity<RestResponseMessage> checkRegister(KakaoMemberInfoRequestDto kakaoMemberInfoRequestDto, HttpServletResponse response) {
         log.info("kakaoId : ", kakaoMemberInfoRequestDto.getKakaoId());
         boolean login = memberRepository.existsMemberByKakaoId(kakaoMemberInfoRequestDto.getKakaoId());
         log.info("memberExist : ", login);
@@ -244,6 +246,15 @@ public class OauthServiceImpl implements OauthService {
             map.put("login", true);
             map.put("token", token);
             map.put("myInfo", myInfo);
+
+            // 크롬 익스텐션용 엑세스 토큰 쿠키
+            Cookie cookie = new Cookie("accessToken", token.getAccessToken());
+            cookie.setMaxAge(1 * 24 * 60 * 60);
+            cookie.setSecure(true);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
 
             return new ResponseEntity<>(new RestResponseMessage<>(true,"로그인 성공", map), HttpStatus.OK);
 

@@ -78,6 +78,9 @@ public class ReminderServiceImpl implements ReminderService {
     @Override
     public void editReminder(ReminderRequestDto reminderRequestDto, Member member) {
         Reminder reminder = reminderRepository.findReminderByMemberNameAndArticle_Id(member.getMemberName(), reminderRequestDto.getArticleId());
+        if(reminder == null) {
+            throw new BusinessException(ErrorCode.REMINDER_NOT_FOUND);
+        }
         reminder.editDate(reminderRequestDto.getButtonDate());
     }
 
