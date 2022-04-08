@@ -190,8 +190,14 @@ public class MainPageServiceImpl implements MainPageService {
     }
 
     private List<MainPageArticleFolderResponseDto> selectRandom(int size, List<MainPageArticleFolderResponseDto> folderList) {
+        int returnElementSize = size;
+
+        if (folderList.size() < size) {
+            returnElementSize = folderList.size();
+        }
+
         Collections.shuffle(folderList);
-        return folderList.subList(0, size);
+        return folderList.subList(0, returnElementSize);
     }
 
 }
