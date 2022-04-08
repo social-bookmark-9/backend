@@ -9,6 +9,8 @@ import com.sparta.backend.oauthDto.TokenDto;
 import com.sparta.backend.oauthDto.TokenRequestDto;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletResponse;
+
 public interface OauthService {
 
     KakaoMemberInfoRequestDto getKakaoInfo(String code) throws JsonProcessingException;
@@ -23,6 +25,6 @@ public interface OauthService {
 
     void deleteRefreshToken(String refreshToken);
 
-    ResponseEntity<RestResponseMessage> checkRegister(KakaoMemberInfoRequestDto kakaoMemberInfoRequestDto);
+    ResponseEntity<RestResponseMessage> checkRegister(KakaoMemberInfoRequestDto kakaoMemberInfoRequestDto, HttpServletResponse response);
 }
 
