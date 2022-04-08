@@ -20,9 +20,9 @@ public interface ArticleFolderService {
 
     void updateArticleFolderName(ArticleFolderNameUpdateRequestDto articleFolderNameUpdateRequestDto, Long id);
 
-    ArticlesInFolderResponseDto findArticlesInFolderLoginTrue(Member member, Long id);
+    ArticlesInFolderResponseDto findArticlesInFolderLogin(Member member, Long id);
 
-    ArticlesInFolderResponseDto findArticlesInFolderLoginFalse(Long id);
+    ArticlesInFolderResponseDto findArticlesInFolderNonLogin(Long id);
 
     void deleteArticleInArticleFolder(Long folderId, Long articleId);
 

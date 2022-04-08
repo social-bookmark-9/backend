@@ -1,26 +1,33 @@
 package com.sparta.backend.serviceImpl;
 
+import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
-import com.sparta.backend.responseDto.ArticleRandomResponseDto;
-import com.sparta.backend.responseDto.MainPageArticleFolderResponseDto;
-import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
+import com.sparta.backend.responseDto.*;
 import com.sparta.backend.service.MainPageService;
 import com.sparta.backend.utils.RandomGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.springframework.util.StringUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -147,14 +154,44 @@ public class MainPageServiceImpl implements MainPageService {
     public List<MainPageArticleFolderResponseDto> getRecommendedArticleFolders(Member member) {
         if (member != null) {
             List<String> hashtagList = new ArrayList<>();
-            String memberHashtag = member.getHashtag().getHashtag1();
-            List<String> folderHashtagList = member.getArticleFolders().stream().map(ArticleFolder::getFolderHashtag1).collect(Collectors.toList());
-            hashtagList.add(memberHashtag);
-            hashtagList.addAll(folderHashtagList);
+            MemberHashtagInfoDto memberHashtagInfo = memberRepository.memberHashtagInfo(member.getId());
 
-            return articleFolderRepository.mainPageArticleFolderLogin(member.getId(), hashtagList);
+            if (hasLength(memberHashtagInfo.getMemberHashtag1())) {
+                hashtagList.add(memberHashtagInfo.getMemberHashtag1());
+            }
+            if (hasLength(memberHashtagInfo.getMemberHashtag2())) {
+                hashtagList.add(memberHashtagInfo.getMemberHashtag2());
+            }
+            if (hasLength(memberHashtagInfo.getMemberHashtag3())) {
+                hashtagList.add(memberHashtagInfo.getMemberHashtag3());
+            }
+
+            Optional<MemberArticleFolderHashtagInfoDto> memberFolderHashtagInfo = memberRepository.memberArticleFolderHashtagInfo(member.getId());
+            if (memberFolderHashtagInfo.isPresent()) {
+                MemberArticleFolderHashtagInfoDto folderHashtag = memberFolderHashtagInfo.get();
+                if (hasLength(folderHashtag.getFolderHashtag3())) {
+                    hashtagList.add(folderHashtag.getFolderHashtag1());
+                }
+                if (hasLength(folderHashtag.getFolderHashtag2())) {
+                    hashtagList.add(folderHashtag.getFolderHashtag2());
+                }
+                if (hasLength(folderHashtag.getFolderHashtag3())) {
+                    hashtagList.add(folderHashtag.getFolderHashtag3());
+                }
+            }
+
+            List<MainPageArticleFolderResponseDto> folderResponseList = articleFolderRepository.mainPageArticleFolderLogin(member.getId(), hashtagList);
+
+            return selectRandom(9, folderResponseList);
         } else {
-            return articleFolderRepository.mainPageArticleFolderNonLogin();
+            List<MainPageArticleFolderResponseDto> folderResponseList = articleFolderRepository.mainPageArticleFolderNonLogin();
+            return selectRandom(9, folderResponseList);
         }
     }
+
+    private List<MainPageArticleFolderResponseDto> selectRandom(int size, List<MainPageArticleFolderResponseDto> folderList) {
+        Collections.shuffle(folderList);
+        return folderList.subList(0, size);
+    }
+
 }

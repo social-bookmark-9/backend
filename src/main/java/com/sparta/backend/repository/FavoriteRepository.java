@@ -17,5 +17,5 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     Optional<Favorite> findByMemberAndArticleFolder(Member member, ArticleFolder articleFolder);
 
     @Query("select f.articleFolder.id from Favorite f where f.member.id = :memberId")
-    List<Long> findAllFolderId(@Param("memberId") Long memberId);
+    List<Long> memberFavoriteFolderList(@Param("memberId") Long memberId);
 }

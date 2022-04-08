@@ -92,10 +92,10 @@ public class MyPageServiceImpl implements MyPageService {
 
     private List<ArticleFolderListResponseDto> getOtherArticleFolderListDtoList(Member loginMember, List<ArticleFolder> otherArticleFolders) {
         List<ArticleFolderListResponseDto> articleFolderListDtoListResponse = new ArrayList<>();
-        List<Long> allFolderId = favoriteRepository.findAllFolderId(loginMember.getId());
+        List<Long> memberFavoriteFolderIdList = favoriteRepository.memberFavoriteFolderList(loginMember.getId());
 
         for (ArticleFolder otherArticleFolder : otherArticleFolders) {
-            Boolean likeStatus = allFolderId.contains(otherArticleFolder.getId());
+            Boolean likeStatus = memberFavoriteFolderIdList.contains(otherArticleFolder.getId());
             if (CollectionUtils.isEmpty(otherArticleFolder.getArticles())) {
                 ArticleFolderListResponseDto noArticlesInFolder = ArticleFolderListResponseDto.of(otherArticleFolder, likeStatus);
                 articleFolderListDtoListResponse.add(noArticlesInFolder);
