@@ -10,5 +10,4 @@ public interface ArticleFolderRepositoryCustom {
     List<ArticleFolder> myPageArticleFolder(Member member);
     List<MainPageArticleFolderResponseDto> mainPageArticleFolderLogin(Long memberId, List<String> hashTagList);
     List<MainPageArticleFolderResponseDto> mainPageArticleFolderNonLogin();
-    List<String> articleFolderHashtagInfo(Long memberId);
 }
