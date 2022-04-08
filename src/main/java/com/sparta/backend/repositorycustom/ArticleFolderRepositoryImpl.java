@@ -17,8 +17,6 @@ import java.util.List;
 import static com.querydsl.core.group.GroupBy.*;
 import static com.sparta.backend.model.QArticle.*;
 import static com.sparta.backend.model.QArticleFolder.articleFolder;
-import static com.sparta.backend.model.QHashtag.hashtag;
-import static com.sparta.backend.model.QMember.*;
 
 public class ArticleFolderRepositoryImpl implements ArticleFolderRepositoryCustom {
 
@@ -47,10 +45,7 @@ public class ArticleFolderRepositoryImpl implements ArticleFolderRepositoryCusto
                         .where(memberIdNe(memberId),
                                 mustNotHide(articleFolder.id),
                                 mustNotDeleteable(articleFolder.id),
-                                folderHashTag1In(hashTagList))
-                        .distinct()
-                        .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc(), articleFolder.likeCount.desc())
-                        .limit(9)
+                                MemberAndfolderHashTagsIn(hashTagList))
                         .transform(
                                 groupBy(articleFolder.id)
                                         .list(new QMainPageArticleFolderResponseDto(
@@ -78,13 +73,10 @@ public class ArticleFolderRepositoryImpl implements ArticleFolderRepositoryCusto
                         .from(articleFolder)
                         .leftJoin(articleFolder.articles, article)
                         .where(mustNotHide(articleFolder.id), mustNotDeleteable(articleFolder.id))
-                        .distinct()
-                        .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc(), articleFolder.likeCount.desc())
-                        .limit(9)
                         .transform(
                                 groupBy(articleFolder.id)
                                         .list(new QMainPageArticleFolderResponseDto(
-                                                articleFolder.member.id.as("memerId"),
+                                                articleFolder.member.id.as("memberId"),
                                                 articleFolder.id.as("folderId"),
                                                 articleFolder.articleFolderName.as("folderName"),
                                                 articleFolder.likeCount,
@@ -101,33 +93,20 @@ public class ArticleFolderRepositoryImpl implements ArticleFolderRepositoryCusto
                         );
     }
 
-    @Override
-    public List<String> articleFolderHashtagInfo(Long memberId) {
-        return null;
-    }
 
     private BooleanExpression memberIdNe(Long memberId) {
         return memberId != null ? articleFolder.member.id.ne(memberId) : null;
     }
 
-    private BooleanExpression mustNotHide(NumberPath<Long> id) {
-        return id != null ? articleFolder.folderHide.eq(false) : null;
+    private BooleanExpression mustNotHide(NumberPath<Long> folderId) {
+        return folderId != null ? articleFolder.folderHide.eq(false) : null;
     }
 
-    private BooleanExpression mustNotDeleteable(NumberPath<Long> id) {
-        return id != null ? articleFolder.deleteable.eq(true) : null;
+    private BooleanExpression mustNotDeleteable(NumberPath<Long> folderId) {
+        return folderId != null ? articleFolder.deleteable.eq(true) : null;
     }
 
-    private BooleanExpression folderHashTag1In(List<String> hashTagList) {
-        return articleFolder.folderHashtag2 != null ? articleFolder.folderHashtag2.in(hashTagList) : null;
-    }
-
-    private BooleanExpression folderHashTag2In(List<String> hashTagList) {
+    private BooleanExpression MemberAndfolderHashTagsIn(List<String> hashTagList) {
         return articleFolder.folderHashtag1 != null ? articleFolder.folderHashtag1.in(hashTagList) : null;
     }
-
-    private BooleanExpression folderHashTag3In(List<String> hashTagList) {
-        return articleFolder.folderHashtag3 != null ? articleFolder.folderHashtag3.in(hashTagList) : null;
-    }
-
 }

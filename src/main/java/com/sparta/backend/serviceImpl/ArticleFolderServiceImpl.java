@@ -99,14 +99,14 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return List<ArticlesInFolderResponseDto>
      */
     @Override
-    public ArticlesInFolderResponseDto findArticlesInFolderLoginTrue(Member member, Long folderId) {
+    public ArticlesInFolderResponseDto findArticlesInFolderLogin(Member member, Long folderId) {
         // 타켓 아티클 폴더 찾기
         Optional<ArticleFolder> findArticleFolder = Optional.of(getFolder(folderId));
         // 타켓 아티클 폴더 안 모든 아티클 articles에 저장
         List<Article> articles = new ArrayList<>();
-        findArticleFolder.map(ArticleFolder::getArticles).ifPresent(
-                articleList -> articles.addAll(articleList)
-        );
+        findArticleFolder
+                .map(ArticleFolder::getArticles)
+                .ifPresent(articles::addAll);
 
         // member의 폴더 리스트에서 아티클 url로 같은 아티클을 가지고 있는지 판별하기 위해 아티클의 url만 리스트로 저장
         Member findMember = getMember(member.getId());
@@ -116,7 +116,11 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
                 .stream()
                 .map(ArticleFolder::getArticles)
                 .forEach(myArticleList -> myArticleList
-                            .forEach(myArticle -> myArticlesUrl.add(myArticle.getUrl())));
+                        .forEach(myArticle -> myArticlesUrl.add(myArticle.getUrl())));
+
+        // 해당 폴더 좋아요 상태
+        List<Long> memberFavoriteFolderIdList = favoriteRepository.memberFavoriteFolderList(member.getId());
+        Boolean likeStatus = memberFavoriteFolderIdList.contains(folderId);
 
         // isMe(내가 소유한 폴더인지 아닌지)
         boolean isMe = findArticleFolder.get().getMember().equals(findMember);
@@ -134,7 +138,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
             articlesInfoInFolderResponseDtoList.add(null);
         }
 
-        return ArticlesInFolderResponseDto.of(findArticleFolder.get(), isMe, articlesInfoInFolderResponseDtoList);
+        return ArticlesInFolderResponseDto.of(findArticleFolder.get(), isMe, likeStatus, articlesInfoInFolderResponseDtoList);
     }
 
     /**
@@ -143,13 +147,13 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      * @return List<ArticlesInFolderResponseDto>
      */
     @Override
-    public ArticlesInFolderResponseDto findArticlesInFolderLoginFalse(Long folderId) {
+    public ArticlesInFolderResponseDto findArticlesInFolderNonLogin(Long folderId) {
         Optional<ArticleFolder> findArticleFolder = Optional.of(getFolder(folderId));
 
         List<Article> articles = new ArrayList<>();
-        findArticleFolder.map(ArticleFolder::getArticles).ifPresent(
-                articleList -> articles.addAll(articleList)
-        );
+        findArticleFolder
+                .map(ArticleFolder::getArticles)
+                .ifPresent(articles::addAll);
 
         List<ArticlesInfoInFolderResponseDto> articlesInfoInFolderResponseDtoList = new ArrayList<>();
 

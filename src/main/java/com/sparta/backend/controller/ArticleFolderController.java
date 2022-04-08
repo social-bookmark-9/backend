@@ -116,7 +116,7 @@ public class ArticleFolderController {
         boolean loginStatus = member != null;
 
         ArticlesInFolderResponseDto articlesInFolder =
-                loginStatus ? articleFolderService.findArticlesInFolderLoginTrue(member, id) : articleFolderService.findArticlesInFolderLoginFalse(id);
+                loginStatus ? articleFolderService.findArticlesInFolderLogin(member, id) : articleFolderService.findArticlesInFolderNonLogin(id);
 
         return new ResponseEntity<>(new RestResponseMessage<>(true, "폴더 안 아티클 조회", articlesInFolder), HttpStatus.OK);
     }
