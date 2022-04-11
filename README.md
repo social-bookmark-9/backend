@@ -41,6 +41,7 @@
 - [기술 스택](#기술-스택)
 - [서비스 아키텍처](#서비스-아키텍처)
 - [DB 모델링](#DB-모델링)
+- [서비스 API](#서비스-API)
 - [핵심 트러블 슈팅](#핵심-트러블-슈팅)
 - [그 외 트러블 슈팅](#그-외-트러블-슈팅)
 - [향후 목표](#향후-목표)
@@ -100,13 +101,13 @@
 |       Spring       |  5.3.1  |               |
 |  Spring Security   |  2.4.0  |  사용자 인증 및 인가  |
 |  Spring Data Jpa   |  2.4.0  |  데이터베이스 ORM   |
-|    Spring mail     |         | SMTP 메일 서버 설정 |
+|    Spring mail     |  2.4.0  | SMTP 메일 서버 설정 |
 |  Spring Cloud AWS  |  2.2.1  |     S3관련      |
 |    OAuth client    |  2.4.0  |   OAuth 로그인   |
 |       lombok       | 1.18.16 |     개발 편의     |
 |        jjwt        |  0.9.1  |   JWT 토큰 조작   |
 |       jsoup        | 1.14.3  |   URL 스크래핑    |
-|     thymeleaf      |         |  이메일 html 생성  |
+|     thymeleaf      |  2.4.0  |  이메일 html 생성  |
 |      queryDSL      | 1.0.10  |   동적 쿼리 생성    |
 
 <br/>
@@ -120,6 +121,85 @@
 ## DB 모델링
 
 <img alt="ERD" width="600" src="https://user-images.githubusercontent.com/76833697/162219023-780d86da-2ea9-40c3-86a1-8aacc17bbe80.png"/>
+
+<br/>
+
+## 서비스 API
+
+### 유저
+
+| Feat | Method |         URL         | Request |       Response       |
+|:----:|:------:|:-------------------:|:-------:|:--------------------:|
+| 로그인  |  POST  |  /api/users/login   |  인가코드(카카오) |       "로그인 성공"       |
+| 로그아웃 | POST  |  /api/users/logout  | 리프레시 토큰 |      "로그아웃 성공"       |
+| 회원가입 | POST  | /api/users/register | 카카오 아이디  |       "로그인 성공"       |
+| 회원탈퇴 | DELETE | /api/users/{userid} |      | "서비스를 이용해주셔서 감사합니다." |
+| 토큰 재발급 | POST |  /api/users/token   | 엑세스, 리프레시 토큰 |       "토큰 재발급"       |
+|내 정보 | GET | /api/users/check | 헤더: { token } |        myInfo        |
+|유저명 중복 확인| GET | /api/users/checkmembername| membername | 사용유무 | 
+
+### 아티클(북마크)
+
+| Feat | Method |         URL         |      Request      |      Response      |
+|:----:|:------:|:-------------------:|:-----------------:|:------------------:|
+|아티클 생성|POST| /api/articles |    articleData    |     "아티클 생성 성공     |
+|아티클 조회 | GET | /api/articles/{articleid}|                   |    "아티클 조회 성공"     |
+|아티클 삭제 | DELETE | /api/articles/{articleid} |                   |    "아티클 삭제 성공"     |
+|아티클 제목 수정 | PATCH | /api/articles/{articleid}/title |    "제목 수정 내용"     |     "제목 수정 성공"     |
+|아티클 해시태그 수정 | PATCH | /api/articles/{articleid}/hashtag|   hashtag1,2,3    |  "아티클 해시태그 수정 성공"  |
+|아티클 리뷰 수정 | PATCH | /api/articles/{articleid}/review |    "리뷰 수정 내용"     |   "아티클 리뷰 수정 성공"   |
+|아티클 리뷰 공개여부 수정|PATCH|/api/articles/{articleid}/review/hide |                   |    "리뷰 가리기 성공"     |
+|아티클 모든 리뷰 조회 | GET | /api/reviews |                   |  "모든 리뷰 가져오기 성공"   |
+|아티클 읽은 횟수 증가 | PATCH | /api/articles/{articleid}/readcount |                   | "아티클 읽은 횟수 증가 성공"  |
+|아티클 폴더 이동| PATCH | /api/articles/{articleid}/folder | articleFolderName |  "아티클의 폴더 이동 성공"   |
+|아티클 타유저 모두 저장 | PATCH | /api/articles/articlefolder/{articlefolderid} | articlefolderName | "타유저 아티클 모두 저장 성공" |
+
+### 아티클 폴더(컬렉션)
+
+|     Feat     | Method |                 URL                  |      Request     |    Response     |
+|:------------:|:------:|:------------------------------------:|:----------------:|:---------------:|
+|  아티클 컬렉션 생성  |  POST  |          /api/articleFolder          | articleFolderName |   "컬렉션 생성 완료"   |
+| 컬렉션 내 아티클 조회 |  GET   | /api/articleFolder/{articleFolderid} |                  | "컬렉션 내 아티클 조회"  |
+|  컬렉션 목록 조회   |  GET   |    /api/articleFolder/folderName     |                  |   컬렉션 목록 조회"    |
+|컬렉션 삭제 | DELETE | /api/articleFolder/{articleFolderid} |                  |   "컬렉션 삭제 완료"   |
+|컬렉션 제목 수정 | PATCH  | /api/articleFolder/{articleFolderid} | articleFolderName | "컬렉션 제목 수정 완료"  |
+|컬렉션 좋아요 | PATCH | /api/articleFolder/{articleFolferId}/likes |                  | "컬렉션 좋아요 추가 완료" |
+|컬렉션 좋아요 삭제 | DELETE | /api/articleFolder/{articleFolderid}/likes |                  | "컬렉견 좋아요 취 완료"  |
+
+### 검색 페이지
+
+|     Feat     | Method |              URL              |    Request     |  Response   |
+|:------------:|:------:|:-----------------------------:|:--------------:|:-----------:|
+|아티클 검색 | GET | /api/searchpage/articles/???? |                | "아티클 검색 결과" |
+|아티클 폴더 검색 | GET | /api/searchpage/articlesfolders/????|| "아티클 폴더 검색 결과" |
+
+### 메인 페이지
+
+|     Feat     | Method |              URL              |    Request     | Response  |
+|:------------:|:------:|:-----------------------------:|:--------------:|:---------:|
+|아티클 조회 | GET | /api/mainpage | | 아티클 조회 결과 |
+|태그로 아티클 조회 | GET | /api/mainpage/hashtag? | | 아티클 조회 결과 |
+
+### 마이 페이지
+
+|     Feat     | Method |              URL              |  Request   |       Response        |
+|:------------:|:------:|:-----------------------------:|:----------:|:---------------------:|
+|마이페이지 조회 | GET | /api/mypage/memberid | 토큰, 멤버 아이디 |       유저 정보 결과        |
+|프로필 수정(자기소개) | PATCH | /api/mypage/statusmessage | userDesc | "프로필 정보가 업데이트 되었습니다"  |
+|프로필 수정(url) | PATCH | /api/mypage/snsurl | urls |   "프로필이 업데이트 되었습니다"   |
+|프로필 이미지 수정 | POST | /api/mypage/profileimage | image(multipart) | "프로필 이미지가 업데이트 되었습니다" |
+|프로필 닉네임 수정 | PATCH | /api/mypage/nickname | nickname |    "프로필 닉네임 수정 완료"    |
+|프로필 관심분야 수정 | PATCH | /api/mypage/hashtag | hashtag1,2,3 |   "프로필 관심분야 수정 완료"    |
+|리마인더 이메일 수정 | PATCH | /api/mypage/reminder | email |   "리마인더 이메일 수정 완료"    |
+
+### 리마인더
+
+|     Feat     | Method |              URL              |  Request   |   Response   |
+|:------------:|:------:|:-----------------------------:|:----------:|:------------:|
+|리마인더 생성 | POST | /api/reminders | article정보 | "리마인더 생성 성공" |
+|리마인더 수정 | PATCH | /api/reminders | article정보 | "리마인더 수정 성공" |
+|리마인더 삭제 | DELETE | /api/reminders | article정보 | "리마인더 삭제 성공" |
+|리마인더 조회 | GET | /api/reminders | | "리마인더 조회 성공" |
 
 <br/>
 
