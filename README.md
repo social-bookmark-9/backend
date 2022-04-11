@@ -262,11 +262,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
 <br/>
 
-<details>
-
-</details>
-
-
 ## 그 외 트러블 슈팅
 
 <details>
