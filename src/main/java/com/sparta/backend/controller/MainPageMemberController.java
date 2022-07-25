@@ -1,3 +1,4 @@
+/*
 package com.sparta.backend.controller;
 
 import com.sparta.backend.message.RestResponseMessage;
@@ -27,9 +28,10 @@ public class MainPageMemberController {
         String randomHashtag = String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag());
 
         // 유저
-        List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembers(getMember, randomHashtag);
+        List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembersLogin(getMember);
 
         return new ResponseEntity<>(new RestResponseMessage<>(true,"메인페이지 정보 불러오기", memberList), HttpStatus.OK);
     }
 }
 
+*/

@@ -1,7 +1,6 @@
 package com.sparta.backend.repositorycustom;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.backend.model.ArticleFolder;
@@ -12,17 +11,19 @@ import com.sparta.backend.responseDto.QMainPageArticleFolderResponseDto_ArticleT
 
 import javax.persistence.EntityManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.querydsl.core.group.GroupBy.*;
 import static com.sparta.backend.model.QArticle.*;
 import static com.sparta.backend.model.QArticleFolder.articleFolder;
+import static com.sparta.backend.model.QMember.member;
 
-public class ArticleFolderRepositoryImpl implements ArticleFolderRepositoryCustom {
+public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    public ArticleFolderRepositoryImpl(EntityManager em) {
+    public ArticleFolderRepositoryCustomImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
@@ -38,41 +39,30 @@ public class ArticleFolderRepositoryImpl implements ArticleFolderRepositoryCusto
 
     @Override
     public List<MainPageArticleFolderResponseDto> mainPageArticleFolderLogin(Long memberId, List<String> hashTagList) {
-        return
-                queryFactory
-                        .from(articleFolder)
-                        .leftJoin(articleFolder.articles, article)
-                        .where(memberIdNe(memberId),
-                                mustNotHide(articleFolder.id),
-                                mustNotDeleteable(articleFolder.id),
-                                MemberAndfolderHashTagsIn(hashTagList))
-                        .transform(
-                                groupBy(articleFolder.id)
-                                        .list(new QMainPageArticleFolderResponseDto(
-                                                articleFolder.member.id.as("memerId"),
-                                                articleFolder.id.as("folderId"),
-                                                articleFolder.articleFolderName.as("folderName"),
-                                                articleFolder.likeCount,
-                                                articleFolder.folderHashtag1.as("hashTag1"),
-                                                articleFolder.folderHashtag2.as("hashTag2"),
-                                                articleFolder.folderHashtag3.as("hashTag3"),
-                                                list(
-                                                    new QMainPageArticleFolderResponseDto_ArticleTitleContentDto(
-                                                            article.titleOg,
-                                                            article.contentOg
-                                                    )
-                                                )
-                                        ))
-                        );
-    }
+        Double tlkAvg = queryFactory
+                .select(articleFolder.likeCount.avg())
+                .from(articleFolder)
+                .where(articleFolder.likeCount.gt(0))
+                .fetchOne();
 
-    @Override
-    public List<MainPageArticleFolderResponseDto> mainPageArticleFolderNonLogin() {
+        List<Long> ids = queryFactory
+                .select(articleFolder.id)
+                .from(articleFolder)
+                .where(gtParticularLikeCount(tlkAvg) ,articleFolder.folderHide.eq(false), articleFolder.deleteable.eq(true), articleFolder.member.id.ne(memberId), folderHashtagsIn(hashTagList))
+                .orderBy(articleFolder.likeCount.desc())
+                .limit(50)
+                .fetch();
+
+        if (ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         return
                 queryFactory
                         .from(articleFolder)
-                        .leftJoin(articleFolder.articles, article)
-                        .where(mustNotHide(articleFolder.id), mustNotDeleteable(articleFolder.id))
+                        .leftJoin(article)
+                        .on(article.articleFolder.id.eq(articleFolder.id))
+                        .where(articleFolder.id.in(ids))
                         .transform(
                                 groupBy(articleFolder.id)
                                         .list(new QMainPageArticleFolderResponseDto(
@@ -93,20 +83,65 @@ public class ArticleFolderRepositoryImpl implements ArticleFolderRepositoryCusto
                         );
     }
 
+    @Override
+    public List<MainPageArticleFolderResponseDto> mainPageArticleFolderNonLogin(String hashtag) {
+        Double tlkAvg = queryFactory
+                .select(articleFolder.likeCount.avg())
+                .from(articleFolder)
+                .where(articleFolder.likeCount.gt(0))
+                .fetchOne();
 
-    private BooleanExpression memberIdNe(Long memberId) {
-        return memberId != null ? articleFolder.member.id.ne(memberId) : null;
+        List<Long> ids = queryFactory
+                .select(articleFolder.id)
+                .from(articleFolder)
+                .where(gtParticularLikeCount(tlkAvg), articleFolder.folderHashtag1.eq(hashtag), articleFolder.folderHide.eq(false), articleFolder.deleteable.eq(true))
+                .orderBy(articleFolder.likeCount.desc())
+                .limit(50)
+                .fetch();
+
+        if (ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return
+                queryFactory
+                        .from(articleFolder)
+                        .leftJoin(article)
+                        .on(article.articleFolder.id.eq(articleFolder.id))
+                        .where(articleFolder.id.in(ids))
+                        .transform(
+                                groupBy(articleFolder.id)
+                                        .list(new QMainPageArticleFolderResponseDto(
+                                                articleFolder.member.id.as("memberId"),
+                                                articleFolder.id.as("folderId"),
+                                                articleFolder.articleFolderName.as("folderName"),
+                                                articleFolder.likeCount,
+                                                articleFolder.folderHashtag1.as("hashTag1"),
+                                                articleFolder.folderHashtag2.as("hashTag2"),
+                                                articleFolder.folderHashtag3.as("hashTag3"),
+                                                list(
+                                                        new QMainPageArticleFolderResponseDto_ArticleTitleContentDto(
+                                                                article.titleOg,
+                                                                article.contentOg
+                                                        )
+                                                )
+                                        ))
+                        );
     }
 
-    private BooleanExpression mustNotHide(NumberPath<Long> folderId) {
-        return folderId != null ? articleFolder.folderHide.eq(false) : null;
+    private BooleanExpression gtParticularLikeCount(Double likeCount) {
+        return articleFolder.likeCount.gt(likeCount);
     }
 
-    private BooleanExpression mustNotDeleteable(NumberPath<Long> folderId) {
-        return folderId != null ? articleFolder.deleteable.eq(true) : null;
+    private BooleanExpression mustNotHide() {
+        return articleFolder.folderHide.eq(false);
     }
 
-    private BooleanExpression MemberAndfolderHashTagsIn(List<String> hashTagList) {
+    private BooleanExpression mustDeleteable() {
+        return articleFolder.deleteable.eq(true);
+    }
+
+    private BooleanExpression folderHashtagsIn(List<String> hashTagList) {
         return articleFolder.folderHashtag1 != null ? articleFolder.folderHashtag1.in(hashTagList) : null;
     }
 }

@@ -2,9 +2,10 @@ package com.sparta.backend.controller;
 
 import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
-import com.sparta.backend.responseDto.ArticleFolderListResponseDto;
+import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.responseDto.ArticleRandomResponseDto;
 import com.sparta.backend.responseDto.MainPageArticleFolderResponseDto;
+import com.sparta.backend.responseDto.MemberHashtagInfoDto;
 import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
 import com.sparta.backend.service.MainPageService;
 import com.sparta.backend.utils.RandomGenerator;
@@ -24,29 +25,43 @@ import java.util.Map;
 public class MainPageController {
 
     private final MainPageService mainPageService;
+    private final MemberRepository memberRepository;
 
     @GetMapping("/api/mainpage")
     public ResponseEntity<RestResponseMessage> getMainPage(@AuthenticationPrincipal Member getMember) {
-        
-        // 랜덤 해시태그 생성
-        String randomHashtag = String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag());
-
-        // 유저
-        List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembers(getMember, randomHashtag);
-
-        // 아티클 폴더
-        List<MainPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFolders(getMember);
-
-        // 아티클
-        List<ArticleRandomResponseDto> articleList = mainPageService.getMonthArticles(randomHashtag);
-        
         // 데이터 리턴
-        Map<String, Object> map = new HashMap<>();
-        map.put("memberList", memberList);
-        map.put("articleFolderList", articleFolderList);
-        map.put("articleList", articleList);
-        map.put("hashtagButton", randomHashtag);
-        
-        return new ResponseEntity<>(new RestResponseMessage<>(true,"메인페이지 정보 불러오기", map), HttpStatus.OK);
+        Map<String, Object> returnData = new HashMap<>();
+
+        if (getMember == null) {
+            // 랜덤 해시태그 생성
+            String randomHashtag = String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag());
+
+            List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembersNonLogin(randomHashtag);
+
+            List<MainPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFoldersNonLogin(randomHashtag);
+
+            List<ArticleRandomResponseDto> articleList = mainPageService.getMonthArticlesNonLogin();
+
+            returnData.put("memberList", memberList);
+            returnData.put("articleFolderList", articleFolderList);
+            returnData.put("articleList", articleList);
+            returnData.put("hashtagButton", randomHashtag);
+        } else {
+            // 유저 해시테그 정보
+            MemberHashtagInfoDto memberHashtagInfoDto = memberRepository.memberHashtagInfo(getMember.getId());
+            // 유저
+            List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembersLogin(getMember, memberHashtagInfoDto);
+            // 아티클 폴더
+            List<MainPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFoldersLogin(getMember, memberHashtagInfoDto);
+            // 아티클
+            List<ArticleRandomResponseDto> articleList = mainPageService.getMonthArticlesLogin(getMember, memberHashtagInfoDto);
+
+            returnData.put("memberList", memberList);
+            returnData.put("articleFolderList", articleFolderList);
+            returnData.put("articleList", articleList);
+            returnData.put("hashtagButton", memberHashtagInfoDto);
+        }
+
+        return new ResponseEntity<>(new RestResponseMessage<>(true,"메인페이지 정보 불러오기", returnData), HttpStatus.OK);
     }
 }

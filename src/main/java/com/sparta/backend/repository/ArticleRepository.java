@@ -2,6 +2,7 @@ package com.sparta.backend.repository;
 
 import com.sparta.backend.model.Article;
 import com.sparta.backend.model.Member;
+import com.sparta.backend.repositorycustom.ArticleRepositoryCustom;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface ArticleRepository extends JpaRepository<Article, Long> {
+public interface ArticleRepository extends JpaRepository<Article, Long>, ArticleRepositoryCustom {
     List<Article> findArticlesByIdNotAndHashtag_Hashtag1AndArticleFolder_FolderHide(Long id ,String mainHashtag, boolean folderHide);
     List<Article> findAllByMember(Member member);
 

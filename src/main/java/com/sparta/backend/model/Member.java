@@ -59,6 +59,9 @@ public class Member extends Timestamped implements UserDetails {
     @Column(name = "profile_image", length = 1000)
     private String profileImage;
 
+    @Column(name = "total_like_count", nullable = false)
+    private int totalLikeCount;
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hashtag hashtag;
 
@@ -103,7 +106,7 @@ public class Member extends Timestamped implements UserDetails {
 
     @Builder
     public Member (String memberName, String email, String password,
-                   Hashtag hashtag, String kakaoId, List<String> memberRoles, String profileImage) {
+                   Hashtag hashtag, String kakaoId, List<String> memberRoles, String profileImage, int totalLikeCount) {
         this.memberName = memberName;
         this.email = email;
         this.profileImage = profileImage;
@@ -111,6 +114,7 @@ public class Member extends Timestamped implements UserDetails {
         this.hashtag = hashtag;
         this.kakaoId = kakaoId;
         this.memberRoles = memberRoles;
+        this.totalLikeCount = totalLikeCount;
     }
 
     // 프로필 닉네임 수정하기
@@ -148,5 +152,19 @@ public class Member extends Timestamped implements UserDetails {
     // 프로필 이메일 수정하기
     public void editEmail(String email) {
         this.email = email;
+    }
+
+    // 회원 총 좋아요 수 증가
+    public void increaseTotalLikeCount(int currentTotalLikeCount) {
+        this.totalLikeCount = ++currentTotalLikeCount;
+    }
+
+    // 회원 총 좋아요 수 감소
+    public void decreaseTotalLikeCount(int currentTotalLikeCount) {
+         this.totalLikeCount = --currentTotalLikeCount;
+    }
+    // 폴더 삭제시 총 좋아요 수 감소
+    public void decreaseTotalLikeCount_size(int size) {
+        this.totalLikeCount = totalLikeCount - size;
     }
 }

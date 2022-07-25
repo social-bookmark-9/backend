@@ -73,8 +73,13 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      */
     @Override
     public void deleteArticleFolder(Member member, Long folderId) {
+        Member findMember = getMember(member.getId());
         ArticleFolder findFolder = getFolder(folderId);
-        if (Objects.equals(findFolder.getMember().getId(), member.getId())) {
+        if (Objects.equals(findFolder.getMember().getId(), findMember.getId())) {
+            int currentLikeCount = findFolder.getLikeCount();
+            if (currentLikeCount != 0) {
+                findMember.decreaseTotalLikeCount_size(currentLikeCount);
+            }
             articleFolderRepository.delete(findFolder);
         } else throw new AccessDeniedException("접근 권한 없음");
     }
@@ -201,11 +206,13 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         if (isFavoriteExist.isPresent()) {
             favoriteRepository.delete(isFavoriteExist.get());
             articleFolder.decreaseLikeCount(articleFolder.getLikeCount());
+            findMember.decreaseTotalLikeCount(articleFolder.getLikeCount());
             return new LikeAddOrRemoveResponseDto(false);
         } else {
             Favorite favorite = new Favorite(articleFolder, findMember);
             favoriteRepository.save(favorite);
             articleFolder.increaseLikeCount(articleFolder.getLikeCount());
+            findMember.increaseTotalLikeCount(articleFolder.getLikeCount());
             return new LikeAddOrRemoveResponseDto(true);
         }
     }

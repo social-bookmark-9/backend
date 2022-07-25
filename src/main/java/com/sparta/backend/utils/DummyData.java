@@ -65,6 +65,7 @@ public class DummyData {
                     .memberRoles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
                     .hashtag(hashtag)
                     .profileImage(RandomString.make(10))
+                    .totalLikeCount((int) (Math.random() * 100))
                     .build();
 
             hashtag.setMember(kakaoMember);

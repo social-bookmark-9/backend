@@ -139,6 +139,7 @@ public class OauthServiceImpl implements OauthService {
                 .memberRoles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
                 .hashtag(hashtag)
                 .profileImage(kakaoMemberRegisterRequestDto.getProfileImage())
+                .totalLikeCount(0)
                 .build();
 
         hashtag.setMember(kakaoMember);
@@ -150,6 +151,7 @@ public class OauthServiceImpl implements OauthService {
                 .deleteable(false)
                 .folderHide(true)
                 .member(kakaoMember)
+                .likeCount(0)
                 .build();
 
         articleFolderRepository.save(articleFolder);

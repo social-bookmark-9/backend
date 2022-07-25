@@ -1,5 +1,6 @@
 package com.sparta.backend.responseDto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.sparta.backend.model.Article;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class SearchPageArticleResponseDto {
     private String hashtag2;
     private String hashtag3;
 
+    @QueryProjection
     public SearchPageArticleResponseDto(Article article) {
         this.articleId = article.getId();
         this.titleOg = article.getTitleOg();
