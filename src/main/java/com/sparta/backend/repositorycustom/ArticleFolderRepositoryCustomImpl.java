@@ -1,13 +1,12 @@
 package com.sparta.backend.repositorycustom;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Member;
-import com.sparta.backend.responseDto.MainPageArticleFolderResponseDto;
-import com.sparta.backend.responseDto.QMainPageArticleFolderResponseDto;
-import com.sparta.backend.responseDto.QMainPageArticleFolderResponseDto_ArticleTitleContentDto;
+import com.sparta.backend.responseDto.MainAndSearchPageArticleFolderResponseDto;
+import com.sparta.backend.responseDto.QMainAndSearchPageArticleFolderResponseDto;
+import com.sparta.backend.responseDto.QMainAndSearchPageArticleFolderResponseDto_ArticleTitleContentDto;
 
 import javax.persistence.EntityManager;
 
@@ -17,7 +16,6 @@ import java.util.List;
 import static com.querydsl.core.group.GroupBy.*;
 import static com.sparta.backend.model.QArticle.*;
 import static com.sparta.backend.model.QArticleFolder.articleFolder;
-import static com.sparta.backend.model.QMember.member;
 
 public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositoryCustom {
 
@@ -38,7 +36,7 @@ public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositor
     }
 
     @Override
-    public List<MainPageArticleFolderResponseDto> mainPageArticleFolderLogin(Long memberId, List<String> hashTagList) {
+    public List<MainAndSearchPageArticleFolderResponseDto> mainPageArticleFolderLogin(Long memberId, List<String> hashTagList) {
         Double tlkAvg = queryFactory
                 .select(articleFolder.likeCount.avg())
                 .from(articleFolder)
@@ -65,7 +63,7 @@ public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositor
                         .where(articleFolder.id.in(ids))
                         .transform(
                                 groupBy(articleFolder.id)
-                                        .list(new QMainPageArticleFolderResponseDto(
+                                        .list(new QMainAndSearchPageArticleFolderResponseDto(
                                                 articleFolder.member.id.as("memberId"),
                                                 articleFolder.id.as("folderId"),
                                                 articleFolder.articleFolderName.as("folderName"),
@@ -74,7 +72,7 @@ public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositor
                                                 articleFolder.folderHashtag2.as("hashTag2"),
                                                 articleFolder.folderHashtag3.as("hashTag3"),
                                                 list(
-                                                        new QMainPageArticleFolderResponseDto_ArticleTitleContentDto(
+                                                        new QMainAndSearchPageArticleFolderResponseDto_ArticleTitleContentDto(
                                                                 article.titleOg,
                                                                 article.contentOg
                                                         )
@@ -84,7 +82,7 @@ public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositor
     }
 
     @Override
-    public List<MainPageArticleFolderResponseDto> mainPageArticleFolderNonLogin(String hashtag) {
+    public List<MainAndSearchPageArticleFolderResponseDto> mainPageArticleFolderNonLogin(String hashtag) {
         Double tlkAvg = queryFactory
                 .select(articleFolder.likeCount.avg())
                 .from(articleFolder)
@@ -111,7 +109,7 @@ public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositor
                         .where(articleFolder.id.in(ids))
                         .transform(
                                 groupBy(articleFolder.id)
-                                        .list(new QMainPageArticleFolderResponseDto(
+                                        .list(new QMainAndSearchPageArticleFolderResponseDto(
                                                 articleFolder.member.id.as("memberId"),
                                                 articleFolder.id.as("folderId"),
                                                 articleFolder.articleFolderName.as("folderName"),
@@ -120,7 +118,7 @@ public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositor
                                                 articleFolder.folderHashtag2.as("hashTag2"),
                                                 articleFolder.folderHashtag3.as("hashTag3"),
                                                 list(
-                                                        new QMainPageArticleFolderResponseDto_ArticleTitleContentDto(
+                                                        new QMainAndSearchPageArticleFolderResponseDto_ArticleTitleContentDto(
                                                                 article.titleOg,
                                                                 article.contentOg
                                                         )

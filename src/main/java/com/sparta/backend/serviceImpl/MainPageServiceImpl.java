@@ -6,7 +6,6 @@ import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.responseDto.*;
 import com.sparta.backend.service.MainPageService;
-import com.sparta.backend.utils.RandomGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,10 +70,10 @@ public class MainPageServiceImpl implements MainPageService {
     }
 
     @Override
-    public List<MainPageArticleFolderResponseDto> getRecommendedArticleFoldersLogin(Member member, MemberHashtagInfoDto memberHashtagInfoDto) {
+    public List<MainAndSearchPageArticleFolderResponseDto> getRecommendedArticleFoldersLogin(Member member, MemberHashtagInfoDto memberHashtagInfoDto) {
         List<String> hashtagList = transformToHashtagList(memberHashtagInfoDto);
-        List<MainPageArticleFolderResponseDto> mainPageArticleFolderResponseDtoList = articleFolderRepository.mainPageArticleFolderLogin(member.getId(), hashtagList);
-        return selectRandom(mainPageArticleFolderResponseDtoList);
+        List<MainAndSearchPageArticleFolderResponseDto> mainAndSearchPageArticleFolderResponseDtoList = articleFolderRepository.mainPageArticleFolderLogin(member.getId(), hashtagList);
+        return selectRandom(mainAndSearchPageArticleFolderResponseDtoList);
     }
 
     @Override
@@ -102,8 +101,8 @@ public class MainPageServiceImpl implements MainPageService {
     }
 
     @Override
-    public List<MainPageArticleFolderResponseDto> getRecommendedArticleFoldersNonLogin(String hashtag) {
-        List<MainPageArticleFolderResponseDto> folderResponseList = articleFolderRepository.mainPageArticleFolderNonLogin(hashtag);
+    public List<MainAndSearchPageArticleFolderResponseDto> getRecommendedArticleFoldersNonLogin(String hashtag) {
+        List<MainAndSearchPageArticleFolderResponseDto> folderResponseList = articleFolderRepository.mainPageArticleFolderNonLogin(hashtag);
         return selectRandom(folderResponseList);
     }
 

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 public class ArticleRandomResponseDto {
+
     private Long articleId;
     private String titleOg;
     private String imgOg;

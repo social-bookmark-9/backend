@@ -27,22 +27,21 @@ public class SearchPageServiceTestImpl implements SearchPageServiceTest {
 
     // 검색페이지 아티클 검색 기능
     @Override
-    public Map<String, Object> getSearchArticles(String hashtag, String titleOg, Pageable pageable) {
-
+    public Map<String, Object> getSearchArticles(String hashtag, String keyword, Pageable pageable) {
         // 검색어에 따라서 조건
         Slice<Article> articles;
-        if (Objects.equals(titleOg, "") && Objects.equals(hashtag, "")) {
+        if (Objects.equals(keyword, "") && Objects.equals(hashtag, "")) {
             articles = articleRepository
                     .findArticlesByArticleFolder_FolderHide(false, pageable);
-        } else if (Objects.equals(titleOg, "")) {
+        } else if (Objects.equals(keyword, "")) {
             articles = articleRepository
                     .findArticlesByHashtag_Hashtag1AndArticleFolder_FolderHide(hashtag, false, pageable);
         } else if (Objects.equals(hashtag, "")) {
             articles = articleRepository
-                    .findArticlesByArticleFolder_FolderHideAndTitleOgContains(false, titleOg, pageable);
+                    .findArticlesByArticleFolder_FolderHideAndTitleOgContains(false, keyword, pageable);
         } else {
             articles = articleRepository
-                    .findArticlesByHashtag_Hashtag1AndArticleFolder_FolderHideAndTitleOgContains(hashtag, false, titleOg, pageable);
+                    .findArticlesByHashtag_Hashtag1AndArticleFolder_FolderHideAndTitleOgContains(hashtag, false, keyword, pageable);
         }
 
         // 첫페이지 마지막페이지 확인
@@ -62,22 +61,21 @@ public class SearchPageServiceTestImpl implements SearchPageServiceTest {
 
     // 검색페이지 아티클 폴더 검색 기능
     @Override
-    public Map<String, Object> getSearchArticleFolders(String hashtag, String articleFolderName, Pageable pageable) {
-
+    public Map<String, Object> getSearchArticleFolders(String hashtag, String keyword, Pageable pageable) {
         // 검색어에 따라서 조건
         Page<ArticleFolder> articleFolders;
-        if (Objects.equals(articleFolderName, "") && Objects.equals(hashtag, "")) {
+        if (Objects.equals(keyword, "") && Objects.equals(hashtag, "")) {
             articleFolders = articleFolderRepository
                     .findArticleFoldersByFolderHide(false, pageable);
-        } else if (Objects.equals(articleFolderName, "")) {
+        } else if (Objects.equals(keyword, "")) {
             articleFolders = articleFolderRepository
                     .findArticleFoldersByFolderHideAndFolderHashtag1(false, hashtag, pageable);
         } else if (Objects.equals(hashtag, "")) {
             articleFolders = articleFolderRepository
-                    .findArticleFoldersByFolderHideAndArticleFolderNameContains(false, articleFolderName, pageable);
+                    .findArticleFoldersByFolderHideAndArticleFolderNameContains(false, keyword, pageable);
         } else {
             articleFolders = articleFolderRepository
-                    .findArticleFoldersByFolderHideAndFolderHashtag1AndArticleFolderNameContains(false, hashtag, articleFolderName, pageable);
+                    .findArticleFoldersByFolderHideAndFolderHashtag1AndArticleFolderNameContains(false, hashtag, keyword, pageable);
         }
 
         // 첫페이지 마지막페이지 확인
@@ -99,7 +97,7 @@ public class SearchPageServiceTestImpl implements SearchPageServiceTest {
         Map<String, Object> map = new HashMap<>();
         map.put("isFirst", isFirst);
         map.put("isLast", isLast);
-        map.put("articleList", articleFolderList);
+        map.put("articleFolderList", articleFolderList);
 
         return map;
     }

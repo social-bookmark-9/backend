@@ -73,7 +73,7 @@ public class DummyData {
             memberRepository.save(kakaoMember);
 
             ArticleFolder memberArticleFolder = ArticleFolder.builder()
-                    .articleFolderName("미분류 컬렉션")
+                    .articleFolderName(RandomString.make(10))
                     .deleteable(false)
                     .folderHide(true)
                     .member(kakaoMember)
@@ -83,7 +83,7 @@ public class DummyData {
 
             for (int k = 0; k < dummyRequestDto.getArticleFolders(); k++) {
                 ArticleFolder articleFolder = ArticleFolder.builder()
-                        .articleFolderName("더미 아티클 폴더 " + k)
+                        .articleFolderName(RandomString.make(10) + k)
                         .deleteable(true)
                         .folderHide(false)
                         .likeCount((int) (Math.random() * 100))
@@ -115,7 +115,7 @@ public class DummyData {
                     articleHashtag.setArticle(article);
                     articleRepository.save(article);
 
-                    if (!articleFolder.getArticleFolderName().equals("미분류 컬렉션")) {
+                    if (!articleFolder.getArticleFolderName().equals(RandomString.make(10))) {
                         List<String> sortedHashtag = sortingHashtag(articleFolder);
 
                         if (sortedHashtag.size() == 1) articleFolderRepository.updateArticleFolderHashtag(sortedHashtag.get(0), null, null, articleFolder.getId());

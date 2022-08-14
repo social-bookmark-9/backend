@@ -4,7 +4,7 @@ import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.responseDto.ArticleRandomResponseDto;
-import com.sparta.backend.responseDto.MainPageArticleFolderResponseDto;
+import com.sparta.backend.responseDto.MainAndSearchPageArticleFolderResponseDto;
 import com.sparta.backend.responseDto.MemberHashtagInfoDto;
 import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
 import com.sparta.backend.service.MainPageService;
@@ -38,7 +38,7 @@ public class MainPageController {
 
             List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembersNonLogin(randomHashtag);
 
-            List<MainPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFoldersNonLogin(randomHashtag);
+            List<MainAndSearchPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFoldersNonLogin(randomHashtag);
 
             List<ArticleRandomResponseDto> articleList = mainPageService.getMonthArticlesNonLogin();
 
@@ -52,7 +52,7 @@ public class MainPageController {
             // 유저
             List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembersLogin(getMember, memberHashtagInfoDto);
             // 아티클 폴더
-            List<MainPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFoldersLogin(getMember, memberHashtagInfoDto);
+            List<MainAndSearchPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFoldersLogin(getMember, memberHashtagInfoDto);
             // 아티클
             List<ArticleRandomResponseDto> articleList = mainPageService.getMonthArticlesLogin(getMember, memberHashtagInfoDto);
 

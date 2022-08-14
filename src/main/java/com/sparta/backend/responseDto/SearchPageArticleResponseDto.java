@@ -2,14 +2,12 @@ package com.sparta.backend.responseDto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.sparta.backend.model.Article;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class SearchPageArticleResponseDto {
 
@@ -22,6 +20,30 @@ public class SearchPageArticleResponseDto {
     private String hashtag3;
 
     @QueryProjection
+    public SearchPageArticleResponseDto(Long articleId, String titleOg, String imgOg, String contentOg, String hashtag1, String hashtag2, String hashtag3) {
+        this.articleId = articleId;
+        this.titleOg = titleOg;
+        this.imgOg = imgOg;
+        this.contentOg = contentOg;
+
+        if (hashtag1 != null && !hashtag1.isEmpty()) {
+            this.hashtag1 = hashtag1;
+        } else {
+            this.hashtag1 = null;
+        }
+        if (hashtag2 != null && !hashtag2.isEmpty()) {
+            this.hashtag2 = hashtag2;
+        } else {
+            this.hashtag2 = null;
+        }
+        if (hashtag3 != null && !hashtag3.isEmpty()) {
+            this.hashtag3 = hashtag3;
+        } else {
+            this.hashtag3 = null;
+        }
+    }
+
+    // 삭제
     public SearchPageArticleResponseDto(Article article) {
         this.articleId = article.getId();
         this.titleOg = article.getTitleOg();

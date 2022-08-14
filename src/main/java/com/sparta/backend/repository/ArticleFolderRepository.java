@@ -25,7 +25,7 @@ public interface ArticleFolderRepository extends JpaRepository<ArticleFolder, Lo
     @Query("UPDATE ArticleFolder articleFolder SET articleFolder.folderHashtag1 = :hashtag1, articleFolder.folderHashtag2 = :hashtag2, articleFolder.folderHashtag3 = :hashtag3 WHERE articleFolder.id = :id")
     void updateArticleFolderHashtag(@Param("hashtag1") String hashtag1, @Param("hashtag2") String hashtag2, @Param("hashtag3") String hashtag3, @Param("id") Long id);
 
-    // 검색페이지 아티클 폴더 검색용
+    // 검색페이지 아티클 폴더 검색용 (기존)
     Page<ArticleFolder> findArticleFoldersByFolderHideAndFolderHashtag1AndArticleFolderNameContains(boolean folderHide, String hashtag, String articleFolderName, Pageable pageable);
     // 검색페이지 아티클 폴더 검색용 ( hashtag == null )
     Page<ArticleFolder> findArticleFoldersByFolderHideAndArticleFolderNameContains(boolean folderHide, String articleFolderName, Pageable pageable);

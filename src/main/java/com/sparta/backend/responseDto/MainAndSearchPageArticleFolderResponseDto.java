@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class MainPageArticleFolderResponseDto {
+public class MainAndSearchPageArticleFolderResponseDto {
 
     private Long memberId;
     private Long folderId;
@@ -21,9 +21,9 @@ public class MainPageArticleFolderResponseDto {
     private List<ArticleTitleContentDto> articleTitleContentDto = new ArrayList<>();
 
     @QueryProjection
-    public MainPageArticleFolderResponseDto(Long memberId, Long folderId, String folderName, Integer likeCount,
-                                            String hashTag1, String hashTag2, String hashTag3,
-                                            List<ArticleTitleContentDto> articleTitleContentDto) {
+    public MainAndSearchPageArticleFolderResponseDto(Long memberId, Long folderId, String folderName, Integer likeCount,
+                                                     String hashTag1, String hashTag2, String hashTag3,
+                                                     List<ArticleTitleContentDto> articleTitleContentDto) {
 
         this.memberId = memberId;
         this.folderId = folderId;
