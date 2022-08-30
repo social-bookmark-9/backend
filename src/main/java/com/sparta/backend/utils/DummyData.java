@@ -7,7 +7,6 @@ import com.sparta.backend.model.Member;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
-import com.sparta.backend.responseDto.ArticleCreateResponseDto;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.security.crypto.password.PasswordEncoder;

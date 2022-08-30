@@ -23,7 +23,7 @@ public class SearchPageController {
 
     private final SearchPageService searchPageService;
 
-    @GetMapping("/api/searchpage/articlefolderstest")
+    @GetMapping("/api/searchpage/articlefolders")
     public ResponseEntity<RestResponseMessage<?>> searchArticleFolders(@RequestParam(required = false, defaultValue = "") String hashtag, @RequestParam(required = false, defaultValue = "") String keyword, @RequestParam(defaultValue = "1") int page) throws UnsupportedEncodingException {
         if (page < 1) page = 1;
         PageRequest pageRequest = PageRequest.of(page - 1, 6, Sort.unsorted());
@@ -36,7 +36,7 @@ public class SearchPageController {
         return new ResponseEntity<>(new RestResponseMessage<>(true, "아티클 폴더 검색 결과", articleFolders), HttpStatus.OK);
     }
 
-    @GetMapping("/api/searchpage/articlestest")
+    @GetMapping("/api/searchpage/articles")
     public ResponseEntity<RestResponseMessage<?>> searchArticles(@RequestParam(required = false, defaultValue = "") String hashtag, @RequestParam(required = false, defaultValue = "") String keyword, @RequestParam(defaultValue = "1") int page) throws UnsupportedEncodingException {
         if (page < 1) page = 1;
 

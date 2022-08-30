@@ -11,7 +11,10 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "article")
+@Table(
+        name = "article",
+        indexes = @Index( name = "crt_idx",columnList = "createdAt")
+)
 public class Article extends Timestamped {
 
     @Id

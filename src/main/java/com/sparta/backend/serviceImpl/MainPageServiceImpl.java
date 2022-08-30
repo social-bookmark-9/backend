@@ -1,16 +1,21 @@
 package com.sparta.backend.serviceImpl;
 
 import com.sparta.backend.model.Member;
+import com.sparta.backend.responseDto.ArticleRandomResponseDto;
+import com.sparta.backend.responseDto.MainAndSearchPageArticleFolderResponseDto;
+import com.sparta.backend.responseDto.MemberHashtagInfoDto;
+import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
-import com.sparta.backend.responseDto.*;
 import com.sparta.backend.service.MainPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,19 +83,11 @@ public class MainPageServiceImpl implements MainPageService {
 
     @Override
     public List<ArticleRandomResponseDto> getMonthArticlesLogin(Member member, MemberHashtagInfoDto memberHashtagInfoDto) {
-//        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(30), LocalTime.of(0,0,0));
-//        LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
-
-        // 임시
-        String start = "2022-07-01 00:00:00.000";
-        String end = "2022-08-01 00:00:00.000";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-        LocalDateTime startDateTime = LocalDateTime.parse(start, formatter);
-        LocalDateTime endDateTime = LocalDateTime.parse(end, formatter);
-
+        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(30), LocalTime.of(0,0,0));
+        LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
 
         List<String> hashtagList = transformToHashtagList(memberHashtagInfoDto);
-        List<ArticleRandomResponseDto> articleRandomResponseDtoList = articleRepository.mainPageArticleLogin(member.getId(), hashtagList, startDateTime, endDateTime);
+        List<ArticleRandomResponseDto> articleRandomResponseDtoList = articleRepository.mainPageArticleLogin(member.getId(), hashtagList, startDatetime, endDatetime);
         return selectRandom(articleRandomResponseDtoList);
     }
 
@@ -108,17 +105,10 @@ public class MainPageServiceImpl implements MainPageService {
 
     @Override
     public List<ArticleRandomResponseDto> getMonthArticlesNonLogin() {
-//        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(30), LocalTime.of(0,0,0));
-//        LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
+        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(30), LocalTime.of(0,0,0));
+        LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
 
-        // 임시
-        String start = "2022-07-01 00:00:00.000";
-        String end = "2022-08-01 00:00:00.000";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-        LocalDateTime startDateTime = LocalDateTime.parse(start, formatter);
-        LocalDateTime endDateTime = LocalDateTime.parse(end, formatter);
-
-        List<ArticleRandomResponseDto> articleRandomResponseDtoList = articleRepository.mainPageArticleNonLogin(startDateTime, endDateTime);
+        List<ArticleRandomResponseDto> articleRandomResponseDtoList = articleRepository.mainPageArticleNonLogin(startDatetime, endDatetime);
         return selectRandom(articleRandomResponseDtoList);
     }
 

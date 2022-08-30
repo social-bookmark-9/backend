@@ -37,16 +37,10 @@ public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositor
 
     @Override
     public List<MainAndSearchPageArticleFolderResponseDto> mainPageArticleFolderLogin(Long memberId, List<String> hashTagList) {
-        Double tlkAvg = queryFactory
-                .select(articleFolder.likeCount.avg())
-                .from(articleFolder)
-                .where(articleFolder.likeCount.gt(0))
-                .fetchOne();
-
         List<Long> ids = queryFactory
                 .select(articleFolder.id)
                 .from(articleFolder)
-                .where(gtParticularLikeCount(tlkAvg) ,articleFolder.folderHide.eq(false), articleFolder.deleteable.eq(true), articleFolder.member.id.ne(memberId), folderHashtagsIn(hashTagList))
+                .where(folderHashtagsIn(hashTagList) ,articleFolder.folderHide.eq(false), articleFolder.deleteable.eq(true), articleFolder.member.id.ne(memberId))
                 .orderBy(articleFolder.likeCount.desc())
                 .limit(50)
                 .fetch();
@@ -83,16 +77,10 @@ public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositor
 
     @Override
     public List<MainAndSearchPageArticleFolderResponseDto> mainPageArticleFolderNonLogin(String hashtag) {
-        Double tlkAvg = queryFactory
-                .select(articleFolder.likeCount.avg())
-                .from(articleFolder)
-                .where(articleFolder.likeCount.gt(0))
-                .fetchOne();
-
         List<Long> ids = queryFactory
                 .select(articleFolder.id)
                 .from(articleFolder)
-                .where(gtParticularLikeCount(tlkAvg), articleFolder.folderHashtag1.eq(hashtag), articleFolder.folderHide.eq(false), articleFolder.deleteable.eq(true))
+                .where(articleFolder.folderHashtag1.eq(hashtag), articleFolder.folderHide.eq(false), articleFolder.deleteable.eq(true))
                 .orderBy(articleFolder.likeCount.desc())
                 .limit(50)
                 .fetch();
@@ -125,18 +113,6 @@ public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositor
                                                 )
                                         ))
                         );
-    }
-
-    private BooleanExpression gtParticularLikeCount(Double likeCount) {
-        return articleFolder.likeCount.gt(likeCount);
-    }
-
-    private BooleanExpression mustNotHide() {
-        return articleFolder.folderHide.eq(false);
-    }
-
-    private BooleanExpression mustDeleteable() {
-        return articleFolder.deleteable.eq(true);
     }
 
     private BooleanExpression folderHashtagsIn(List<String> hashTagList) {

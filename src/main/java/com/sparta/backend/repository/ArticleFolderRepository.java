@@ -3,7 +3,6 @@ package com.sparta.backend.repository;
 import com.sparta.backend.model.ArticleFolder;
 import com.sparta.backend.model.Member;
 import com.sparta.backend.repositorycustom.ArticleFolderRepositoryCustom;
-import com.sparta.backend.repositorycustom.ArticleFolderRepositoryCustom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

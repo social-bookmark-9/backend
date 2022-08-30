@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
-
     @Override
     @EntityGraph(attributePaths = {"hashtag"})
     Optional<Member> findById(Long id);

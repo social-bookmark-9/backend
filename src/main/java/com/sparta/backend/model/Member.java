@@ -18,7 +18,10 @@ import java.util.stream.Collectors;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "member")
+@Table(
+        name = "member",
+        indexes = @Index(name = "tlc_idx", columnList = "total_like_count")
+)
 public class Member extends Timestamped implements UserDetails {
 
     @Id

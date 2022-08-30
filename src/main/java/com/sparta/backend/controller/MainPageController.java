@@ -49,11 +49,11 @@ public class MainPageController {
         } else {
             // 유저 해시테그 정보
             MemberHashtagInfoDto memberHashtagInfoDto = memberRepository.memberHashtagInfo(getMember.getId());
-            // 유저
+
             List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembersLogin(getMember, memberHashtagInfoDto);
-            // 아티클 폴더
+
             List<MainAndSearchPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFoldersLogin(getMember, memberHashtagInfoDto);
-            // 아티클
+
             List<ArticleRandomResponseDto> articleList = mainPageService.getMonthArticlesLogin(getMember, memberHashtagInfoDto);
 
             returnData.put("memberList", memberList);

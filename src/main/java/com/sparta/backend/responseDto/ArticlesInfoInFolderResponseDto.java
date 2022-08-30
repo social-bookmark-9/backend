@@ -1,7 +1,8 @@
 package com.sparta.backend.responseDto;
 
 import com.sparta.backend.model.Article;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 

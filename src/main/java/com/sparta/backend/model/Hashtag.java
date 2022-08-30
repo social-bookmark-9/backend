@@ -7,7 +7,13 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "hashtag")
+@Table(
+        name = "hashtag",
+        indexes = {
+                @Index(name = "h1_idx", columnList = "hashtag_1"),
+                @Index(name = "mid_h1_idx", columnList = "member_id, hashtag_1"),
+                @Index(name = "art_h1_idx", columnList = "article_id, hashtag_1")
+        })
 public class Hashtag extends Timestamped {
 
     @Id

@@ -44,7 +44,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     // 랜덤 아티클 생성
-    public ArticleGetResponseDto randomArticleGenerator(Long id ,Article currentArticle, Member currentWriterMember) {
+    public ArticleGetResponseDto randomArticleGenerator(Long id , Article currentArticle, Member currentWriterMember) {
         RandomGenerator randomGenerator = new RandomGenerator();
         String mainHashtag = currentArticle.getHashtag().getHashtag1();
         Integer reminderButtonDate;

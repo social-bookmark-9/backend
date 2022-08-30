@@ -4,7 +4,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.backend.model.QHashtag;
+import com.sparta.backend.responseDto.MainAndSearchPageArticleFolderResponseDto;
+import com.sparta.backend.responseDto.SearchPageArticleResponseDto;
 import com.sparta.backend.responseDto.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -111,10 +112,6 @@ public class SearchQueryRepository {
 
         return DataResultSlice.toSlice(results, pageable);
     }
-
-    // folders + articles(새로운 Dto 만들기)
-
-
 
     private BooleanExpression articleFolderKeywordMatch(String keyword) {
         if (keyword == null || keyword.isEmpty()) return null;

@@ -12,7 +12,15 @@ import java.util.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "article_folder")
+@Table(
+        name = "article_folder",
+        indexes = {
+                @Index(name = "mid_fh_da_idx", columnList = "member_id, folder_hide, deleteable"),
+                @Index(name = "lc_h1_fh_da_idx", columnList = "like_count, folder_hashtag1, folder_hide, deleteable"),
+                @Index(name = "lc_idx", columnList = "like_count"),
+                @Index(name = "fh1_idx", columnList = "folder_hashtag1")
+        }
+)
 public class ArticleFolder extends Timestamped {
 
     @Id
