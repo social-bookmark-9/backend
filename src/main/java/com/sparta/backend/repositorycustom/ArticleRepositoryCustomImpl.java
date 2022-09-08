@@ -1,5 +1,6 @@
 package com.sparta.backend.repositorycustom;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.backend.responseDto.ArticleRandomResponseDto;
 import com.sparta.backend.responseDto.QArticleRandomResponseDto;
@@ -38,11 +39,10 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom{
                         .on(articleFolder.id.eq(article.articleFolder.id), articleFolder.folderHide.eq(false))
                         .join(hashtag)
                         .on(hashtag.article.id.eq(article.id))
-                        .where(article.member.id.ne(memberId), article.createdAt.goe(startDateTime), article.createdAt.lt(endDateTime) ,hashtag.hashtag1.in(hashtagList))
+                        .where(article.member.id.ne(memberId), article.createdAt.goe(startDateTime), article.createdAt.lt(endDateTime), hashtagsIn(hashtagList))
                         .orderBy(article.createdAt.desc())
                         .limit(50)
-                        .fetch()
-        ;
+                        .fetch();
     }
 
     @Override
@@ -66,8 +66,15 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom{
                         .where(article.createdAt.goe(startDateTime), article.createdAt.lt(endDateTime))
                         .orderBy(article.createdAt.desc())
                         .limit(50)
-                        .fetch()
-                ;
+                        .fetch();
+    }
+
+    private BooleanExpression hashtagsIn(List<String> hashtagList) {
+        if (hashtagList.isEmpty()) {
+            return null;
+        }
+
+        return hashtag.hashtag1.in(hashtagList);
     }
 
 }

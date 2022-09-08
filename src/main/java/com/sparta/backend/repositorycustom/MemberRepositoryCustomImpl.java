@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.sparta.backend.model.QArticleFolder.*;
 import static com.sparta.backend.model.QHashtag.*;
@@ -26,22 +27,23 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom{
 
     @Override
     public MemberHashtagInfoDto memberHashtagInfo(Long memberId) {
-        return queryFactory
-                .select(new QMemberHashtagInfoDto(
-                        hashtag.hashtag1.as("memberHashtag1"),
-                        hashtag.hashtag2.as("memberHashtag2"),
-                        hashtag.hashtag3.as("memberHashtag3"),
-                        articleFolder.folderHashtag1.as("folderHashtag1"),
-                        articleFolder.folderHashtag2.as("folderHashtag2"),
-                        articleFolder.folderHashtag3.as("folderHashtag3")
-                ))
-                .from(hashtag)
-                .leftJoin(articleFolder)
-                .on(articleFolder.member.id.eq(hashtag.member.id), mustNotHide(), mustNotDeleteable())
-                .where(hashtag.member.id.eq(memberId))
-                .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
-                .limit(1)
-                .fetchOne();
+        return
+                queryFactory
+                    .select(new QMemberHashtagInfoDto(
+                            hashtag.hashtag1.as("memberHashtag1"),
+                            hashtag.hashtag2.as("memberHashtag2"),
+                            hashtag.hashtag3.as("memberHashtag3"),
+                            articleFolder.folderHashtag1.as("folderHashtag1"),
+                            articleFolder.folderHashtag2.as("folderHashtag2"),
+                            articleFolder.folderHashtag3.as("folderHashtag3")
+                    ))
+                    .from(hashtag)
+                    .leftJoin(articleFolder)
+                    .on(articleFolder.member.id.eq(hashtag.member.id), articleFolder.folderHide.eq(false), articleFolder.deleteable.eq(true))
+                    .where(hashtag.member.id.eq(memberId))
+                    .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+                    .limit(1)
+                    .fetchOne();
     }
 
     @Override
@@ -51,7 +53,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom{
                 .from(member)
                 .join(hashtag)
                 .on(hashtag.member.id.eq(member.id))
-                .where(hashtag.hashtag1.in(hashtagList))
+                .where(hashtagsIn(hashtagList))
                 .orderBy(member.totalLikeCount.desc())
                 .limit(50)
                 .fetch();
@@ -61,6 +63,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom{
         } else {
             ids.removeIf(id -> Objects.equals(id, memberId));
         }
+
         return
                 queryFactory
                         .select(new QRecommendedMemberResponseDto(
@@ -115,13 +118,14 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom{
                         .fetch();
     }
 
-    private BooleanExpression mustNotHide() {
-        return articleFolder.folderHide.eq(false);
+    private BooleanExpression hashtagsIn(List<String> hashtagList) {
+        if (hashtagList.isEmpty()) {
+            return null;
+        }
+
+        return hashtag.hashtag1.in(hashtagList);
     }
 
-    private BooleanExpression mustNotDeleteable() {
-        return articleFolder.deleteable.eq(true);
-    }
 }
 
 

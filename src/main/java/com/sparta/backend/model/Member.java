@@ -167,7 +167,7 @@ public class Member extends Timestamped implements UserDetails {
          this.totalLikeCount = --currentTotalLikeCount;
     }
     // 폴더 삭제시 총 좋아요 수 감소
-    public void decreaseTotalLikeCount_size(int size) {
-        this.totalLikeCount = totalLikeCount - size;
+    public void decreaseTotalLikeCount_size(int currentTotalLikeCount, int size) {
+        this.totalLikeCount = currentTotalLikeCount - size;
     }
 }

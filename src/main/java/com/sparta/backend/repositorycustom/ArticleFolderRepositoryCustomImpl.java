@@ -36,11 +36,11 @@ public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositor
     }
 
     @Override
-    public List<MainAndSearchPageArticleFolderResponseDto> mainPageArticleFolderLogin(Long memberId, List<String> hashTagList) {
+    public List<MainAndSearchPageArticleFolderResponseDto> mainPageArticleFolderLogin(Long memberId, List<String> hashtagList) {
         List<Long> ids = queryFactory
                 .select(articleFolder.id)
                 .from(articleFolder)
-                .where(folderHashtagsIn(hashTagList) ,articleFolder.folderHide.eq(false), articleFolder.deleteable.eq(true), articleFolder.member.id.ne(memberId))
+                .where(folderHashtagsIn(hashtagList), articleFolder.folderHide.eq(false), articleFolder.deleteable.eq(true), articleFolder.member.id.ne(memberId))
                 .orderBy(articleFolder.likeCount.desc())
                 .limit(50)
                 .fetch();
@@ -115,7 +115,11 @@ public class ArticleFolderRepositoryCustomImpl implements ArticleFolderRepositor
                         );
     }
 
-    private BooleanExpression folderHashtagsIn(List<String> hashTagList) {
-        return articleFolder.folderHashtag1 != null ? articleFolder.folderHashtag1.in(hashTagList) : null;
+    private BooleanExpression folderHashtagsIn(List<String> hashtagList) {
+        if (hashtagList.isEmpty()) {
+            return null;
+        }
+
+        return articleFolder.folderHashtag1.in(hashtagList);
     }
 }

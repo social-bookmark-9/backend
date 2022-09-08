@@ -48,7 +48,6 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
      */
     @Override
     public void createArticleFolder(ArticleFolderCreateRequestDto articleFolderRequestDto, Member member) {
-        // TODO: 한 유저가 1개 이상의 동일한 아티클 폴더 이름을 생성할 수 없음 (현우)
         Member currentMember = getMember(member.getId());
 
         ArticleFolder savedArticleFolder = articleFolderRepository
@@ -78,7 +77,7 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         if (Objects.equals(findFolder.getMember().getId(), findMember.getId())) {
             int currentLikeCount = findFolder.getLikeCount();
             if (currentLikeCount != 0) {
-                findMember.decreaseTotalLikeCount_size(currentLikeCount);
+                findMember.decreaseTotalLikeCount_size(findMember.getTotalLikeCount(), currentLikeCount);
             }
             articleFolderRepository.delete(findFolder);
         } else throw new AccessDeniedException("접근 권한 없음");
@@ -139,8 +138,6 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
                 ArticlesInfoInFolderResponseDto articlesInfoInFolderResponseDto = ArticlesInfoInFolderResponseDto.of(article, isRead, isSaved);
                 articlesInfoInFolderResponseDtoList.add(articlesInfoInFolderResponseDto);
             }
-        } else {
-            articlesInfoInFolderResponseDtoList.add(null);
         }
 
         return ArticlesInFolderResponseDto.of(findArticleFolder.get(), isMe, likeStatus, articlesInfoInFolderResponseDtoList);
@@ -167,8 +164,6 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
                 ArticlesInfoInFolderResponseDto articlesInfoInFolderResponseDto = ArticlesInfoInFolderResponseDto.of(article);
                 articlesInfoInFolderResponseDtoList.add(articlesInfoInFolderResponseDto);
             }
-        } else {
-            articlesInfoInFolderResponseDtoList.add(null);
         }
 
         return ArticlesInFolderResponseDto.of(findArticleFolder.get(), articlesInfoInFolderResponseDtoList);
@@ -206,13 +201,13 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
         if (isFavoriteExist.isPresent()) {
             favoriteRepository.delete(isFavoriteExist.get());
             articleFolder.decreaseLikeCount(articleFolder.getLikeCount());
-            findMember.decreaseTotalLikeCount(articleFolder.getLikeCount());
+            findMember.decreaseTotalLikeCount(findMember.getTotalLikeCount());
             return new LikeAddOrRemoveResponseDto(false);
         } else {
             Favorite favorite = new Favorite(articleFolder, findMember);
             favoriteRepository.save(favorite);
             articleFolder.increaseLikeCount(articleFolder.getLikeCount());
-            findMember.increaseTotalLikeCount(articleFolder.getLikeCount());
+            findMember.increaseTotalLikeCount(findMember.getTotalLikeCount());
             return new LikeAddOrRemoveResponseDto(true);
         }
     }
@@ -231,8 +226,6 @@ public class ArticleFolderServiceImpl implements ArticleFolderService {
             for (ArticleFolder articleFolder : findArticleFolders) {
                 articleFolderNameAndIdResponseDtoList.add(ArticleFolderNameAndIdResponseDto.of(articleFolder));
             }
-        } else {
-            return null;
         }
 
         return articleFolderNameAndIdResponseDtoList;

@@ -51,7 +51,7 @@ public class ArticleFolderListResponseDto {
         this.hashTag1 = articleFolder.getFolderHashtag1();
         this.hashTag2 = articleFolder.getFolderHashtag2();
         this.hashTag3 = articleFolder.getFolderHashtag3();
-        this.articleTitleContentDto.addAll(articleTitleContentDto);
+        this.articleTitleContentDto = articleTitleContentDto;
     }
 
     public ArticleFolderListResponseDto(ArticleFolder articleFolder, Boolean likeStatus) {
@@ -79,7 +79,7 @@ public class ArticleFolderListResponseDto {
         this.hashTag1 = articleFolder.getFolderHashtag1();
         this.hashTag2 = articleFolder.getFolderHashtag2();
         this.hashTag3 = articleFolder.getFolderHashtag3();
-        this.articleTitleContentDto.addAll(articleTitleContentDto);
+        this.articleTitleContentDto = articleTitleContentDto;
     }
 
     // 폴더에 아티클이 없을때(내꺼)

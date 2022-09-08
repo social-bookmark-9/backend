@@ -18,7 +18,7 @@ public class MyPageResponseDto {
 
     public MyPageResponseDto(MemberInfoResponseDto memberInfoResponseDto, List<ArticleFolderListResponseDto> articleFolderListResponseDto) {
         this.memberInfoResponseDto = memberInfoResponseDto;
-        this.articleFolderListResponseDto.addAll(articleFolderListResponseDto);
+        this.articleFolderListResponseDto = articleFolderListResponseDto;
     }
 
     public static MyPageResponseDto of(MemberInfoResponseDto memberInfoResponseDto, List<ArticleFolderListResponseDto> articleFolderListResponseDto) {

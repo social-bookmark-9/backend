@@ -33,7 +33,7 @@ public class ArticlesInFolderResponseDto {
         this.likeCount = articleFolder.getLikeCount();
         this.isMe = isMe;
         this.likeStatus = likeStatus;
-        this.articlesInfoInFolderResponseDtoList.addAll(articlesInfoInFolderResponseDtoList);
+        this.articlesInfoInFolderResponseDtoList = articlesInfoInFolderResponseDtoList;
     }
 
     //비로그인

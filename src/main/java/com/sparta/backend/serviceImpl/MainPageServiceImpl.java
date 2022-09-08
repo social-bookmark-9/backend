@@ -1,25 +1,22 @@
 package com.sparta.backend.serviceImpl;
 
 import com.sparta.backend.model.Member;
-import com.sparta.backend.responseDto.ArticleRandomResponseDto;
-import com.sparta.backend.responseDto.MainAndSearchPageArticleFolderResponseDto;
-import com.sparta.backend.responseDto.MemberHashtagInfoDto;
-import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
+import com.sparta.backend.responseDto.*;
 import com.sparta.backend.repository.ArticleFolderRepository;
 import com.sparta.backend.repository.ArticleRepository;
 import com.sparta.backend.repository.MemberRepository;
 import com.sparta.backend.service.MainPageService;
+import com.sparta.backend.utils.RandomGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,15 +27,19 @@ public class MainPageServiceImpl implements MainPageService {
     private final ArticleFolderRepository articleFolderRepository;
     private final MemberRepository memberRepository;
 
-    private <T> List<T> selectRandom(List<T> folderList) {
-        int folderListSize = folderList.size();
+    private <T> List<T> selectRandom(List<T> dataList) {
+        int folderListSize = dataList.size();
         int returnElementSize = 9;
 
+        if (dataList.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         if (folderListSize < returnElementSize) {
-            return folderList;
+            return dataList;
         } else {
-            Collections.shuffle(folderList);
-            return folderList.subList(0, returnElementSize);
+            Collections.shuffle(dataList);
+            return dataList.subList(0, returnElementSize);
         }
     }
 
@@ -68,49 +69,59 @@ public class MainPageServiceImpl implements MainPageService {
     }
 
     @Override
-    public List<RecommendedMemberResponseDto> getRecommendedMembersLogin(Member member, MemberHashtagInfoDto memberHashtagInfoDto) {
-        List<String> hashtagList = transformToHashtagList(memberHashtagInfoDto);
-        List<RecommendedMemberResponseDto> recommendedMemberResponseDtoList = memberRepository.mainPageMemberLogin(member.getId(), hashtagList);
-        return selectRandom(recommendedMemberResponseDtoList);
+    public MainPageResponseDto mainPageLoginVer(Member member) {
+//        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(30), LocalTime.of(0,0,0));
+//        LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
+
+        // 임시
+        String start = "2022-08-01 00:00:00.000";
+        String end = "2022-09-01 00:00:00.000";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        LocalDateTime startDateTime = LocalDateTime.parse(start, formatter);
+        LocalDateTime endDateTime = LocalDateTime.parse(end, formatter);
+
+        List<String> memberHashtagList = new ArrayList<>();
+        MemberHashtagInfoDto memberHashtagInfoDto = memberRepository.memberHashtagInfo(member.getId());
+
+        if (memberHashtagInfoDto != null) {
+            memberHashtagList = transformToHashtagList(memberHashtagInfoDto);
+        }
+
+        List<RecommendedMemberResponseDto> recommendedMemberList = memberRepository.mainPageMemberLogin(member.getId(), memberHashtagList);
+
+        List<MainAndSearchPageArticleFolderResponseDto> recommendedArticleFolderList = articleFolderRepository.mainPageArticleFolderLogin(member.getId(), memberHashtagList);
+
+        List<ArticleRandomResponseDto> recommendedArticleList = articleRepository.mainPageArticleLogin(member.getId(), memberHashtagList, startDateTime, endDateTime);
+
+        List<RecommendedMemberResponseDto> memberResponseDtoList = selectRandom(recommendedMemberList);
+        List<MainAndSearchPageArticleFolderResponseDto> articleFolderResponseDtoList = selectRandom(recommendedArticleFolderList);
+        List<ArticleRandomResponseDto> articleResponseDtoList = selectRandom(recommendedArticleList);
+
+        return MainPageResponseDto.of(memberResponseDtoList, articleFolderResponseDtoList, articleResponseDtoList, memberHashtagList);
     }
 
     @Override
-    public List<MainAndSearchPageArticleFolderResponseDto> getRecommendedArticleFoldersLogin(Member member, MemberHashtagInfoDto memberHashtagInfoDto) {
-        List<String> hashtagList = transformToHashtagList(memberHashtagInfoDto);
-        List<MainAndSearchPageArticleFolderResponseDto> mainAndSearchPageArticleFolderResponseDtoList = articleFolderRepository.mainPageArticleFolderLogin(member.getId(), hashtagList);
-        return selectRandom(mainAndSearchPageArticleFolderResponseDtoList);
+    public MainPageResponseDto mainPageNonLoginVer() {
+//        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(30), LocalTime.of(0,0,0));
+//        LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
+        String randomHashtag = String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag());
+        // 임시
+        String start = "2022-08-01 00:00:00.000";
+        String end = "2022-09-01 00:00:00.000";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        LocalDateTime startDateTime = LocalDateTime.parse(start, formatter);
+        LocalDateTime endDateTime = LocalDateTime.parse(end, formatter);
+
+        List<RecommendedMemberResponseDto> recommendedMemberResponseList = memberRepository.mainPageMemberNonLogin(randomHashtag);
+
+        List<MainAndSearchPageArticleFolderResponseDto> recommendedArticleFolderList = articleFolderRepository.mainPageArticleFolderNonLogin(randomHashtag);
+
+        List<ArticleRandomResponseDto> recommendedArticleList = articleRepository.mainPageArticleNonLogin(startDateTime, endDateTime);
+
+        List<RecommendedMemberResponseDto> memberResponseDtoList = selectRandom(recommendedMemberResponseList);
+        List<MainAndSearchPageArticleFolderResponseDto> articleFolderResponseDtoList = selectRandom(recommendedArticleFolderList);
+        List<ArticleRandomResponseDto> articleResponseDtoList = selectRandom(recommendedArticleList);
+
+        return MainPageResponseDto.of(memberResponseDtoList, articleFolderResponseDtoList, articleResponseDtoList, Collections.singletonList(randomHashtag));
     }
-
-    @Override
-    public List<ArticleRandomResponseDto> getMonthArticlesLogin(Member member, MemberHashtagInfoDto memberHashtagInfoDto) {
-        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(30), LocalTime.of(0,0,0));
-        LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
-
-        List<String> hashtagList = transformToHashtagList(memberHashtagInfoDto);
-        List<ArticleRandomResponseDto> articleRandomResponseDtoList = articleRepository.mainPageArticleLogin(member.getId(), hashtagList, startDatetime, endDatetime);
-        return selectRandom(articleRandomResponseDtoList);
-    }
-
-    @Override
-    public List<RecommendedMemberResponseDto> getRecommendedMembersNonLogin(String hashtag) {
-        List<RecommendedMemberResponseDto> recommendedMemberResponseDtoList = memberRepository.mainPageMemberNonLogin(hashtag);
-        return selectRandom(recommendedMemberResponseDtoList);
-    }
-
-    @Override
-    public List<MainAndSearchPageArticleFolderResponseDto> getRecommendedArticleFoldersNonLogin(String hashtag) {
-        List<MainAndSearchPageArticleFolderResponseDto> folderResponseList = articleFolderRepository.mainPageArticleFolderNonLogin(hashtag);
-        return selectRandom(folderResponseList);
-    }
-
-    @Override
-    public List<ArticleRandomResponseDto> getMonthArticlesNonLogin() {
-        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now().minusDays(30), LocalTime.of(0,0,0));
-        LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
-
-        List<ArticleRandomResponseDto> articleRandomResponseDtoList = articleRepository.mainPageArticleNonLogin(startDatetime, endDatetime);
-        return selectRandom(articleRandomResponseDtoList);
-    }
-
-
 }

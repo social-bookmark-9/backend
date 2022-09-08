@@ -2,13 +2,8 @@ package com.sparta.backend.controller;
 
 import com.sparta.backend.message.RestResponseMessage;
 import com.sparta.backend.model.Member;
-import com.sparta.backend.repository.MemberRepository;
-import com.sparta.backend.responseDto.ArticleRandomResponseDto;
-import com.sparta.backend.responseDto.MainAndSearchPageArticleFolderResponseDto;
-import com.sparta.backend.responseDto.MemberHashtagInfoDto;
-import com.sparta.backend.responseDto.RecommendedMemberResponseDto;
+import com.sparta.backend.responseDto.*;
 import com.sparta.backend.service.MainPageService;
-import com.sparta.backend.utils.RandomGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,52 +11,21 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 public class MainPageController {
 
     private final MainPageService mainPageService;
-    private final MemberRepository memberRepository;
 
     @GetMapping("/api/mainpage")
     public ResponseEntity<RestResponseMessage> getMainPage(@AuthenticationPrincipal Member getMember) {
-        // 데이터 리턴
-        Map<String, Object> returnData = new HashMap<>();
-
+        MainPageResponseDto mainPageResponseDto;
         if (getMember == null) {
-            // 랜덤 해시태그 생성
-            String randomHashtag = String.valueOf(RandomGenerator.RandomHashtag.getRandomHashtag());
-
-            List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembersNonLogin(randomHashtag);
-
-            List<MainAndSearchPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFoldersNonLogin(randomHashtag);
-
-            List<ArticleRandomResponseDto> articleList = mainPageService.getMonthArticlesNonLogin();
-
-            returnData.put("memberList", memberList);
-            returnData.put("articleFolderList", articleFolderList);
-            returnData.put("articleList", articleList);
-            returnData.put("hashtagButton", randomHashtag);
+            mainPageResponseDto = mainPageService.mainPageNonLoginVer();
         } else {
-            // 유저 해시테그 정보
-            MemberHashtagInfoDto memberHashtagInfoDto = memberRepository.memberHashtagInfo(getMember.getId());
-
-            List<RecommendedMemberResponseDto> memberList = mainPageService.getRecommendedMembersLogin(getMember, memberHashtagInfoDto);
-
-            List<MainAndSearchPageArticleFolderResponseDto> articleFolderList = mainPageService.getRecommendedArticleFoldersLogin(getMember, memberHashtagInfoDto);
-
-            List<ArticleRandomResponseDto> articleList = mainPageService.getMonthArticlesLogin(getMember, memberHashtagInfoDto);
-
-            returnData.put("memberList", memberList);
-            returnData.put("articleFolderList", articleFolderList);
-            returnData.put("articleList", articleList);
-            returnData.put("hashtagButton", memberHashtagInfoDto);
+            mainPageResponseDto = mainPageService.mainPageLoginVer(getMember);
         }
-
-        return new ResponseEntity<>(new RestResponseMessage<>(true,"메인페이지 정보 불러오기", returnData), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseMessage<>(true,"메인페이지 정보 불러오기", mainPageResponseDto), HttpStatus.OK);
     }
 }
