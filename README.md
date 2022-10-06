@@ -113,7 +113,7 @@
 
 ## 서비스 아키텍처
 
-<img alt="project-architecture" width="600" src="https://user-images.githubusercontent.com/76833697/161889252-2fa7d4f9-da8f-4b8f-8a94-78f6f2b83545.png"/>
+![project-architecture](https://user-images.githubusercontent.com/82927161/194331246-0b2edf08-5234-409a-b5e4-3878464ffca5.png)
 
 <br/>
 
