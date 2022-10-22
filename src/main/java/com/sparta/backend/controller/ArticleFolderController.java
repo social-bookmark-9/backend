@@ -129,7 +129,7 @@ public class ArticleFolderController {
      * @param articleId
      * @return message
      */
-    @DeleteMapping("/articleFolder/{folderId}/articles{articleId}")
+    @DeleteMapping("/articleFolder/{folderId}/articles/{articleId}")
     public ResponseEntity<RestResponseMessage<?>> deleteArticleInArticleFolder(
             @AuthenticationPrincipal Member member,
             @PathVariable Long folderId,
